@@ -287,14 +287,15 @@ void Game::GenerateOutput()
     // Clear back buffer
     mRenderer->Clear();
     // Draw background
-    mRenderer->DrawTexture(Vector2(LEVEL_WIDTH * TILE_SIZE * 0.5f, WINDOW_HEIGHT * 0.5f),
-                           Vector2(LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE),
-                           0.0f,
-                           Color::White,
-                           mBackgroundTexture,
-                           Vector4(0,0,1,1),
-                           mCameraPos,
-                           false);
+    // TODO: Fix the background rendering
+    // mRenderer->DrawTexture(Vector2(LEVEL_WIDTH * TILE_SIZE * 0.5f, WINDOW_HEIGHT * 0.5f),
+    //                        Vector2(LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE),
+    //                        0.0f,
+    //                        Color::White,
+    //                        mBackgroundTexture,
+    //                        Vector4(0,0,1,1),
+    //                        mCameraPos,
+    //                        false);
 
     for (auto drawable : mDrawables)
     {

@@ -30,8 +30,8 @@ public:
     // Renderer
     class Renderer* GetRenderer() { return mRenderer; }
 
-    static const int WINDOW_WIDTH   = 640;
-    static const int WINDOW_HEIGHT  = 448;
+    static const int WINDOW_WIDTH   = 800;
+    static const int WINDOW_HEIGHT  = 600;
     static const int LEVEL_WIDTH    = 215;
     static const int LEVEL_HEIGHT   = 15;
     static const int TILE_SIZE      = 32;
