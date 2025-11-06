@@ -8,8 +8,12 @@
 
 #pragma once
 #include <SDL.h>
+
 #include <vector>
+
 #include "Renderer/Renderer.h"
+#include "UI/HUD.h"
+#include "UI/Menus/PauseMenu.h"
 
 class Game
 {
@@ -20,6 +24,10 @@ public:
     void RunLoop();
     void Shutdown();
     void Quit() { mIsRunning = false; }
+
+    enum GameState {EGameplay, EMenu, EPaused};
+    void SetState(GameState state) { mGameState = state; }
+    GameState GetState() { return mGameState; }
 
     // Actor functions
     void InitializeActors();
@@ -52,6 +60,11 @@ public:
     Vector2& GetCameraPos() { return mCameraPos; };
     void SetCameraPos(const Vector2& position) { mCameraPos = position; };
 
+    // UI functions
+    const std::vector<class UIScreen*>& GetUIStack() const { return mUIStack; }
+    void PushUI(class UIScreen* screen);
+    void UpdateUI(float deltaTime);
+    void RemoveUI(class UIScreen* screen);
     // Game specific
 
 private:
@@ -59,7 +72,9 @@ private:
     void UpdateGame(float deltaTime);
     void UpdateCamera();
     void GenerateOutput();
-
+    void LoadData();
+    void OnPause();
+    void OnResume();
     // Level loading
     int **LoadLevel(const std::string& fileName, int width, int height);
     void BuildLevel(int** levelData, int width, int height);
@@ -89,7 +104,16 @@ private:
     bool mIsRunning;
     bool mIsDebugging;
     bool mUpdatingActors;
+    GameState mGameState;
 
+    //UI stack for game
+    std::vector<class UIScreen*> mUIStack;
+
+    //Pause menu
+    PauseMenu* mPauseMenu;
+
+    //HUD
+    class HUD* mHud;
     // Game-specific
     int **mLevelData;
     Texture* mBackgroundTexture;

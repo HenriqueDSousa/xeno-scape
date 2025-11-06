@@ -11,14 +11,7 @@ Texture::~Texture()
 {
 }
 
-bool Texture::Load(const std::string &filePath)
-{
-    SDL_Surface* surface = IMG_Load(filePath.c_str());
-    if (!surface)
-    {
-        SDL_Log("Falha ao carregar a textura: %s", filePath.c_str());
-        return false;
-    }
+bool Texture::LoadFromSurface(SDL_Surface *surface) {
     mHeight = surface->h;
     mWidth = surface->w;
 
@@ -47,6 +40,18 @@ bool Texture::Load(const std::string &filePath)
     return true;
 }
 
+bool Texture::Load(const std::string &filePath)
+{
+    SDL_Surface* surface = IMG_Load(filePath.c_str());
+    if (!surface)
+    {
+        SDL_Log("Falha ao carregar a textura: %s", filePath.c_str());
+        return false;
+    }
+
+    return LoadFromSurface(surface);
+}
+
 void Texture::Unload()
 {
 	glDeleteTextures(1, &mTextureID);
@@ -56,4 +61,13 @@ void Texture::SetActive(int index) const
 {
     glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, mTextureID);
+}
+
+bool Texture::CreateFromSurface(SDL_Surface *surface) {
+    if (!surface)
+    {
+        SDL_Log("Failure on creating texture from surface");
+        return false;
+    }
+    return LoadFromSurface(surface);
 }

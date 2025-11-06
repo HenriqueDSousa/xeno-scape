@@ -6,17 +6,20 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <fstream>
-#include "CSV.h"
 #include "Game.h"
+
+#include <algorithm>
+#include <fstream>
+#include <map>
+#include <vector>
+
+#include "Actors/Actor.h"
+#include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
 #include "Random.h"
-#include "Actors/Actor.h"
-
+#include "UI/Menus/PauseMenu.h"
+#include "UI/UIScreen.h"
 
 Game::Game()
         :mWindow(nullptr)
@@ -51,12 +54,33 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    LoadData();
     // Init all game actors
     InitializeActors();
 
     mTicksCount = SDL_GetTicks();
 
     return true;
+}
+
+void Game::LoadData() {
+  mHud = new HUD(this);
+}
+
+void Game::OnPause() {
+  SDL_Log("Paused");
+  mPauseMenu = new PauseMenu(this);
+  SetState(EPaused);
+}
+
+void Game::OnResume() {
+    if (!mPauseMenu)
+      return;
+
+    mPauseMenu->Close();
+    SetState(EGameplay);
+    SDL_Log("Resume");
+    mPauseMenu = nullptr;
 }
 
 void Game::InitializeActors()
@@ -120,6 +144,33 @@ void Game::LoadBackgroundTexture(const std::string &fileName) {
     }
 }
 
+void Game::PushUI(class UIScreen *screen) {
+    if (!screen) {
+        SDL_Log("Error loading UI screen!");
+        return;
+    }
+    mUIStack.emplace_back(screen);
+}
+
+void Game::UpdateUI(float deltaTime) {
+
+    std::vector<UIScreen*> closingUIs;
+    for (auto ui : mUIStack)
+    {
+        if (ui->GetState() == UIScreen::EActive)
+        {
+            ui->Update(deltaTime);
+        } else if (ui->GetState() == UIScreen::EClosing) {
+          closingUIs.emplace_back(ui);
+        }
+    }
+
+    for (auto ui : closingUIs) {
+      delete ui;
+    }
+
+}
+
 void Game::RunLoop()
 {
     while (mIsRunning)
@@ -149,6 +200,7 @@ void Game::RunLoop()
 void Game::ProcessInput()
 {
     SDL_Event event;
+
     while (SDL_PollEvent(&event))
     {
         switch (event.type)
@@ -156,14 +208,31 @@ void Game::ProcessInput()
             case SDL_QUIT:
                 Quit();
                 break;
+            case SDL_KEYDOWN:
+              // Handle pause
+              if (event.key.keysym.sym == SDLK_ESCAPE) {
+                if (mGameState == EPaused) {
+                  if (mUIStack.back() == mPauseMenu) {
+                    OnResume();
+                  }
+                } else {
+                  OnPause();
+                }
+              }
+            break;
+
         }
     }
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    for (auto actor : mActors)
-    {
+    if (mGameState == EGameplay) {
+      for (auto actor : mActors)
+      {
         actor->ProcessInput(state);
+      }
+    } else if (!mUIStack.empty()) {
+      mUIStack.back()->ProcessInput(state);
     }
 }
 
@@ -171,8 +240,7 @@ void Game::UpdateGame(float deltaTime)
 {
     // Update all actors and pending actors
     UpdateActors(deltaTime);
-
-    // Update camera position
+    UpdateUI(deltaTime);
     UpdateCamera();
 }
 
@@ -237,8 +305,7 @@ void Game::AddActor(Actor* actor)
     }
 }
 
-void Game::RemoveActor(Actor* actor)
-{
+void Game::RemoveActor(Actor* actor) {
     auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
     if (iter != mPendingActors.end())
     {
@@ -255,6 +322,22 @@ void Game::RemoveActor(Actor* actor)
         mActors.pop_back();
     }
 }
+
+void Game::RemoveUI(class UIScreen* screen) {
+  if (!screen) {
+    SDL_Log("RemoveUI: null screen");
+    return;
+  }
+
+  auto iter = std::find(mUIStack.begin(), mUIStack.end(), screen);
+  if (iter == mUIStack.end()) {
+    SDL_Log("RemoveUI: screen not found");
+    return;
+  }
+  mUIStack.erase(iter);
+}
+
+
 
 void Game::AddDrawable(class DrawComponent *drawable)
 {
@@ -310,6 +393,15 @@ void Game::GenerateOutput()
               }
         }
     }
+    //Draw UI
+    for (auto ui : mUIStack)
+    {
+        if (ui->GetState() == UIScreen::EActive)
+        {
+            ui->Draw();
+        }
+    }
+
     // Swap front buffer and back buffer
     mRenderer->Present();
 }
