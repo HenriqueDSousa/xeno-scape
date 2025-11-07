@@ -8,6 +8,7 @@ project(${PROJECT_NAME})
 
 find_package(SDL2 2.32.2 EXACT REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
@@ -45,6 +46,18 @@ add_executable(${PROJECT_NAME}
         Source/Components/Drawing/AnimatorComponent.h
         Source/Components/Drawing/RectComponent.cpp
         Source/Components/Drawing/RectComponent.h
+        Source/UI/Font.cpp
+        Source/UI/Font.h
+        Source/UI/UIScreen.cpp
+        Source/UI/UIScreen.h
+        Source/UI/HUD.cpp
+        Source/UI/HUD.h
+        Source/UI/Menus/PauseMenu.cpp
+        Source/UI/Menus/PauseMenu.h
+        Source/UI/UIElement.cpp
+        Source/UI/UIElement.h
+        Source/UI/UIText.cpp
+        Source/UI/UIText.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL)
+target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)

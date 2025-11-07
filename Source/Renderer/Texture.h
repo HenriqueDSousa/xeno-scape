@@ -15,12 +15,15 @@ public:
 
 	void SetActive(int index = 0) const;
 
-    static GLenum SDLFormatToGL(SDL_PixelFormat* fmt);
+	bool LoadFromSurface(SDL_Surface *surface);
+
+	static GLenum SDLFormatToGL(SDL_PixelFormat* fmt);
 
 	int GetWidth() const { return mWidth; }
 	int GetHeight() const { return mHeight; }
 
 	unsigned int GetTextureID() const { return mTextureID; }
+	bool CreateFromSurface(SDL_Surface* surface);
 
 private:
 	unsigned int mTextureID;
