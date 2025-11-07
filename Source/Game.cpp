@@ -18,6 +18,7 @@
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
 #include "Random.h"
+#include "UI/Font.h"
 #include "UI/Menus/PauseMenu.h"
 #include "UI/UIScreen.h"
 
@@ -51,6 +52,13 @@ bool Game::Initialize()
         return false;
     }
 
+    // Initialize SDL_ttf
+    if (TTF_Init() != 0)
+    {
+      SDL_Log("Failed to initialize SDL_ttf");
+      return false;
+    }
+
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -64,12 +72,12 @@ bool Game::Initialize()
 }
 
 void Game::LoadData() {
-  mHud = new HUD(this);
+  // mHud = new HUD(this);
 }
 
 void Game::OnPause() {
   SDL_Log("Paused");
-  mPauseMenu = new PauseMenu(this);
+  mPauseMenu = new PauseMenu(this, "../Assets/Fonts/SuperPixel-m2L8j.ttf");
   SetState(EPaused);
 }
 
@@ -337,7 +345,21 @@ void Game::RemoveUI(class UIScreen* screen) {
   mUIStack.erase(iter);
 }
 
-
+Font* Game::LoadFont(const std::string& fileName) {
+    auto iter = mFonts.find(fileName);
+    if (iter != mFonts.end()) {
+      return iter->second;
+    }
+    // Saves on buffer
+    Font* font = new Font(mRenderer);
+    if (font->Load(fileName)) {
+      mFonts.emplace(fileName, font);
+      return font;
+    }
+    font->Unload();
+    delete font;
+    return nullptr;
+}
 
 void Game::AddDrawable(class DrawComponent *drawable)
 {

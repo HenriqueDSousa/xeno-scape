@@ -7,7 +7,7 @@
 
 class PauseMenu : public UIScreen {
  public:
-  PauseMenu(class Game *game);
+  PauseMenu(class Game *game, const std::string& fontName);
 
   void Update(float deltaTime) override;
   void Draw() override;

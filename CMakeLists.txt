@@ -54,6 +54,10 @@ add_executable(${PROJECT_NAME}
         Source/UI/HUD.h
         Source/UI/Menus/PauseMenu.cpp
         Source/UI/Menus/PauseMenu.h
+        Source/UI/UIElement.cpp
+        Source/UI/UIElement.h
+        Source/UI/UIText.cpp
+        Source/UI/UIText.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)

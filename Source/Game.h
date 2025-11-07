@@ -65,6 +65,7 @@ public:
     void PushUI(class UIScreen* screen);
     void UpdateUI(float deltaTime);
     void RemoveUI(class UIScreen* screen);
+    Font* LoadFont(const std::string& fileName);
     // Game specific
 
 private:
@@ -93,8 +94,10 @@ private:
     // All the collision components
     std::vector<class AABBColliderComponent*> mColliders;
 
-    // SDL stuff
+    // Window
     SDL_Window* mWindow;
+
+    // Renderer
     class Renderer* mRenderer;
 
     // Track elapsed time since game start
@@ -106,8 +109,9 @@ private:
     bool mUpdatingActors;
     GameState mGameState;
 
-    //UI stack for game
+    //UI elements
     std::vector<class UIScreen*> mUIStack;
+    std::unordered_map<std::string, class Font*> mFonts;
 
     //Pause menu
     PauseMenu* mPauseMenu;
