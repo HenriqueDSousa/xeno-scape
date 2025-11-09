@@ -36,13 +36,11 @@ void UIText::SetText(const std::string& name) {
 }
 
 void UIText::Draw(Renderer* renderer, const Vector2& cameraPos) {
-  Vector4 titleRect;
-  titleRect.x = mPosition.x + cameraPos.x;
-  titleRect.y = mPosition.y + cameraPos.y;
-  titleRect.z = mSize.x;
-  titleRect.w = mSize.y;
-  renderer->DrawTexture(Vector2(titleRect.x, titleRect.y),
-                        Vector2(titleRect.z, titleRect.w),
+  Vector2 centerPos = Vector2(mPosition.x + cameraPos.x + mSize.x * 0.5f,
+                              mPosition.y + cameraPos.y + mSize.y * 0.5f);
+
+  renderer->DrawTexture(centerPos,
+                        Vector2(mSize.x, mSize.y),
                         0.0f, mColor,
                         mTextTexture);
 }

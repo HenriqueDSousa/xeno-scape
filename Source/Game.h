@@ -66,6 +66,10 @@ public:
     void UpdateUI(float deltaTime);
     void RemoveUI(class UIScreen* screen);
     Font* LoadFont(const std::string& fileName);
+
+    // Pause
+    void OnPause();
+    void OnResume();
     // Game specific
 
 private:
@@ -74,8 +78,7 @@ private:
     void UpdateCamera();
     void GenerateOutput();
     void LoadData();
-    void OnPause();
-    void OnResume();
+
     // Level loading
     int **LoadLevel(const std::string& fileName, int width, int height);
     void BuildLevel(int** levelData, int width, int height);

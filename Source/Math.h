@@ -1189,5 +1189,6 @@ namespace Color
 	constexpr Vector3 LightBlue(0.68f, 0.85f, 0.9f);
 	constexpr Vector3 LightPink(1.0f, 0.71f, 0.76f);
 	constexpr Vector3 LightGreen(0.56f, 0.93f, 0.56f);
+        constexpr Vector3 Gray(0.5f, 0.5f, 0.5f);
 	// NOLINTEND
 } // namespace Color
