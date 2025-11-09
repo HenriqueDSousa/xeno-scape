@@ -3,8 +3,8 @@
 //
 
 #include "PauseMenu.h"
-
 #include "../../Game.h"
+
 PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
 : UIScreen(game, fontName) {
   SetSize(Vector2(Game::WINDOW_WIDTH/3, Game::WINDOW_HEIGHT/3));
@@ -13,6 +13,24 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
         AddText(std::string(text),Vector2::Zero, Vector2::Zero,
                 30,
                 Color::White);
+  AddButton("Resume", Vector2(GetSize().x / 4, GetSize().y / 3),
+          Vector2(GetSize().x / 2, 50.f),
+          24,
+          UIButton::TextPos::Center,
+          [this]() {
+            mGame->OnResume();
+          },
+          Vector2::Zero,
+          Color::White);
+  AddButton("Quit", Vector2(GetSize().x / 4, 2 * GetSize().y /3),
+          Vector2(GetSize().x / 2, 50.f),
+          24,
+          UIButton::TextPos::Center,
+          [this]() {
+            mGame->OnResume();
+          },
+          Vector2::Zero,
+          Color::White);
 }
 
 void PauseMenu::Update(float deltaTime) { UIScreen::Update(deltaTime); }

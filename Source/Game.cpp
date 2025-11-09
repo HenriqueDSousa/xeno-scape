@@ -211,36 +211,43 @@ void Game::ProcessInput()
 
     while (SDL_PollEvent(&event))
     {
-        switch (event.type)
-        {
-            case SDL_QUIT:
-                Quit();
-                break;
-            case SDL_KEYDOWN:
-              // Handle pause
-              if (event.key.keysym.sym == SDLK_ESCAPE) {
-                if (mGameState == EPaused) {
-                  if (mUIStack.back() == mPauseMenu) {
+        if (event.type == SDL_QUIT) {
+            Quit();
+            continue;
+        }
+        // Handle pause/resume
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+            if (mGameState == EPaused) {
+                if (!mUIStack.empty() && mUIStack.back() == mPauseMenu) {
                     OnResume();
-                  }
-                } else {
-                  OnPause();
                 }
-              }
-            break;
-
+                } else {
+                    OnPause();
+                }
+                continue;
+            }
+        // Handle UI input
+        if (!mUIStack.empty()) {
+            UIScreen* top = mUIStack.back();
+            if (!top) {
+                RemoveUI(top);
+                continue;
+            }
+            if (event.type == SDL_KEYDOWN) {
+                    top->HandleKeyPress(event.key.keysym.sym);
+            } else if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP || event.type == SDL_MOUSEMOTION) {
+                    top->HandleMouse(event);
+            }
+            continue;
         }
     }
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    if (mGameState == EGameplay) {
-      for (auto actor : mActors)
-      {
-        actor->ProcessInput(state);
-      }
-    } else if (!mUIStack.empty()) {
-      mUIStack.back()->ProcessInput(state);
+    if (mGameState == EGameplay && mUIStack.empty()) {
+        for (auto actor : mActors) {
+                actor->ProcessInput(state);
+        }
     }
 }
 

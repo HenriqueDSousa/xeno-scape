@@ -58,6 +58,8 @@ add_executable(${PROJECT_NAME}
         Source/UI/UIElement.h
         Source/UI/UIText.cpp
         Source/UI/UIText.h
+        Source/UI/UIButton.h
+        Source/UI/UIButton.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)
