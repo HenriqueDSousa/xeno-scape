@@ -31,6 +31,8 @@ Game::Game()
         ,mUpdatingActors(false)
         ,mCameraPos(Vector2::Zero)
         ,mLevelData(nullptr)
+        ,mGameState(Menu)
+        ,mCurrentScene(MainMenu)
 {
 
 }
@@ -62,6 +64,7 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    mCurrentScene = Level1;
     LoadData();
     // Init all game actors
     InitializeActors();
@@ -72,13 +75,21 @@ bool Game::Initialize()
 }
 
 void Game::LoadData() {
-  // mHud = new HUD(this);
+  if (mCurrentScene != MainMenu) {
+    mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+    mHud->SetPaused(false);
+  }
+
 }
 
 void Game::OnPause() {
   SDL_Log("Paused");
   mPauseMenu = new PauseMenu(this, "../Assets/Fonts/SuperPixel-m2L8j.ttf");
-  SetState(EPaused);
+  SetState(Paused);
+
+  if (mHud) {
+    mHud->SetPaused(true);
+  }
 }
 
 void Game::OnResume() {
@@ -86,9 +97,13 @@ void Game::OnResume() {
       return;
 
     mPauseMenu->Close();
-    SetState(EGameplay);
+    SetState(Gameplay);
     SDL_Log("Resume");
     mPauseMenu = nullptr;
+
+  if (mHud) {
+    mHud->SetPaused(false);
+  }
 }
 
 void Game::InitializeActors()
@@ -217,7 +232,7 @@ void Game::ProcessInput()
         }
         // Handle pause/resume
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
-            if (mGameState == EPaused) {
+            if (mGameState == Paused) {
                 if (!mUIStack.empty() && mUIStack.back() == mPauseMenu) {
                     OnResume();
                 }
@@ -244,7 +259,7 @@ void Game::ProcessInput()
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    if (mGameState == EGameplay && mUIStack.empty()) {
+    if (mGameState == Gameplay && mUIStack.empty()) {
         for (auto actor : mActors) {
                 actor->ProcessInput(state);
         }
