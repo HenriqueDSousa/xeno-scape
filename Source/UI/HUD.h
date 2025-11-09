@@ -3,16 +3,22 @@
 //
 
 #pragma once
+#include "Timer.h"
 #include "UIScreen.h"
 
 class HUD : public UIScreen {
-public:
-    HUD(class Game* game);
-    virtual ~HUD();
+ public:
 
-    virtual void Update(float deltaTime);
-    virtual void Draw(class Shader* shader);
-    virtual void ProcessInput(const uint8_t* keys);
+  HUD(class Game* game, const std::string& fontName);
 
+  virtual void Update(float deltaTime);
+  void Draw() override;
+  void ChangeResolution(float oldScale, float newScale) override;
+  void SetVisible(bool isVisible) { mIsVisible = isVisible; }
+  void SetPaused(bool isPaused) { mIsPaused = isPaused; }
+
+private:
+  Timer* mTimer;
+  bool mIsPaused;
 };
 

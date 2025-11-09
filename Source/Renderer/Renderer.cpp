@@ -53,8 +53,8 @@ bool Renderer::Initialize(float width, float height)
     // Create quad for drawing sprites
     CreateSpriteVerts();
 
-    // Set the clear color to light grey
-    glClearColor(0.419f, 0.549f, 1.0f, 1.0f);
+    // Set the clear color to black
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Enable alpha blending on textures
     glEnable(GL_BLEND);

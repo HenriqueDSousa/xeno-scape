@@ -25,9 +25,11 @@ public:
     void Shutdown();
     void Quit() { mIsRunning = false; }
 
-    enum GameState {EGameplay, EMenu, EPaused};
+    enum GameState {Gameplay, Menu, Paused};
     void SetState(GameState state) { mGameState = state; }
     GameState GetState() { return mGameState; }
+
+    enum GameScene { MainMenu, Level1, Level2, Level3 };
 
     // Actor functions
     void InitializeActors();
@@ -111,17 +113,18 @@ private:
     bool mIsDebugging;
     bool mUpdatingActors;
     GameState mGameState;
+    GameScene mCurrentScene;
 
     //UI elements
     std::vector<class UIScreen*> mUIStack;
     std::unordered_map<std::string, class Font*> mFonts;
 
     //Pause menu
-    PauseMenu* mPauseMenu;
+    PauseMenu* mPauseMenu{};
 
     //HUD
-    class HUD* mHud;
+    class HUD* mHud{};
     // Game-specific
     int **mLevelData;
-    Texture* mBackgroundTexture;
+    Texture* mBackgroundTexture{};
 };
