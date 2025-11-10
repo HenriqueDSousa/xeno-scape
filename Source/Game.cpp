@@ -17,6 +17,7 @@
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
+#include "Json.h"
 #include "Random.h"
 #include "UI/Font.h"
 #include "UI/Menus/PauseMenu.h"
@@ -33,8 +34,9 @@ Game::Game()
         ,mLevelData(nullptr)
         ,mGameState(Menu)
         ,mCurrentScene(MainMenu)
+        ,mCurrentWidth(0)
+        ,mCurrentHeight(0)
 {
-
 }
 
 bool Game::Initialize()
@@ -64,7 +66,7 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    mCurrentScene = Level1;
+    mCurrentScene = TestLevel;
     LoadData();
     // Init all game actors
     InitializeActors();
@@ -79,7 +81,10 @@ void Game::LoadData() {
     mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
     mHud->SetPaused(false);
   }
-
+  if (mCurrentScene == TestLevel) {
+    int** levelData = LoadLevel("../Assets/Levels/TestLevel/testlevel.json");
+    BuildLevel(levelData);
+  }
 }
 
 void Game::OnPause() {
@@ -108,8 +113,7 @@ void Game::OnResume() {
 
 void Game::InitializeActors()
 {
-    // int** levelData = LoadLevel("../Assets/Levels/Level1/level1-1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
-    // BuildLevel(levelData, LEVEL_WIDTH, LEVEL_HEIGHT);
+    //
     // LoadBackgroundTexture("../Assets/Sprites/Background.png");
     //
     // for (int i = 0; i < LEVEL_HEIGHT; ++i)
@@ -117,33 +121,80 @@ void Game::InitializeActors()
     // delete[] levelData;
 }
 
-int **Game::LoadLevel(const std::string& fileName, int width, int height)
+int **Game::LoadLevel(const std::string& jsonFileName)
 {
+    // Open the JSON file
+    std::ifstream ifs(jsonFileName);
+    if (!ifs.is_open()) {
+        SDL_Log("Failed to open level file: %s", jsonFileName.c_str());
+        return nullptr;
+    }
+
+    nlohmann::json data;
+    try {
+        ifs >> data;
+    } catch (const nlohmann::json::parse_error& e) {
+        SDL_Log("Failed to parse level file %s: %s", jsonFileName.c_str(), e.what());
+        return nullptr;
+    }
+
+    if (data.is_null()) {
+      SDL_Log("Level file parsed to null: %s", jsonFileName.c_str());
+      return nullptr;
+    }
+
+    // Validate expected fields
+    if (!data.contains("width") || !data.contains("height") || !data.contains("layers")) {
+      SDL_Log("Level file missing required fields: %s", jsonFileName.c_str());
+      return nullptr;
+    }
+
+    int width = data["width"].get<int>();
+    int height = data["height"].get<int>();
+
+    // Allocate level array
     int **level = new int*[height];
-    for (int i=0; i < height; i++) {
-        level[i] = new int[width];
+    for (int r = 0; r < height; r++) {
+        level[r] = new int[width];
     }
-    std::ifstream file(fileName);
-    if (!file.is_open()) {
-        SDL_Log("Error opening level file!");
-        return level;
+
+    // Read map data (first layer)
+    std::vector<int> map;
+    try {
+        map = data["layers"][0]["data"].get<std::vector<int>>();
+    } catch (const std::exception& e) {
+        SDL_Log("Failed to read map data from %s: %s", jsonFileName.c_str(), e.what());
+        // clean up
+        for (int r = 0; r < height; r++) delete[] level[r];
+        delete[] level;
+        return nullptr;
     }
-    int row = 0;
-    std::string line;
-    while (std::getline(file,line)) {
-        auto newRow = CSVHelper::Split(line);
-        for (int col = 0; col < width && col < newRow.size(); col++) {
-            level[row][col] = newRow[col];
-        }
-        row++;
+
+    if ((int)map.size() < width * height) {
+        SDL_Log("Map data size (%zu) is smaller than width*height (%d)", map.size(), width * height);
+        // fill missing with zeros
     }
+
+    int idx = 0;
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+          int value = 0;
+          if (idx < (int)map.size()) value = map[idx];
+          level[row][col] = value + 1;
+          idx++;
+      }
+    }
+
+    mCurrentWidth = width;
+    mCurrentHeight = height;
+
     return level;
 }
 
-void Game::BuildLevel(int** levelData, int width, int height)
+void Game::BuildLevel(int** levelData)
 {
-    for (int y=0; y < height; y++) {
-        for (int x=0; x < width; x++) {
+    for (int y=0; y < mCurrentHeight; y++) {
+        for (int x=0; x < mCurrentWidth; x++) {
             int tileID = levelData[y][x];
 
             float worldX = x * TILE_SIZE + TILE_SIZE / 2.0f;
@@ -314,8 +365,8 @@ void Game::UpdateCamera()
 
     if (desiredCamX < 0.0f)
         desiredCamX = 0.0f;
-    else if (desiredCamX > levelWidthPx - WINDOW_WIDTH)
-        desiredCamX = levelWidthPx - WINDOW_WIDTH;
+    // else if (desiredCamX > levelWidthPx - WINDOW_WIDTH)
+    //     desiredCamX = levelWidthPx - WINDOW_WIDTH;
 
     // Atualiza a posição da câmera (movendo apenas no eixo X)
     mCameraPos.x = desiredCamX;

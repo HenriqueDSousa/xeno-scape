@@ -29,7 +29,7 @@ public:
     void SetState(GameState state) { mGameState = state; }
     GameState GetState() { return mGameState; }
 
-    enum GameScene { MainMenu, Level1, Level2, Level3 };
+    enum GameScene { MainMenu, TestLevel, Level1, Level2, Level3 };
 
     // Actor functions
     void InitializeActors();
@@ -42,9 +42,9 @@ public:
 
     static const int WINDOW_WIDTH   = 800;
     static const int WINDOW_HEIGHT  = 600;
-    static const int LEVEL_WIDTH    = 215;
-    static const int LEVEL_HEIGHT   = 15;
-    static const int TILE_SIZE      = 32;
+    static const int LEVEL_WIDTH    = 20;
+    static const int LEVEL_HEIGHT   = 20;
+    static const int TILE_SIZE      = 16;
     static const int SPAWN_DISTANCE = 700;
     static const int FPS = 60;
 
@@ -82,8 +82,8 @@ private:
     void LoadData();
 
     // Level loading
-    int **LoadLevel(const std::string& fileName, int width, int height);
-    void BuildLevel(int** levelData, int width, int height);
+    int **LoadLevel(const std::string& fileName);
+    void BuildLevel(int** levelData);
     void LoadBackgroundTexture(const std::string& fileName);
 
     // All the actors in the game
@@ -114,6 +114,8 @@ private:
     bool mUpdatingActors;
     GameState mGameState;
     GameScene mCurrentScene;
+    int mCurrentWidth;
+    int mCurrentHeight;
 
     //UI elements
     std::vector<class UIScreen*> mUIStack;
