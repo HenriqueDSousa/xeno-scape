@@ -10,6 +10,7 @@
 #include <SDL.h>
 
 #include <vector>
+#include <unordered_map>
 
 #include "Renderer/Renderer.h"
 #include "UI/HUD.h"
@@ -40,13 +41,20 @@ public:
     // Renderer
     class Renderer* GetRenderer() { return mRenderer; }
 
-    static const int WINDOW_WIDTH   = 800;
-    static const int WINDOW_HEIGHT  = 600;
+    static const int WINDOW_WIDTH   = 1280;
+    static const int WINDOW_HEIGHT  = 720;
     static const int LEVEL_WIDTH    = 20;
     static const int LEVEL_HEIGHT   = 20;
-    static const int TILE_SIZE      = 16;
+    // Size of source sprites (in pixels). Your sprites are 16x16.
+    static const int SPRITE_SIZE    = 16;
+    // Scaled tile size at runtime: use GetTileSize() to retrieve
     static const int SPAWN_DISTANCE = 700;
     static const int FPS = 60;
+    static constexpr std::string_view BLOCK_ASSETS_PATH = "../Assets/Sprites/Blocks/";
+
+    // Scale factor for sprites / tiles. Computed at runtime in Initialize().
+    int GetGameScale() const { return mGameScale; }
+    int GetTileSize() const { return SPRITE_SIZE * mGameScale; }
 
     // Draw functions
     void AddDrawable(class DrawComponent* drawable);
@@ -83,6 +91,7 @@ private:
 
     // Level loading
     int **LoadLevel(const std::string& fileName);
+    bool LoadTileMap(const std::string& fileName);
     void BuildLevel(int** levelData);
     void LoadBackgroundTexture(const std::string& fileName);
 
@@ -114,8 +123,8 @@ private:
     bool mUpdatingActors;
     GameState mGameState;
     GameScene mCurrentScene;
-    int mCurrentWidth;
-    int mCurrentHeight;
+    int mCurrentLevelWidth;
+    int mCurrentLevelHeight;
 
     //UI elements
     std::vector<class UIScreen*> mUIStack;
@@ -129,4 +138,8 @@ private:
     // Game-specific
     int **mLevelData;
     Texture* mBackgroundTexture{};
+    // Runtime scale for sprites (multiplier for SPRITE_SIZE)
+    int mGameScale{2};
+    // Mapping from tile ID -> sprite filename (populated per-level)
+    std::unordered_map<int, std::string> mTileSpriteMap;
 };
