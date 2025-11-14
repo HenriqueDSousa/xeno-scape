@@ -5,9 +5,9 @@
 #pragma once
 #include <string>
 
-#include "../Math.h"
-#include "UIButton.h"
-#include "UIText.h"
+#include "../../Math.h"
+#include "../UIButton.h"
+#include "../UIText.h"
 
 class Vector3;
 
