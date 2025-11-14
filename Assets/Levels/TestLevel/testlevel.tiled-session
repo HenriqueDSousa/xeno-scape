@@ -1,6 +1,7 @@
 {
-    "activeFile": "",
+    "activeFile": "testlevel.json",
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -26,8 +27,8 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 254.75,
-                "y": 241
+                "x": 169.25,
+                "y": 130
             }
         },
         "testlevel.json#tileset": {
@@ -52,13 +53,15 @@
     "last.imagePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "openFiles": [
+        "testlevel.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json"
     ],
     "project": "testlevel.tiled-project",
     "recentFiles": [
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
+        "testlevel.json",
         "tileset.tsx",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/block_tileset.tsx",
-        "testlevel.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx",
         "untitled.tmx"
     ],
