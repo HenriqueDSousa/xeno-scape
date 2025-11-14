@@ -9,9 +9,11 @@
 HUD::HUD(class Game* game, const std::string& fontName)
 : UIScreen(game, fontName),
   mIsPaused(true) {
+  SetPosition(Vector2(Vector2::Zero));
+  SetSize(Vector2(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT));
   mTimer = new Timer(60.0f,
-    Vector2(Game::LEVEL_WIDTH / 2.0f, 10.0f),
-    Vector2(200.0f, 50.0f),
+    Vector2((GetSize().x / 2.0f), GetSize().y / 30.0f),
+    Vector2::Zero,
     Color::White, mFont);
 }
 
@@ -26,7 +28,7 @@ void HUD::Draw() {
   if (!mIsVisible) {
     return;
   }
-  mTimer->Draw(mRenderer, mTimer->GetPosition());
+  mTimer->Draw(mRenderer, mPos);
 }
 
 void HUD::ChangeResolution(float oldScale, float newScale) {

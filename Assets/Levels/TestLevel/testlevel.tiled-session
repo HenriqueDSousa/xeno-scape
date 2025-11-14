@@ -1,0 +1,70 @@
+{
+    "activeFile": "testlevel.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/block_tileset.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 3,
+            "scaleInEditor": 2
+        },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json": {
+            "dynamicWrapping": true,
+            "scaleInDock": 3,
+            "scaleInEditor": 1
+        },
+        "testlevel.json": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 169.25,
+                "y": 130
+            }
+        },
+        "testlevel.json#tileset": {
+            "dynamicWrapping": false,
+            "scaleInEditor": 1
+        },
+        "tileset.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "untitled.tmx": {
+            "scale": 2.6599999999999997,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160.33834586466168,
+                "y": 114.66165413533838
+            }
+        }
+    },
+    "last.exportedFilePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1",
+    "last.imagePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks",
+    "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
+    "openFiles": [
+        "testlevel.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json"
+    ],
+    "project": "testlevel.tiled-project",
+    "recentFiles": [
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
+        "testlevel.json",
+        "tileset.tsx",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/block_tileset.tsx",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx",
+        "untitled.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}

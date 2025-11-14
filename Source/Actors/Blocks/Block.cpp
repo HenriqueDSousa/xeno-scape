@@ -12,9 +12,9 @@ Block::Block(Game* game, const std::string &texturePath)
 {
     mDrawComponent = new AnimatorComponent(
         this, texturePath,"",
-        Game::TILE_SIZE, Game::TILE_SIZE
+        game->GetTileSize(), game->GetTileSize()
         );
     mColliderComponent = new AABBColliderComponent(this,
         0.0f, 0.0f,
-        Game::TILE_SIZE, Game::TILE_SIZE, ColliderLayer::Blocks, true);
+        game->GetTileSize(), game->GetTileSize(), ColliderLayer::Blocks, true);
 }

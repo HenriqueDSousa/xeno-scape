@@ -14,9 +14,11 @@
 #include <vector>
 
 #include "Actors/Actor.h"
+#include "Actors/Blocks/Block.h"
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
+#include "Json.h"
 #include "Random.h"
 #include "UI/Font.h"
 #include "UI/Menus/PauseMenu.h"
@@ -33,8 +35,10 @@ Game::Game()
         ,mLevelData(nullptr)
         ,mGameState(Menu)
         ,mCurrentScene(MainMenu)
+        ,mCurrentLevelWidth(0)
+        ,mCurrentLevelHeight(0)
+    ,mGameScale(2)
 {
-
 }
 
 bool Game::Initialize()
@@ -64,7 +68,18 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    mCurrentScene = Level1;
+    // Compute a reasonable integer scale (mGameScale) based on actual window size
+    {
+        int winW = 0, winH = 0;
+        SDL_GetWindowSize(mWindow, &winW, &winH);
+        int scaleW = winW / (LEVEL_WIDTH * Game::SPRITE_SIZE);
+        int scaleH = winH / (LEVEL_HEIGHT * Game::SPRITE_SIZE);
+        int chosen = std::max(1, std::min(scaleW, scaleH));
+        if (chosen <= 0) chosen = 1;
+        mGameScale = chosen;
+    }
+
+    mCurrentScene = TestLevel;
     LoadData();
     // Init all game actors
     InitializeActors();
@@ -79,7 +94,13 @@ void Game::LoadData() {
     mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
     mHud->SetPaused(false);
   }
+  
+  LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
 
+  if (mCurrentScene == TestLevel) {
+    int** levelData = LoadLevel("../Assets/Levels/TestLevel/testlevel.json");
+    BuildLevel(levelData);
+  }
 }
 
 void Game::OnPause() {
@@ -108,8 +129,7 @@ void Game::OnResume() {
 
 void Game::InitializeActors()
 {
-    // int** levelData = LoadLevel("../Assets/Levels/Level1/level1-1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
-    // BuildLevel(levelData, LEVEL_WIDTH, LEVEL_HEIGHT);
+    //
     // LoadBackgroundTexture("../Assets/Sprites/Background.png");
     //
     // for (int i = 0; i < LEVEL_HEIGHT; ++i)
@@ -117,41 +137,147 @@ void Game::InitializeActors()
     // delete[] levelData;
 }
 
-int **Game::LoadLevel(const std::string& fileName, int width, int height)
+int **Game::LoadLevel(const std::string& jsonFileName)
 {
+    // Open the JSON file
+    std::ifstream ifs(jsonFileName);
+    if (!ifs.is_open()) {
+        SDL_Log("Failed to open level file: %s", jsonFileName.c_str());
+        return nullptr;
+    }
+
+    nlohmann::json data;
+    try {
+        ifs >> data;
+    } catch (const nlohmann::json::parse_error& e) {
+        SDL_Log("Failed to parse level file %s: %s", jsonFileName.c_str(), e.what());
+        return nullptr;
+    }
+
+    if (data.is_null()) {
+      SDL_Log("Level file parsed to null: %s", jsonFileName.c_str());
+      return nullptr;
+    }
+
+    // Validate expected fields
+    if (!data.contains("width") || !data.contains("height") || !data.contains("layers")) {
+      SDL_Log("Level file missing required fields: %s", jsonFileName.c_str());
+      return nullptr;
+    }
+
+    int width = data["width"].get<int>();
+    int height = data["height"].get<int>();
+
+    // Allocate level array
     int **level = new int*[height];
-    for (int i=0; i < height; i++) {
-        level[i] = new int[width];
+    for (int r = 0; r < height; r++) {
+        level[r] = new int[width];
     }
-    std::ifstream file(fileName);
-    if (!file.is_open()) {
-        SDL_Log("Error opening level file!");
-        return level;
+
+    // Read map data (first layer)
+    std::vector<int> map;
+    try {
+        map = data["layers"][0]["data"].get<std::vector<int>>();
+    } catch (const std::exception& e) {
+        SDL_Log("Failed to read map data from %s: %s", jsonFileName.c_str(), e.what());
+        // clean up
+        for (int r = 0; r < height; r++) delete[] level[r];
+        delete[] level;
+        return nullptr;
     }
-    int row = 0;
-    std::string line;
-    while (std::getline(file,line)) {
-        auto newRow = CSVHelper::Split(line);
-        for (int col = 0; col < width && col < newRow.size(); col++) {
-            level[row][col] = newRow[col];
-        }
-        row++;
+
+    if ((int)map.size() < width * height) {
+        SDL_Log("Map data size (%zu) is smaller than width*height (%d)", map.size(), width * height);
+        // fill missing with zeros
     }
+
+    int idx = 0;
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+          int value = 0;
+          if (idx < (int)map.size()) value = map[idx];
+          level[row][col] = value - 1;
+          idx++;
+      }
+    }
+    mCurrentLevelWidth = width;
+    mCurrentLevelHeight = height;
     return level;
 }
 
-void Game::BuildLevel(int** levelData, int width, int height)
+bool Game::LoadTileMap(const std::string& fileName) {
+    std::ifstream ifs(fileName);
+    if (!ifs.is_open()) {
+        SDL_Log("Failed to open tileset mapping: %s", fileName.c_str());
+        return false;
+    }
+
+    nlohmann::json j;
+    try {
+        ifs >> j;
+    } catch (const nlohmann::json::parse_error& e) {
+        SDL_Log("Failed to parse tileset mapping %s: %s", fileName.c_str(), e.what());
+        return false;
+    }
+
+    if (!j.is_object() || !j.contains("tiles")) {
+        SDL_Log("Tileset mapping missing 'tiles' object: %s", fileName.c_str());
+        return false;
+    }
+
+    mTileSpriteMap.clear();
+
+    for (const auto& tile : j["tiles"]) {
+        if (!tile.is_object()) {
+            SDL_Log("Invalid tile entry in %s", fileName.c_str());
+            continue;
+        }
+        if (!tile.contains("id") || !tile.contains("image")) {
+            SDL_Log("Tile entry missing 'id' or 'image' in %s", fileName.c_str());
+            continue;
+        }
+        if (!tile["id"].is_number() || !tile["image"].is_string()) {
+            SDL_Log("Tile entry has unexpected types (id must be number, image must be string) in %s", fileName.c_str());
+            continue;
+        }
+
+        int id = tile["id"].get<int>();
+        std::string img = tile["image"].get<std::string>();
+
+        // Extract filename (works for both '/' and '\')
+        size_t pos = img.find_last_of("/\\");
+        std::string filename = (pos == std::string::npos) ? img : img.substr(pos + 1);
+        if (filename.empty()) {
+            SDL_Log("Tile image filename empty for id %d in %s", id, fileName.c_str());
+            continue;
+        }
+
+        std::string imagePath = std::string(BLOCK_ASSETS_PATH) + filename;
+        mTileSpriteMap.emplace(id, std::move(imagePath));
+    }
+
+    return !mTileSpriteMap.empty();
+}
+
+void Game::BuildLevel(int** levelData)
 {
-    for (int y=0; y < height; y++) {
-        for (int x=0; x < width; x++) {
+    for (int y=0; y < mCurrentLevelHeight; y++) {
+        for (int x=0; x < mCurrentLevelWidth; x++) {
             int tileID = levelData[y][x];
 
-            float worldX = x * TILE_SIZE + TILE_SIZE / 2.0f;
-            float worldY =  y * TILE_SIZE + TILE_SIZE / 2.0f;
+            int tile = GetTileSize();
+            float worldX = x * tile + tile / 2.0f;
+            float worldY = y * tile + tile / 2.0f;
 
-            switch (tileID) {
-                default:
-                    break;
+            // Skip empty tiles or invalid IDs (only negative IDs are empty)
+            if (tileID < 0) {
+                continue;
+            }
+
+            auto it = mTileSpriteMap.find(tileID);
+            if (it != mTileSpriteMap.end()) {
+                auto block = new Block(this, it->second);
+                block->SetPosition(Vector2(worldX, worldY));
             }
         }
     }
@@ -306,21 +432,38 @@ void Game::UpdateActors(float deltaTime)
 
 void Game::UpdateCamera()
 {
-    // TODO: Update to player's x position
-    float desiredCamX = 0.0f;
+    // TODO: Update to player's position once player actor exists
+    // Compute level size in pixels using current level dimensions
+    float levelWidthPx = (mCurrentLevelWidth > 0) ? (mCurrentLevelWidth * GetTileSize()) : (LEVEL_WIDTH * GetTileSize());
+    float levelHeightPx = (mCurrentLevelHeight > 0) ? (mCurrentLevelHeight * GetTileSize()) : (LEVEL_HEIGHT * GetTileSize());
 
-    // Limites do nível em pixels
-    float levelWidthPx = LEVEL_WIDTH * TILE_SIZE;
+    // Default target: center of level
+    float targetX = levelWidthPx * 0.5f;
+    float targetY = levelHeightPx * 0.5f;
 
-    if (desiredCamX < 0.0f)
-        desiredCamX = 0.0f;
-    else if (desiredCamX > levelWidthPx - WINDOW_WIDTH)
-        desiredCamX = levelWidthPx - WINDOW_WIDTH;
+    // Convert target (center) to camera top-left coordinates
+    float camX = targetX - (WINDOW_WIDTH * 0.5f);
+    float camY = targetY - (WINDOW_HEIGHT * 0.5f);
 
-    // Atualiza a posição da câmera (movendo apenas no eixo X)
-    mCameraPos.x = desiredCamX;
-    mCameraPos.y = 0.0f;
+    // Clamp horizontally. If level is smaller than window, keep left at 0 (no need to move)
+    if (levelWidthPx <= WINDOW_WIDTH) {
+        // Keep camera so level is visible; align left (0) is fine here
+        camX = 0.0f;
+    } else {
+        if (camX < 0.0f) camX = 0.0f;
+        if (camX > levelWidthPx - WINDOW_WIDTH) camX = levelWidthPx - WINDOW_WIDTH;
+    }
 
+    // Clamp vertically. If level is shorter than the window, align the level bottom with window bottom
+    if (levelHeightPx <= WINDOW_HEIGHT) {
+        camY = levelHeightPx - WINDOW_HEIGHT; // negative or zero
+    } else {
+        if (camY < 0.0f) camY = 0.0f;
+        if (camY > levelHeightPx - WINDOW_HEIGHT) camY = levelHeightPx - WINDOW_HEIGHT;
+    }
+
+    mCameraPos.x = camX;
+    mCameraPos.y = camY;
 }
 
 void Game::AddActor(Actor* actor)
@@ -415,8 +558,9 @@ void Game::GenerateOutput()
     mRenderer->Clear();
     // Draw background
     // TODO: Fix the background rendering
-    // mRenderer->DrawTexture(Vector2(LEVEL_WIDTH * TILE_SIZE * 0.5f, WINDOW_HEIGHT * 0.5f),
-    //                        Vector2(LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE),
+    // Example background draw (use runtime tile size):
+    // mRenderer->DrawTexture(Vector2(LEVEL_WIDTH * GetTileSize() * 0.5f, WINDOW_HEIGHT * 0.5f),
+    //                        Vector2(LEVEL_WIDTH * GetTileSize(), LEVEL_HEIGHT * GetTileSize()),
     //                        0.0f,
     //                        Color::White,
     //                        mBackgroundTexture,
@@ -458,7 +602,7 @@ void Game::Shutdown()
 
     // Delete level data
     if (mLevelData) {
-        for (int i = 0; i < LEVEL_HEIGHT; ++i) {
+        for (int i = 0; i < mCurrentLevelHeight; ++i) {
             delete[] mLevelData[i];
         }
         delete[] mLevelData;

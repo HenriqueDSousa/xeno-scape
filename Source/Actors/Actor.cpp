@@ -14,11 +14,11 @@
 #include "../Components/Physics/AABBColliderComponent.h"
 
 Actor::Actor(Game* game)
-        : mState(ActorState::Active)
-        , mPosition(Vector2::Zero)
-        , mScale(Vector2(Game::TILE_SIZE, Game::TILE_SIZE))
-        , mRotation(0.0f)
-        , mGame(game)
+    : mGame(game)
+    , mState(ActorState::Active)
+    , mPosition(Vector2::Zero)
+    , mScale(Vector2((float)mGame->GetTileSize(), (float)mGame->GetTileSize()))
+    , mRotation(0.0f)
 {
     mGame->AddActor(this);
 }
