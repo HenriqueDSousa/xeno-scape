@@ -25,16 +25,39 @@
             35, 36, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":20,
          "id":1,
-         "name":"Tile Layer 1",
+         "name":"Blocks",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
          "width":20,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Enemy",
+         "objects":[
+                {
+                 "gid":145,
+                 "height":32,
+                 "id":4,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Robot1",
+                 "visible":true,
+                 "width":16,
+                 "x":175,
+                 "y":208
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":1,
+ "nextlayerid":6,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.1-99-gec89c545",
@@ -43,6 +66,10 @@
         {
          "firstgid":1,
          "source":"..\/..\/Sprites\/Blocks\/block_tileset.json"
+        }, 
+        {
+         "firstgid":145,
+         "source":"..\/..\/Sprites\/Enemies\/Enemies.json"
         }],
  "tilewidth":16,
  "type":"map",
