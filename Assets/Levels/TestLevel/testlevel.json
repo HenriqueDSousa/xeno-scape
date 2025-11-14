@@ -36,7 +36,7 @@
         {
          "draworder":"topdown",
          "id":5,
-         "name":"Enemy",
+         "name":"Entity",
          "objects":[
                 {
                  "gid":145,
@@ -47,7 +47,7 @@
                  "type":"Robot1",
                  "visible":true,
                  "width":16,
-                 "x":175,
+                 "x":176,
                  "y":208
                 }],
          "opacity":1,

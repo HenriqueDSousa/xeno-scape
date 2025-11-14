@@ -240,7 +240,7 @@ void Game::LoadLevelEnemies(const std::string& jsonFileName) {
 
   nlohmann::json enemies_data;
   for (auto layer : data["layers"]) {
-    if (layer.contains("name") && layer["name"] == "Enemy") {
+    if (layer.contains("name") && layer["name"] == ENTITY_LAYER) {
       enemies_data = layer["data"];
       break;
     }

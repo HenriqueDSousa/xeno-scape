@@ -7,6 +7,7 @@
 
 class Xeno : public Actor {
  public:
+  Xeno(Game* game);
   void OnHorizontalCollision(const float minOverlap,
                              AABBColliderComponent* other) override;
   void OnVerticalCollision(const float minOverlap,
