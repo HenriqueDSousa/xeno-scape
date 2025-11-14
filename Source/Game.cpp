@@ -98,8 +98,9 @@ void Game::LoadData() {
   LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
 
   if (mCurrentScene == TestLevel) {
-    int** levelData = LoadLevel("../Assets/Levels/TestLevel/testlevel.json");
+    int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
     BuildLevel(levelData);
+    LoadLevelEnemies("../Assets/Levels/TestLevel/testlevel.json");
   }
 }
 
@@ -137,7 +138,7 @@ void Game::InitializeActors()
     // delete[] levelData;
 }
 
-int **Game::LoadLevel(const std::string& jsonFileName)
+int **Game::LoadLevelBlocks(const std::string& jsonFileName)
 {
     // Open the JSON file
     std::ifstream ifs(jsonFileName);
@@ -177,7 +178,12 @@ int **Game::LoadLevel(const std::string& jsonFileName)
     // Read map data (first layer)
     std::vector<int> map;
     try {
-        map = data["layers"][0]["data"].get<std::vector<int>>();
+      for (const auto &obj : data["layers"] ) {
+        if (obj["name"] == "Blocks") {
+          map = obj["data"].get<std::vector<int>>();
+          break;
+        }
+      }
     } catch (const std::exception& e) {
         SDL_Log("Failed to read map data from %s: %s", jsonFileName.c_str(), e.what());
         // clean up
@@ -203,6 +209,58 @@ int **Game::LoadLevel(const std::string& jsonFileName)
     mCurrentLevelWidth = width;
     mCurrentLevelHeight = height;
     return level;
+}
+
+void Game::LoadLevelEnemies(const std::string& jsonFileName) {
+  // Open the JSON file
+  std::ifstream ifs(jsonFileName);
+  if (!ifs.is_open()) {
+    SDL_Log("Failed to open level file: %s", jsonFileName.c_str());
+    return;
+  }
+
+  nlohmann::json data;
+  try {
+    ifs >> data;
+  } catch (const nlohmann::json::parse_error& e) {
+    SDL_Log("Failed to parse level file %s: %s", jsonFileName.c_str(), e.what());
+    return;
+  }
+
+  if (data.is_null()) {
+    SDL_Log("Level file parsed to null: %s", jsonFileName.c_str());
+    return;
+  }
+
+  // Validate expected fields
+  if (!data.contains("width") || !data.contains("height") || !data.contains("layers")) {
+    SDL_Log("Level file missing required fields: %s", jsonFileName.c_str());
+    return;
+  }
+
+  nlohmann::json enemies_data;
+  for (auto layer : data["layers"]) {
+    if (layer.contains("name") && layer["name"] == ENTITY_LAYER) {
+      enemies_data = layer["data"];
+      break;
+    }
+  }
+
+  //Load enemy
+  for (const auto &obj : enemies_data["objects"]) {
+    std::string type = obj["type"];
+    int id = obj["id"];
+    float x = static_cast<float>(obj["x"]) * mGameScale;
+    float y = static_cast<float>(obj["y"]) * mGameScale;
+    float MinPosX = 0;
+    float MaxPosX = 0;
+    float MinPosY = 0;
+    float MaxPosY = 0;
+
+    // TODO: Create enemies based on type (e.g Robot1, Robot2 etc)
+  }
+
+
 }
 
 bool Game::LoadTileMap(const std::string& fileName) {

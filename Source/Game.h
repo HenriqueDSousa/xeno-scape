@@ -9,9 +9,10 @@
 #pragma once
 #include <SDL.h>
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
+#include "Actors/Xeno.h"
 #include "Renderer/Renderer.h"
 #include "UI/HUD.h"
 #include "UI/Menus/PauseMenu.h"
@@ -51,6 +52,7 @@ public:
     static const int SPAWN_DISTANCE = 700;
     static const int FPS = 60;
     static constexpr std::string_view BLOCK_ASSETS_PATH = "../Assets/Sprites/Blocks/";
+    static constexpr std::string_view ENTITY_LAYER = "Entity";
 
     // Scale factor for sprites / tiles. Computed at runtime in Initialize().
     int GetGameScale() const { return mGameScale; }
@@ -90,7 +92,8 @@ private:
     void LoadData();
 
     // Level loading
-    int **LoadLevel(const std::string& fileName);
+    int **LoadLevelBlocks(const std::string& fileName);
+    void LoadLevelEnemies(const std::string& fileName);
     bool LoadTileMap(const std::string& fileName);
     void BuildLevel(int** levelData);
     void LoadBackgroundTexture(const std::string& fileName);
@@ -142,4 +145,7 @@ private:
     int mGameScale{2};
     // Mapping from tile ID -> sprite filename (populated per-level)
     std::unordered_map<int, std::string> mTileSpriteMap;
+
+    // Game specific
+    Xeno* mPlayer;
 };

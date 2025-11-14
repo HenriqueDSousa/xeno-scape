@@ -50,7 +50,7 @@
         }
     },
     "last.exportedFilePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1",
-    "last.imagePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks",
+    "last.imagePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "openFiles": [
         "testlevel.json",
@@ -65,6 +65,6 @@
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx",
         "untitled.tmx"
     ],
-    "tileset.lastUsedFormat": "tsx",
+    "tileset.lastUsedFormat": "json",
     "tileset.type": 1
 }
