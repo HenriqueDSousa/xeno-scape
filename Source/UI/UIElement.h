@@ -12,7 +12,7 @@
 class UIElement {
 public:
   virtual ~UIElement() = default;
-  UIElement(const Vector2 &pos, const Vector2 &size, const Vector3 &color);
+  UIElement(const Vector2 &pos, const Vector2 &size, const Vector4 &color);
 
   // Getters/setters
   const Vector2& GetPosition() const { return mPosition; }
@@ -21,8 +21,8 @@ public:
   const Vector2& GetSize() const { return mSize; }
   void SetSize(const Vector2 &size) { mSize = size; }
 
-  const Vector3& GetColor() const { return mColor; }
-  void SetColor(const Vector3 &color) { mColor = color; }
+  const Vector4& GetColor() const { return mColor; }
+  void SetColor(const Vector4 &color) { mColor = color; }
 
   virtual void Draw(Renderer* renderer, const Vector2 &screenPos) {};
 
@@ -33,5 +33,5 @@ public:
 protected:
   Vector2 mPosition;
   Vector2 mSize;
-  Vector3 mColor;
+  Vector4 mColor;
 };

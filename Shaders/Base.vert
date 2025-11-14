@@ -17,7 +17,7 @@ layout(location = 1) in vec2 inTexCoord;
 
 uniform mat4 uWorldTransform;
 uniform mat4 uOrthoProj;
-uniform vec3 uColor;
+uniform vec4 uColor;
 uniform vec2 uCameraPos;
 
 // (u0, v0, u1, v1) for current sprite frame

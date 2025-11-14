@@ -11,7 +11,6 @@
 #include "../Math.h"
 
 class Renderer;
-class Vector3;
 
 class Font
 {
@@ -23,7 +22,7 @@ class Font
   void Unload();
   // Given string and this font, draw to a texture
   class Texture* RenderText(const std::string& text,
-  const Vector3& color = Color::White, int pointSize = 24,
+  const Vector4& color = Color::White, int pointSize = 24,
   int wrapLength = 900);
  private:
   // Map of point sizes to font data

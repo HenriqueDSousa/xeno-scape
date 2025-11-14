@@ -3,7 +3,7 @@
 //
 
 #include "Timer.h"
-Timer::Timer(float timeLeft, const Vector2& pos, const Vector2& size, const Vector3& color, Font* font)
+Timer::Timer(float timeLeft, const Vector2& pos, const Vector2& size, const Vector4& color, Font* font)
 : UIElement(pos, size, color),
   mTimeLeft(timeLeft) {
   mText = new UIText(std::to_string(timeLeft), font, 15, 1024, Vector2::Zero, size, color);

@@ -21,12 +21,13 @@ public:
 };
 
   UIButton(const std::string& text, class Font* font, std::function<void()> onClick,
-           const Vector2& pos, const Vector2& size, const Vector3& color = Vector3(30, 30, 30),
+           const Vector2& pos, const Vector2& size, const Vector4& color = Color::Yellow,
            int pointSize = 72, const unsigned wrapLength = 1024,
            const Vector2& textPos = Vector2::Zero,
            const TextPos textAlign = TextPos::Center,
-           const Vector3& textColor = Color::White,
-           const Vector2& textSize = Vector2(140.f, 20.0f));
+           const Vector4& textColor = Color::White,
+           const Vector2& textSize = Vector2(140.f, 20.0f),
+           const Vector4& backgroundColor = Color::Gray);
 
   ~UIButton();
 
@@ -49,13 +50,12 @@ public:
 private:
   // Callback function
   std::function<void()> mOnClick;
-
   // Button name
   UIText* mText;
-
   // Alinhamento do texto do botão
   TextPos mTextAlign;
-
   // Check if the button is highlighted
   bool mHighlighted;
+  Vector4 mBackgroundColor;
+
 };

@@ -43,7 +43,7 @@ bool Font::Load(const std::string &fileName) {
 }
 
 Texture* Font::RenderText(const std::string &text,
-                        const Vector3 &color,
+                        const Vector4 &color,
                         int pointSize, int wrapLength) {
     if (!mRenderer) {
       SDL_Log("Failed to render font: renderer is null");

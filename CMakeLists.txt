@@ -68,6 +68,7 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Robot1.h
         Source/Actors/Xeno.cpp
         Source/Actors/Xeno.h
+        Source/UI/UIRect.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)

@@ -4,18 +4,20 @@
 
 #include "UIButton.h"
 
-UIButton::UIButton(const std::string& text, class Font* font, std::function<void()> onClick,
-                    const Vector2& pos, const Vector2& size, const Vector3& color,
-                    int pointSize , unsigned wrapLength,
-                    const Vector2 &textPos, TextPos textAlign, const Vector3& textColor, const Vector2 &textSize)
-        :UIElement(pos, size, color)
-        ,mOnClick(onClick)
-        ,mHighlighted(false)
-        ,mTextAlign(textAlign)
+UIButton::UIButton(const std::string& text, class Font* font,
+                   std::function<void()> onClick, const Vector2& pos,
+                   const Vector2& size, const Vector4& color, int pointSize,
+                   const unsigned wrapLength, const Vector2& textPos,
+                   const TextPos textAlign, const Vector4& textColor,
+                   const Vector2& textSize, const Vector4& backgroundColor)
+  :UIElement(pos, size, color)
+  ,mOnClick(onClick)
+  ,mHighlighted(false)
+  ,mTextAlign(textAlign)
+  ,mBackgroundColor(backgroundColor)
 {
   mText = new UIText(text, font, pointSize, wrapLength, textPos, textSize, textColor);
 }
-
 UIButton::~UIButton()
 {
   delete mText;
@@ -28,10 +30,12 @@ void UIButton::Draw(Renderer *renderer, const Vector2 &screenPos)
   Vector2 rectCenter = screenPos + mPosition + mSize * 0.5f;
 
   if (mHighlighted) {
-    renderer->DrawRect(rectCenter, mSize, 0.0f, Color::Yellow,
+    mColor.z = 1.0f;
+    renderer->DrawRect(rectCenter, mSize, 0.0f, mColor,
       Vector2::Zero, RendererMode::TRIANGLES);
   } else {
-    renderer->DrawRect(rectCenter, mSize, 0.0f, mColor,
+    mColor.w = 0.5f;
+    renderer->DrawRect(rectCenter, mSize, 0.0f, mBackgroundColor,
     Vector2::Zero, RendererMode::TRIANGLES);
   }
 
