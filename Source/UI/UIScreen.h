@@ -38,14 +38,14 @@ public:
 
   std::vector<UIText *> GetTexts() { return mTexts; }
   UIText* AddText(const std::string& name, const Vector2& pos = Vector2::Zero,
-    const Vector2& dims = Vector2::Zero, int pointSize = 40, Vector3 color = Color::White,
+    const Vector2& dims = Vector2::Zero, int pointSize = 40, Vector4 color = Color::White,
     int unsigned wrapLength = 1024);
   std::vector<class UIButton*> GetButtons() { return mButtons; }
   UIButton* AddButton(const std::string& name, const Vector2& pos,
     const Vector2& dims, int pointSize,
     UIButton::TextPos alignText, std::function<void()> onClick,
     Vector2 textPos = Vector2::Zero,
-    Vector3 textColor = Color::White);
+    Vector4 textColor = Color::White);
 
   virtual void ChangeResolution(float oldScale, float newScale);
 protected:

@@ -9,7 +9,7 @@
 
 UIText::UIText(const std::string& text, class Font* font, int pointSize,
                const unsigned wrapLength, const Vector2& pos,
-               const Vector2& size, const Vector3& color)
+               const Vector2& size, const Vector4& color)
 : UIElement(pos, size, color),
   mWrapLength(wrapLength),
   mPointSize(pointSize),

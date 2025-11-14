@@ -95,7 +95,7 @@ void Renderer::Clear()
 }
 
 void Renderer::Draw(RendererMode mode, const Matrix4 &modelMatrix, const Vector2 &cameraPos, VertexArray *vertices,
-                    const Vector3 &color, Texture *texture, const Vector4 &textureRect, float textureFactor)
+                    const Vector4 &color, Texture *texture, const Vector4 &textureRect, float textureFactor)
 {
     mBaseShader->SetMatrixUniform("uWorldTransform", modelMatrix);
     mBaseShader->SetVectorUniform("uColor", color);
@@ -126,7 +126,7 @@ void Renderer::Draw(RendererMode mode, const Matrix4 &modelMatrix, const Vector2
     }
 }
 
-void Renderer::DrawRect(const Vector2 &position, const Vector2 &size, float rotation, const Vector3 &color,
+void Renderer::DrawRect(const Vector2 &position, const Vector2 &size, float rotation, const Vector4 &color,
                         const Vector2 &cameraPos, RendererMode mode)
 {
     Matrix4 model = Matrix4::CreateScale(Vector3(size.x, size.y, 1.0f)) *
@@ -136,7 +136,7 @@ void Renderer::DrawRect(const Vector2 &position, const Vector2 &size, float rota
     Draw(mode, model, cameraPos, mSpriteVerts, color);
 }
 
-void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float rotation, const Vector3 &color,
+void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float rotation, const Vector4 &color,
                            Texture *texture, const Vector4 &textureRect, const Vector2 &cameraPos, bool flip,
                            float textureFactor)
 {
@@ -149,7 +149,7 @@ void Renderer::DrawTexture(const Vector2 &position, const Vector2 &size, float r
     Draw(RendererMode::TRIANGLES, model, cameraPos, mSpriteVerts, color, texture, textureRect, textureFactor);
 }
 
-void Renderer::DrawGeometry(const Vector2 &position, const Vector2 &size, float rotation, const Vector3 &color,
+void Renderer::DrawGeometry(const Vector2 &position, const Vector2 &size, float rotation, const Vector4 &color,
                             const Vector2 &cameraPos, VertexArray *vertexArray, RendererMode mode)
 {
     Matrix4 model = Matrix4::CreateScale(Vector3(size.x, size.y, 1.0f)) *

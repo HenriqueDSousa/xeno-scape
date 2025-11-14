@@ -108,7 +108,7 @@ void UIScreen::HandleMouse(const SDL_Event& event) {
 
 UIText *UIScreen::AddText(const std::string &name, const Vector2 &pos,
                           const Vector2 &dims, const int pointSize,
-                          Vector3 color, const int unsigned wrapLength) {
+                          Vector4 color, const int unsigned wrapLength) {
   UIText* t = new UIText(name, mFont, pointSize, wrapLength, pos, dims, color);
   mTexts.emplace_back(t);
 
@@ -119,9 +119,9 @@ UIButton* UIScreen::AddButton(const std::string& name, const Vector2& pos,
                               const Vector2& dims, int pointSize,
                               UIButton::TextPos alignText,
                               std::function<void()> onClick, Vector2 textPos,
-                              Vector3 textColor) {
+                              Vector4 textColor) {
   auto* b = new UIButton(name, mFont, std::move(onClick), pos, dims,
-    Vector3{0.5f, 0.5f, 0.5f},
+    Color::Gray,
     pointSize, 1024,
     textPos, alignText, textColor);
   mButtons.emplace_back(b);

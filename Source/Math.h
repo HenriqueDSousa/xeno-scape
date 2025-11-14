@@ -1179,16 +1179,16 @@ namespace Math
 namespace Color
 {
 	// NOLINTBEGIN
-	constexpr Vector3 Black(0.0f, 0.0f, 0.0f);
-	constexpr Vector3 White(1.0f, 1.0f, 1.0f);
-	constexpr Vector3 Red(1.0f, 0.0f, 0.0f);
-	constexpr Vector3 Green(0.0f, 1.0f, 0.0f);
-	constexpr Vector3 Blue(0.0f, 0.0f, 1.0f);
-	constexpr Vector3 Yellow(1.0f, 1.0f, 0.0f);
-	constexpr Vector3 LightYellow(1.0f, 1.0f, 0.88f);
-	constexpr Vector3 LightBlue(0.68f, 0.85f, 0.9f);
-	constexpr Vector3 LightPink(1.0f, 0.71f, 0.76f);
-	constexpr Vector3 LightGreen(0.56f, 0.93f, 0.56f);
-        constexpr Vector3 Gray(0.5f, 0.5f, 0.5f);
+	constexpr Vector4 Black(0.0f, 0.0f, 0.0f, 1.0f);
+	constexpr Vector4 White(1.0f, 1.0f, 1.0f, 1.0f);
+	constexpr Vector4 Red(1.0f, 0.0f, 0.0f, 1.0f);
+	constexpr Vector4 Green(0.0f, 1.0f, 0.0f, 1.0f);
+	constexpr Vector4 Blue(0.0f, 0.0f, 1.0f, 1.0f);
+	constexpr Vector4 Yellow(1.0f, 1.0f, 0.0f, 1.0f);
+	constexpr Vector4 LightYellow(1.0f, 1.0f, 0.88f, 1.0f);
+	constexpr Vector4 LightBlue(0.68f, 0.85f, 0.9f, 1.0f);
+	constexpr Vector4 LightPink(1.0f, 0.71f, 0.76f, 1.0f);
+	constexpr Vector4 LightGreen(0.56f, 0.93f, 0.56f, 1.0f);
+        constexpr Vector4 Gray(0.5f, 0.5f, 0.5f, 1.0f);
 	// NOLINTEND
 } // namespace Color

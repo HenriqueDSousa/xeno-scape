@@ -11,7 +11,7 @@
 
 // This corresponds to the output color to the color buffer
 out vec4 outColor;
-uniform vec3 uColor;
+uniform vec4 uColor;
 
 // This is used for the texture sampling
 uniform sampler2D uTexture;
@@ -25,6 +25,6 @@ in vec2 fragTexCoord;
 void main()
 {
     vec4 texColor = texture(uTexture, fragTexCoord);
-    vec4 solidColor = vec4(uColor, 1.0);
+    vec4 solidColor = uColor;
     outColor = mix(solidColor, texColor, uTextureFactor);
 }
