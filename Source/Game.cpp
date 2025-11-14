@@ -178,7 +178,12 @@ int **Game::LoadLevelBlocks(const std::string& jsonFileName)
     // Read map data (first layer)
     std::vector<int> map;
     try {
-        map = data["layers"]["Blocks"]["data"].get<std::vector<int>>();
+      for (const auto &obj : data["layers"] ) {
+        if (obj["name"] == "Blocks") {
+          map = obj["data"].get<std::vector<int>>();
+          break;
+        }
+      }
     } catch (const std::exception& e) {
         SDL_Log("Failed to read map data from %s: %s", jsonFileName.c_str(), e.what());
         // clean up

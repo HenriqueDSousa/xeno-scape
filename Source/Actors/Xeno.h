@@ -1,0 +1,19 @@
+//
+// Created by henrique on 11/13/25.
+//
+
+#pragma once
+#include "Actor.h"
+
+class Xeno : public Actor {
+ public:
+  void OnHorizontalCollision(const float minOverlap,
+                             AABBColliderComponent* other) override;
+  void OnVerticalCollision(const float minOverlap,
+                           AABBColliderComponent* other) override;
+  void Kill() override;
+
+ protected:
+  void OnUpdate(float deltaTime) override;
+  void OnProcessInput(const Uint8* keyState) override;
+};
