@@ -228,16 +228,16 @@ void Game::LoadLevelEnemies(const std::string& jsonFileName) {
     return;
   }
 
-  nlohmann::json enemies_data;
+  nlohmann::json entities_data;
   for (auto layer : data["layers"]) {
     if (layer.contains("name") && layer["name"] == ENTITY_LAYER) {
-      enemies_data = layer["data"];
+      entities_data = layer["data"];
       break;
     }
   }
 
   //Load enemy
-  for (const auto &obj : enemies_data["objects"]) {
+  for (const auto &obj : entities_data["objects"]) {
     std::string type = obj["type"];
     int id = obj["id"];
     float x = static_cast<float>(obj["x"]) * mGameScale;
@@ -247,7 +247,7 @@ void Game::LoadLevelEnemies(const std::string& jsonFileName) {
     float MinPosY = 0;
     float MaxPosY = 0;
 
-    // TODO: Create enemies based on type (e.g Robot1, Robot2 etc)
+    // TODO: Create enemies based on type (e.g MeleeRobot, RangedRobot etc)
   }
 
 
