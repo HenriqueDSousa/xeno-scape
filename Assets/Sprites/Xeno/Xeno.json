@@ -1,0 +1,101 @@
+{ "frames": {
+   "XenoIdle0": {
+    "frame": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "XenoAiming1": {
+    "frame": { "x": 16, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk2": {
+    "frame": { "x": 32, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk3": {
+    "frame": { "x": 48, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk4": {
+    "frame": { "x": 64, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk5": {
+    "frame": { "x": 80, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk6": {
+    "frame": { "x": 96, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk7": {
+    "frame": { "x": 112, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk8": {
+    "frame": { "x": 128, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "Xenowalk9": {
+    "frame": { "x": 144, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.3.15.3-dev",
+  "image": "Xeno.png",
+  "format": "RGBA8888",
+  "size": { "w": 160, "h": 26 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Idle", "from": 0, "to": 0, "direction": "forward", "color": "#000000ff" },
+   { "name": "Aiming", "from": 1, "to": 1, "direction": "forward", "color": "#000000ff" },
+   { "name": "walk", "from": 2, "to": 9, "direction": "forward", "color": "#000000ff" }
+  ],
+  "layers": [
+   { "name": "Layer 2", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
