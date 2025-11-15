@@ -1,0 +1,84 @@
+{ "frames": {
+   "RangedRobotIdle0": {
+    "frame": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "RangedRobotIdle1": {
+    "frame": { "x": 16, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "RangedRobotIdle2": {
+    "frame": { "x": 32, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "RangedRobotWalk3": {
+    "frame": { "x": 48, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "RangedRobotWalk4": {
+    "frame": { "x": 64, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "RangedRobotWalk5": {
+    "frame": { "x": 80, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "RangedRobotWalk6": {
+    "frame": { "x": 96, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   },
+   "RangedRobotWalk7": {
+    "frame": { "x": 112, "y": 0, "w": 16, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 26 },
+    "sourceSize": { "w": 16, "h": 26 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.3.15.3-dev",
+  "image": "RangedRobot.png",
+  "format": "RGBA8888",
+  "size": { "w": 128, "h": 26 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Idle", "from": 0, "to": 2, "direction": "forward", "color": "#000000ff" },
+   { "name": "Walk", "from": 3, "to": 7, "direction": "forward", "color": "#000000ff" }
+  ],
+  "layers": [
+   { "name": "Sprite Sheet", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

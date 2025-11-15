@@ -23,12 +23,20 @@
             "scaleInDock": 3,
             "scaleInEditor": 1
         },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies/Enemies.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "testlevel.json": {
-            "scale": 2,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 169.25,
-                "y": 130
+                "x": 95.5,
+                "y": 202.66666666666666
             }
         },
         "testlevel.json#tileset": {
@@ -50,16 +58,19 @@
         }
     },
     "last.exportedFilePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1",
-    "last.imagePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies",
+    "last.imagePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "openFiles": [
         "testlevel.json",
-        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json"
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json"
     ],
     "project": "testlevel.tiled-project",
     "recentFiles": [
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
         "testlevel.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies/Enemies.json",
         "tileset.tsx",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/block_tileset.tsx",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx",

@@ -21,8 +21,10 @@
 #include "Json.h"
 #include "Random.h"
 #include "UI/Font.h"
-#include "UI/Menus/PauseMenu.h"
-#include "UI/UIScreen.h"
+#include "UI/Screens/MainMenu.h"
+#include "UI/Screens/PauseMenu.h"
+#include "UI/Screens/UIScreen.h"
+#include "UI/UIRect.h"
 
 Game::Game()
         :mWindow(nullptr)
@@ -33,11 +35,11 @@ Game::Game()
         ,mUpdatingActors(false)
         ,mCameraPos(Vector2::Zero)
         ,mLevelData(nullptr)
-        ,mGameState(Menu)
-        ,mCurrentScene(MainMenu)
+        ,mGameState(GameState::MainMenu)
+        ,mCurrentScene(GameScene::MainMenu)
         ,mCurrentLevelWidth(0)
         ,mCurrentLevelHeight(0)
-    ,mGameScale(2)
+        ,mFadeRect(nullptr)
 {
 }
 
@@ -79,8 +81,8 @@ bool Game::Initialize()
         mGameScale = chosen;
     }
 
-    mCurrentScene = TestLevel;
-    LoadData();
+    SetScene(GameScene::MainMenu);
+
     // Init all game actors
     InitializeActors();
 
@@ -89,25 +91,13 @@ bool Game::Initialize()
     return true;
 }
 
-void Game::LoadData() {
-  if (mCurrentScene != MainMenu) {
-    mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
-    mHud->SetPaused(false);
-  }
-  
-  LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
-
-  if (mCurrentScene == TestLevel) {
-    int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
-    BuildLevel(levelData);
-    LoadLevelEnemies("../Assets/Levels/TestLevel/testlevel.json");
-  }
-}
-
 void Game::OnPause() {
+  if (mGameState != GameState::Gameplay)
+    return;
+
   SDL_Log("Paused");
   mPauseMenu = new PauseMenu(this, "../Assets/Fonts/SuperPixel-m2L8j.ttf");
-  SetState(Paused);
+  SetState(GameState::Paused);
 
   if (mHud) {
     mHud->SetPaused(true);
@@ -119,7 +109,7 @@ void Game::OnResume() {
       return;
 
     mPauseMenu->Close();
-    SetState(Gameplay);
+    SetState(GameState::Gameplay);
     SDL_Log("Resume");
     mPauseMenu = nullptr;
 
@@ -211,7 +201,7 @@ int **Game::LoadLevelBlocks(const std::string& jsonFileName)
     return level;
 }
 
-void Game::LoadLevelEnemies(const std::string& jsonFileName) {
+void Game::LoadLevelEntities(const std::string& jsonFileName) {
   // Open the JSON file
   std::ifstream ifs(jsonFileName);
   if (!ifs.is_open()) {
@@ -238,26 +228,33 @@ void Game::LoadLevelEnemies(const std::string& jsonFileName) {
     return;
   }
 
-  nlohmann::json enemies_data;
+  nlohmann::json entities_data;
   for (auto layer : data["layers"]) {
     if (layer.contains("name") && layer["name"] == ENTITY_LAYER) {
-      enemies_data = layer["data"];
+      entities_data = layer;
       break;
     }
   }
 
   //Load enemy
-  for (const auto &obj : enemies_data["objects"]) {
+  for (const auto &obj : entities_data["objects"]) {
     std::string type = obj["type"];
     int id = obj["id"];
     float x = static_cast<float>(obj["x"]) * mGameScale;
     float y = static_cast<float>(obj["y"]) * mGameScale;
+    float width = static_cast<float>(obj["width"]) * mGameScale;
+    float height = static_cast<float>(obj["height"]) * mGameScale;
     float MinPosX = 0;
     float MaxPosX = 0;
     float MinPosY = 0;
     float MaxPosY = 0;
 
-    // TODO: Create enemies based on type (e.g Robot1, Robot2 etc)
+    if (type == "Xeno") {
+      mPlayer = new Xeno(this, width, height);
+      mPlayer->SetPosition(Vector2(x, y));
+    }
+
+    // TODO: Create enemies based on type (e.g MeleeRobot, RangedRobot etc)
   }
 
 
@@ -359,6 +356,107 @@ void Game::PushUI(class UIScreen *screen) {
     mUIStack.emplace_back(screen);
 }
 
+void Game::SetScene(GameScene nextScene)
+{
+  mNextSceneToLoad = nextScene;
+  mSceneTransitionState = SceneTransitionState::FadingOut;
+}
+
+void Game::UnloadScene() {
+  // Use state so we can call this from withing an a actor update
+  for(auto *actor : mActors) {
+    actor->SetState(ActorState::Destroy);
+  }
+
+  // Delete UI screens
+  for (auto ui : mUIStack) {
+    delete ui;
+  }
+  mUIStack.clear();
+}
+
+void Game::ApplySceneChange(GameScene gameScene) {
+  UnloadScene();
+  mCurrentScene = gameScene;
+  switch (gameScene) {
+    case GameScene::MainMenu: {
+      // Push main menu UI
+      SetState(GameState::MainMenu);
+      // if (mAudio->GetSoundState(mBackgroundMusic) == SoundState::Paused) {
+        // mAudio->StopSound(mBackgroundMusic);
+        // mBackgroundMusic = mAudio->PlaySound("Music.ogg", true);
+      // }
+      new MainMenu(this, "../Assets/Fonts/SMB.ttf");
+      break;
+    }
+    case GameScene::TestLevel: {
+      SetState(GameState::Gameplay);
+
+      mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetPaused(false);
+      LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
+
+      if (mCurrentScene == GameScene::TestLevel) {
+        int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
+        BuildLevel(levelData);
+        LoadLevelEntities("../Assets/Levels/TestLevel/testlevel.json");
+      }
+      break;
+    }
+    default:
+      break;
+    }
+}
+
+void Game::UpdateSceneManager(float deltaTime)
+{
+  if (mSceneTransitionState != SceneTransitionState::None) {
+    switch (mSceneTransitionState) {
+      case SceneTransitionState::FadingOut:
+        // Increment alpha and ensure we have a single fade rect
+        mFadeAlpha += deltaTime / mFadeSpeed;
+        if (!mFadeRect) {
+          // Create a full-screen black rect used for fading (use screen-space)
+          mFadeRect = new UIRect(Vector2::Zero, Vector2(WINDOW_WIDTH * mGameScale, WINDOW_HEIGHT * mGameScale), Vector4(0.0f, 0.0f, 0.0f, mFadeAlpha));
+        }
+        if (mFadeAlpha >= 1.0f) {
+          mFadeAlpha = 1.0f;
+          // Ensure rect reflects final alpha (black)
+          mFadeRect->SetColor(Vector4(0.0f, 0.0f, 0.0f, mFadeAlpha));
+          // Load the next scene
+          mCurrentScene = mNextSceneToLoad;
+          ApplySceneChange(mNextSceneToLoad);
+          mSceneTransitionState = SceneTransitionState::FadingIn;
+        }
+        else {
+          mFadeRect->SetColor(Vector4(0.0f, 0.0f, 0.0f, mFadeAlpha));
+        }
+        break;
+
+      case SceneTransitionState::FadingIn:
+        // Decrease alpha and update/remove the fade rect when done
+        mFadeAlpha -= deltaTime / mFadeSpeed;
+          if (mFadeRect) {
+            // Keep using a black rect while fading in
+            mFadeRect->SetColor(Vector4(0.0f, 0.0f, 0.0f, mFadeAlpha));
+          }
+        if (mFadeAlpha <= 0.0f) {
+          mFadeAlpha = 0.0f;
+          // Remove and delete the rect
+          if (mFadeRect) {
+            delete mFadeRect;
+            mFadeRect = nullptr;
+          }
+          mSceneTransitionState = SceneTransitionState::None;
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+}
+
 void Game::UpdateUI(float deltaTime) {
 
     std::vector<UIScreen*> closingUIs;
@@ -371,6 +469,8 @@ void Game::UpdateUI(float deltaTime) {
           closingUIs.emplace_back(ui);
         }
     }
+
+    UpdateSceneManager(deltaTime);
 
     for (auto ui : closingUIs) {
       delete ui;
@@ -416,7 +516,7 @@ void Game::ProcessInput()
         }
         // Handle pause/resume
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
-            if (mGameState == Paused) {
+            if (mGameState == GameState::Paused) {
                 if (!mUIStack.empty() && mUIStack.back() == mPauseMenu) {
                     OnResume();
                 }
@@ -443,7 +543,7 @@ void Game::ProcessInput()
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    if (mGameState == Gameplay && mUIStack.empty()) {
+    if (mGameState == GameState::Gameplay && mUIStack.empty()) {
         for (auto actor : mActors) {
                 actor->ProcessInput(state);
         }
@@ -640,6 +740,11 @@ void Game::GenerateOutput()
         }
     }
     //Draw UI
+    if (mFadeRect != nullptr) {
+      // Fade rect is a screen-space UI element; draw it without camera offset
+      mFadeRect->Draw(mRenderer, Vector2::Zero);
+    }
+
     for (auto ui : mUIStack)
     {
         if (ui->GetState() == UIScreen::EActive)
@@ -647,7 +752,6 @@ void Game::GenerateOutput()
             ui->Draw();
         }
     }
-
     // Swap front buffer and back buffer
     mRenderer->Present();
 }

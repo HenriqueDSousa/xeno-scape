@@ -15,7 +15,30 @@
 #include "Actors/Xeno.h"
 #include "Renderer/Renderer.h"
 #include "UI/HUD.h"
-#include "UI/Menus/PauseMenu.h"
+#include "UI/Screens/PauseMenu.h"
+#include "UI/UIRect.h"
+
+enum class SceneTransitionState
+{
+  None,
+  FadingOut,
+  LoadingNext,
+  FadingIn
+};
+
+enum class GameScene
+{
+  MainMenu,
+  Level1,
+  TestLevel
+};
+
+enum class GameState {
+  Gameplay,
+  Paused,
+  MainMenu,
+  GameOver,
+};
 
 class Game
 {
@@ -27,11 +50,12 @@ public:
     void Shutdown();
     void Quit() { mIsRunning = false; }
 
-    enum GameState {Gameplay, Menu, Paused};
     void SetState(GameState state) { mGameState = state; }
     GameState GetState() { return mGameState; }
 
-    enum GameScene { MainMenu, TestLevel, Level1, Level2, Level3 };
+    // Scene Handling
+    void SetScene(GameScene scene);
+    void UnloadScene();
 
     // Actor functions
     void InitializeActors();
@@ -93,10 +117,13 @@ private:
 
     // Level loading
     int **LoadLevelBlocks(const std::string& fileName);
-    void LoadLevelEnemies(const std::string& fileName);
+    void LoadLevelEntities(const std::string& fileName);
     bool LoadTileMap(const std::string& fileName);
     void BuildLevel(int** levelData);
     void LoadBackgroundTexture(const std::string& fileName);
+
+    void UpdateSceneManager(float deltaTime);
+    void ApplySceneChange(GameScene scene);
 
     // All the actors in the game
     std::vector<class Actor*> mActors;
@@ -124,10 +151,24 @@ private:
     bool mIsRunning;
     bool mIsDebugging;
     bool mUpdatingActors;
+
     GameState mGameState;
     GameScene mCurrentScene;
     int mCurrentLevelWidth;
     int mCurrentLevelHeight;
+
+    // Scene loading
+    int mNextBlock;
+    int mNextObstacle;
+    int mScore;
+    int mNextObstacleToScore;
+
+    //Scene transition
+    GameScene mNextSceneToLoad;
+    SceneTransitionState mSceneTransitionState = SceneTransitionState::None;
+    float mFadeAlpha = 0.0f;
+    float mFadeSpeed = 1.0f;
+    UIRect* mFadeRect;
 
     //UI elements
     std::vector<class UIScreen*> mUIStack;

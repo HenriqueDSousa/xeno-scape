@@ -73,17 +73,16 @@ void AnimatorComponent::Draw(Renderer* renderer)
         int spriteIndex = animFrames[currentFrameIndex];
         textureRect = mSpriteSheetData[spriteIndex];
     } else {
-        renderer->DrawTexture(mOwner->GetPosition(),
-        Vector2(mWidth, mHeight),
-            mOwner->GetRotation(),
-            mColor,
-            mSpriteTexture,
-            Vector4(0.0f, 0.0f, 1.0f, 1.0f),
-            mOwner->GetGame()->GetCameraPos(), false);
-        return;
+      renderer->DrawTexture(mOwner->GetPosition(),
+      Vector2(mWidth, mHeight),
+          mOwner->GetRotation(),
+          mColor,
+          mSpriteTexture,
+          Vector4(0.0f, 0.0f, 1.0f, 1.0f),
+          mOwner->GetGame()->GetCameraPos(), false);
+      return;
     }
     bool flip = (mOwner->GetScale().x < 0.0f);
-
     renderer->DrawTexture(mOwner->GetPosition(),
         Vector2(mWidth, mHeight),
         mOwner->GetRotation(),

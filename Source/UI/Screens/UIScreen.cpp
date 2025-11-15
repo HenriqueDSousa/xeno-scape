@@ -6,8 +6,8 @@
 
 #include <utility>
 
-#include "../Game.h"
-#include "Font.h"
+#include "../../Game.h"
+#include "../Font.h"
 
 UIScreen::UIScreen(class Game *game, const std::string& fontName)
 : mGame(game),

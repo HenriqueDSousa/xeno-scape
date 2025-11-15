@@ -48,20 +48,20 @@ add_executable(${PROJECT_NAME}
         Source/Components/Drawing/RectComponent.h
         Source/UI/Font.cpp
         Source/UI/Font.h
-        Source/UI/UIScreen.cpp
-        Source/UI/UIScreen.h
+        Source/UI/Screens/UIScreen.cpp
+        Source/UI/Screens/UIScreen.h
         Source/UI/HUD.cpp
         Source/UI/HUD.h
-        Source/UI/Menus/PauseMenu.cpp
-        Source/UI/Menus/PauseMenu.h
+        Source/UI/Screens/PauseMenu.cpp
+        Source/UI/Screens/PauseMenu.h
         Source/UI/UIElement.cpp
         Source/UI/UIElement.h
         Source/UI/UIText.cpp
         Source/UI/UIText.h
         Source/UI/UIButton.h
         Source/UI/UIButton.cpp
-        Source/UI/Menus/MainMenu.cpp
-        Source/UI/Menus/MainMenu.h
+        Source/UI/Screens/MainMenu.cpp
+        Source/UI/Screens/MainMenu.h
         Source/UI/Timer.cpp
         Source/UI/Timer.h
         Source/Actors/Robot1.cpp

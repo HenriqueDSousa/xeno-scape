@@ -1,24 +1,25 @@
-// //
-// // Created by Lucas N. Ferreira on 05/11/25.
-// //
 //
-// #pragma once
+// Created by Lucas N. Ferreira on 05/11/25.
 //
-//
-// #include "UIElement.h"
-// #include "../Math.h"
-//
-// class UIRect : public UIElement
-// {
-// public:
-//     UIRect(class Game* game, const Vector2 &offset, const Vector2 &size, float scale = 1.0f, float angle = 0.0f, int drawOrder = 100);
-//     ~UIRect();
-//
-//     void Draw(Renderer* renderer, const Vector2 &screenPos) override;
-//     void SetColor(const Vector4 &color) { mColor = color; }
-//
-// protected:
-//     Vector2 mSize;
-//     Vector4 mColor;
-// };
-//
+
+#pragma once
+
+
+#include "UIElement.h"
+#include "../Math.h"
+
+class UIRect : public UIElement
+{
+public:
+    UIRect(const Vector2 &position, const Vector2 &size, Vector4 color, float angle = 0.0f,
+      RendererMode rendererMode = RendererMode::TRIANGLES);
+    ~UIRect();
+
+    void Draw(Renderer* renderer, const Vector2 &screenPos) override;
+    void SetColor(const Vector4 &color) { mColor = color; }
+
+protected:
+    RendererMode mRenderMode;
+    float mAngle;
+};
+
