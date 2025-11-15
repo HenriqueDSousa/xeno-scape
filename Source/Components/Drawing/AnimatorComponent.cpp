@@ -48,7 +48,7 @@ bool AnimatorComponent::LoadSpriteSheetData(const std::string& dataPath)
     auto textureWidth = static_cast<float>(spriteSheetData["meta"]["size"]["w"].get<int>());
     auto textureHeight = static_cast<float>(spriteSheetData["meta"]["size"]["h"].get<int>());
 
-d    for(const auto& frame : spriteSheetData["frames"]) {
+    for(const auto& frame : spriteSheetData["frames"]) {
 
         int x = frame["frame"]["x"].get<int>();
         int y = frame["frame"]["y"].get<int>();
