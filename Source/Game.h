@@ -117,7 +117,7 @@ private:
 
     // Level loading
     int **LoadLevelBlocks(const std::string& fileName);
-    void LoadLevelEnemies(const std::string& fileName);
+    void LoadLevelEntities(const std::string& fileName);
     bool LoadTileMap(const std::string& fileName);
     void BuildLevel(int** levelData);
     void LoadBackgroundTexture(const std::string& fileName);

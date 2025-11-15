@@ -201,7 +201,7 @@ int **Game::LoadLevelBlocks(const std::string& jsonFileName)
     return level;
 }
 
-void Game::LoadLevelEnemies(const std::string& jsonFileName) {
+void Game::LoadLevelEntities(const std::string& jsonFileName) {
   // Open the JSON file
   std::ifstream ifs(jsonFileName);
   if (!ifs.is_open()) {
@@ -231,7 +231,7 @@ void Game::LoadLevelEnemies(const std::string& jsonFileName) {
   nlohmann::json entities_data;
   for (auto layer : data["layers"]) {
     if (layer.contains("name") && layer["name"] == ENTITY_LAYER) {
-      entities_data = layer["data"];
+      entities_data = layer;
       break;
     }
   }
@@ -242,10 +242,17 @@ void Game::LoadLevelEnemies(const std::string& jsonFileName) {
     int id = obj["id"];
     float x = static_cast<float>(obj["x"]) * mGameScale;
     float y = static_cast<float>(obj["y"]) * mGameScale;
+    float width = static_cast<float>(obj["width"]) * mGameScale;
+    float height = static_cast<float>(obj["height"]) * mGameScale;
     float MinPosX = 0;
     float MaxPosX = 0;
     float MinPosY = 0;
     float MaxPosY = 0;
+
+    if (type == "Xeno") {
+      mPlayer = new Xeno(this, width, height);
+      mPlayer->SetPosition(Vector2(x, y));
+    }
 
     // TODO: Create enemies based on type (e.g MeleeRobot, RangedRobot etc)
   }
@@ -392,7 +399,7 @@ void Game::ApplySceneChange(GameScene gameScene) {
       if (mCurrentScene == GameScene::TestLevel) {
         int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
         BuildLevel(levelData);
-        LoadLevelEnemies("../Assets/Levels/TestLevel/testlevel.json");
+        LoadLevelEntities("../Assets/Levels/TestLevel/testlevel.json");
       }
       break;
     }

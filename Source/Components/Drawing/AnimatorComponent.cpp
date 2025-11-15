@@ -48,7 +48,7 @@ bool AnimatorComponent::LoadSpriteSheetData(const std::string& dataPath)
     auto textureWidth = static_cast<float>(spriteSheetData["meta"]["size"]["w"].get<int>());
     auto textureHeight = static_cast<float>(spriteSheetData["meta"]["size"]["h"].get<int>());
 
-    for(const auto& frame : spriteSheetData["frames"]) {
+d    for(const auto& frame : spriteSheetData["frames"]) {
 
         int x = frame["frame"]["x"].get<int>();
         int y = frame["frame"]["y"].get<int>();
@@ -73,15 +73,23 @@ void AnimatorComponent::Draw(Renderer* renderer)
         int spriteIndex = animFrames[currentFrameIndex];
         textureRect = mSpriteSheetData[spriteIndex];
     } else {
-      bool flip = (mOwner->GetScale().x < 0.0f);
       renderer->DrawTexture(mOwner->GetPosition(),
       Vector2(mWidth, mHeight),
           mOwner->GetRotation(),
           mColor,
           mSpriteTexture,
           Vector4(0.0f, 0.0f, 1.0f, 1.0f),
-          mOwner->GetGame()->GetCameraPos(), flip);
+          mOwner->GetGame()->GetCameraPos(), false);
+      return;
     }
+    bool flip = (mOwner->GetScale().x < 0.0f);
+    renderer->DrawTexture(mOwner->GetPosition(),
+        Vector2(mWidth, mHeight),
+        mOwner->GetRotation(),
+        mColor,
+        mSpriteTexture,textureRect,
+        mOwner->GetGame()->GetCameraPos(),
+        flip);
 }
 
 void AnimatorComponent::Update(float deltaTime) {

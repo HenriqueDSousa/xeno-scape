@@ -5,16 +5,44 @@
 #pragma once
 #include "Actor.h"
 
+enum XenoState
+{
+  Aiming
+};
+
 class Xeno : public Actor {
  public:
-  Xeno(Game* game);
+
+  explicit Xeno(Game* game, float width, float height);
   void OnHorizontalCollision(const float minOverlap,
                              AABBColliderComponent* other) override;
   void OnVerticalCollision(const float minOverlap,
                            AABBColliderComponent* other) override;
   void Kill() override;
 
- protected:
   void OnUpdate(float deltaTime) override;
   void OnProcessInput(const Uint8* keyState) override;
+
+  float GetHeight() const { return mHeight; }
+  void SetHeight(float height) { mHeight = height; }
+  float GetWidth() const { return mWidth; }
+  void SetWidth(float width) { mWidth = width; }
+
+private:
+  void ManageAnimations();
+
+  float mHeight;
+  float mWidth;
+
+  float mForwardSpeed;
+  float mJumpSpeed;
+  bool mIsOnGround;
+  bool mIsRunning;
+  bool mIsAiming;
+
+  class RigidBodyComponent* mRigidBodyComponent;
+  class AnimatorComponent* mDrawComponent;
+  class AABBColliderComponent* mColliderComponent;
+  class ParticleSystemComponent* mShootingGun;
+
 };
