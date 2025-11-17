@@ -28,8 +28,12 @@ class Xeno : public Actor {
   float GetWidth() const { return mWidth; }
   void SetWidth(float width) { mWidth = width; }
 
+  bool IsAiming() const { return mIsAiming; }
+
 private:
   void ManageAnimations();
+
+  class XenoArm* mAimArm;
 
   float mHeight;
   float mWidth;

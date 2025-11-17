@@ -4,10 +4,13 @@
 
 #include "Xeno.h"
 
+#include <SDL.h>
+
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Physics/AABBColliderComponent.h"
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Game.h"
+#include "XenoArm.h"
 Xeno::Xeno(Game* game, float width, float height)
   :Actor(game)
   ,mWidth(width)
@@ -25,10 +28,12 @@ Xeno::Xeno(Game* game, float width, float height)
 
   mDrawComponent = new AnimatorComponent(
   this, "../Assets/Sprites/Xeno/Xeno.png","../Assets/Sprites/Xeno/Xeno.json",
-    mWidth, mHeight
+    mWidth, mHeight, 100
   );
+  mAimArm = new XenoArm(game, this);
   mDrawComponent->AddAnimation("idle", std::vector{1});
-  mDrawComponent->AddAnimation("run", std::vector{3,4,5,6,7,8});
+  mDrawComponent->AddAnimation("run", std::vector{2,3,4,5,6,7});
+  mDrawComponent->AddAnimation("aim", std::vector{0});
   mDrawComponent->SetAnimation("idle");
   mDrawComponent->SetAnimFPS(10.0f);
 
@@ -58,16 +63,25 @@ void Xeno::OnUpdate(float deltaTime) {
     Kill();
   }
 
+  // Aiming
+  if (mIsAiming) {
+    mRigidBodyComponent->SetVelocity(Vector2::Zero);
+  }
+
   ManageAnimations();
 }
 
 void Xeno::ManageAnimations() {
+  if (mIsAiming) {
+    mDrawComponent->SetAnimation("aim");
+    mDrawComponent->SetAnimFPS(10.0f);
+    return;
+  }
   if (IsOnGround()) {
     if (mIsRunning) {
       mDrawComponent->SetAnimation("run");
       mDrawComponent->SetAnimFPS(10.0f);
-    }
-    else {
+    } else {
       mDrawComponent->SetAnimation("idle");
       mDrawComponent->SetAnimFPS(10.0f);
     }
@@ -77,30 +91,42 @@ void Xeno::ManageAnimations() {
 void Xeno::OnProcessInput(const Uint8* state) {
   if (!mRigidBodyComponent) return;
 
+  bool isAiming = false;
   bool isMoving = false;
-  if (state[SDL_SCANCODE_D]) {
-    if (mScale.x < 0.0f) {
-      mScale.x *= -1.0f;
+
+  int mouseX = 0, mouseY = 0;
+  Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+  if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+    isAiming = true;
+  }
+  mIsAiming = isAiming;
+
+  if (!mIsAiming) {
+    if (state[SDL_SCANCODE_D]) {
+      if (mScale.x < 0.0f) {
+        mScale.x *= -1.0f;
+      }
+      mRigidBodyComponent->ApplyForce(Vector2(mForwardSpeed, 0.0f));
+      isMoving = true;
     }
-    mRigidBodyComponent->ApplyForce(Vector2(mForwardSpeed, 0.0f));
-    isMoving = true;
-  }
-  if (state[SDL_SCANCODE_A]){
-    if (mScale.x > 0.0f){
-      mScale.x *= -1.0f;
+    if (state[SDL_SCANCODE_A]){
+      if (mScale.x > 0.0f){
+        mScale.x *= -1.0f;
+      }
+      mRigidBodyComponent->ApplyForce(Vector2(-mForwardSpeed, 0.0f));
+      isMoving = true;
     }
-    mRigidBodyComponent->ApplyForce(Vector2(-mForwardSpeed, 0.0f));
-    isMoving = true;
-  }
-  if (state[SDL_SCANCODE_W]) {
-    if (IsOnGround()) {
-      auto velocity = mRigidBodyComponent->GetVelocity();
-      mRigidBodyComponent->SetVelocity(Vector2(velocity.x, mJumpSpeed));
-      SetOffGround();
+    if (state[SDL_SCANCODE_W]) {
+      if (IsOnGround()) {
+        auto velocity = mRigidBodyComponent->GetVelocity();
+        mRigidBodyComponent->SetVelocity(Vector2(velocity.x, mJumpSpeed));
+        SetOffGround();
+      }
+    }
+    mIsRunning = isMoving;
+    if (!mIsRunning && IsOnGround()) {
+      mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
     }
   }
-  mIsRunning = isMoving;
-  if (!mIsRunning && IsOnGround()) {
-    mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
-  }
+
 }
