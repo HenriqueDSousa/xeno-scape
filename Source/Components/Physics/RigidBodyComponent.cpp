@@ -64,7 +64,10 @@ void RigidBodyComponent::Update(float deltaTime)
 
     if (collider)
     {
-        collider->DetectVerticalCollision(this);
+        float overlap = collider->DetectVerticalCollision(this);
+        if (overlap == 0.0f) {
+          mOwner->SetOffGround();
+        }
     }
 
     mAcceleration.Set(0.f, 0.f);

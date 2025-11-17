@@ -119,6 +119,7 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
                 collider->GetOwner()->GetComponent<RigidBodyComponent>()->IsEnabled() == false) {
                 collider->GetOwner()->OnHorizontalCollision(overlap, this);
             }
+            return overlap;
         }
     }
     return 0.0f;
@@ -173,7 +174,7 @@ void AABBColliderComponent::ResolveVerticalCollisions(RigidBodyComponent *rigidB
     rigidBody->SetVelocity(vel);
 
     if (minYOverlap < 0.0f) {
-        rigidBody->GetOwner()->SetOnGround();
+      rigidBody->GetOwner()->SetOnGround();
     }
 }
 

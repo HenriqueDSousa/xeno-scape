@@ -19,6 +19,7 @@ Actor::Actor(Game* game)
     , mPosition(Vector2::Zero)
     , mScale(Vector2((float)mGame->GetTileSize(), (float)mGame->GetTileSize()))
     , mRotation(0.0f)
+    , mIsOnGround(false)
 {
     mGame->AddActor(this);
 }

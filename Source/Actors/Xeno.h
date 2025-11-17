@@ -36,7 +36,6 @@ private:
 
   float mForwardSpeed;
   float mJumpSpeed;
-  bool mIsOnGround;
   bool mIsRunning;
   bool mIsAiming;
 

@@ -508,42 +508,54 @@ void Game::ProcessInput()
 {
     SDL_Event event;
 
-    while (SDL_PollEvent(&event))
-    {
-        if (event.type == SDL_QUIT) {
-            Quit();
-            continue;
+    while (SDL_PollEvent(&event)) {
+      switch (event.type) {
+
+        case SDL_QUIT: {
+          Quit();
+          break;
         }
-        // Handle pause/resume
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
-            if (mGameState == GameState::Paused) {
-                if (!mUIStack.empty() && mUIStack.back() == mPauseMenu) {
-                    OnResume();
-                }
-                } else {
-                    OnPause();
-                }
-                continue;
+        case SDL_KEYDOWN: {
+          // Handle pause/resume
+          if (event.key.keysym.sym == SDLK_ESCAPE) {
+            if (mGameState == GameState::Paused && !mUIStack.empty() && mUIStack.back() == mPauseMenu) {
+                OnResume();
+            } else if (mGameState == GameState::Gameplay) {
+              OnPause();
             }
-        // Handle UI input
-        if (!mUIStack.empty()) {
+          }
+          // Handle UI input
+          if (!mUIStack.empty()) {
             UIScreen* top = mUIStack.back();
             if (!top) {
-                RemoveUI(top);
-                continue;
+              RemoveUI(top);
+              continue;
             }
-            if (event.type == SDL_KEYDOWN) {
-                    top->HandleKeyPress(event.key.keysym.sym);
-            } else if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP || event.type == SDL_MOUSEMOTION) {
-                    top->HandleMouse(event);
-            }
-            continue;
+            top->HandleKeyPress(event.key.keysym.sym);
+          }
+          break;
         }
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEMOTION: {
+          if (!mUIStack.empty()) {
+            UIScreen* top = mUIStack.back();
+            if (!top) {
+              RemoveUI(top);
+              continue;
+            }
+            top->HandleMouse(event);
+          }
+          break;
+        }
+        default:
+          break;
+      }
     }
 
     const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-    if (mGameState == GameState::Gameplay && mUIStack.empty()) {
+    if (mGameState == GameState::Gameplay) {
         for (auto actor : mActors) {
                 actor->ProcessInput(state);
         }
