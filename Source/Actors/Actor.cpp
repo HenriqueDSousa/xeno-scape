@@ -19,6 +19,7 @@ Actor::Actor(Game* game)
     , mPosition(Vector2::Zero)
     , mScale(Vector2((float)mGame->GetTileSize(), (float)mGame->GetTileSize()))
     , mRotation(0.0f)
+    , mIsOnGround(false)
 {
     mGame->AddActor(this);
 }
@@ -84,6 +85,11 @@ void Actor::OnVerticalCollision(const float minOverlap, AABBColliderComponent* o
 void Actor::Kill()
 {
 
+}
+
+Vector2 Actor::GetForward() const
+{
+    return Vector2(Math::Cos(mRotation), Math::Sin(mRotation));
 }
 
 void Actor::AddComponent(Component* c)

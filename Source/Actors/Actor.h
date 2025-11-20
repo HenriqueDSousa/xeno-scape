@@ -46,6 +46,9 @@ public:
     ActorState GetState() const { return mState; }
     void SetState(ActorState state) { mState = state; }
 
+    // Get the forward direction vector based on rotation
+    Vector2 GetForward() const;
+
     // Game getter
     class Game* GetGame() { return mGame; }
 

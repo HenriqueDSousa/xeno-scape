@@ -5,6 +5,7 @@
 #pragma once
 #include "Actor.h"
 
+class XenoArm;
 enum XenoState
 {
   Aiming
@@ -28,21 +29,25 @@ class Xeno : public Actor {
   float GetWidth() const { return mWidth; }
   void SetWidth(float width) { mWidth = width; }
 
+  bool IsAiming() const { return mIsAiming; }
+  XenoArm* GetAimArm() const { return mAimArm; }
+
 private:
   void ManageAnimations();
+
+  class XenoArm* mAimArm;
+  class XenoGun* mXenoGun;
 
   float mHeight;
   float mWidth;
 
   float mForwardSpeed;
   float mJumpSpeed;
-  bool mIsOnGround;
   bool mIsRunning;
   bool mIsAiming;
 
   class RigidBodyComponent* mRigidBodyComponent;
   class AnimatorComponent* mDrawComponent;
   class AABBColliderComponent* mColliderComponent;
-  class ParticleSystemComponent* mShootingGun;
 
 };

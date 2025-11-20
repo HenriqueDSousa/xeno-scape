@@ -32,8 +32,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/Physics/RigidBodyComponent.h
         Source/Components/Physics/AABBColliderComponent.cpp
         Source/Components/Physics/AABBColliderComponent.h
-        Source/Components/ParticleSystemComponent.cpp
-        Source/Components/ParticleSystemComponent.h
+        Source/Components/Particles/ParticleSystemComponent.tpp
+        Source/Components/Particles/ParticleSystemComponent.h
         Source/Renderer/Renderer.cpp
         Source/Renderer/Renderer.h
         Source/Renderer/VertexArray.h
@@ -69,6 +69,20 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Xeno.cpp
         Source/Actors/Xeno.h
         Source/UI/UIRect.cpp
+        Source/Actors/XenoArm.cpp
+        Source/Actors/XenoArm.h
+        Source/Components/Particles/Bullet.cpp
+        Source/Components/Particles/Bullet.h
+        Source/Components/Particles/Particle.cpp
+        Source/Components/Particles/Particle.h
+        Source/Components/Particles/PortalBullet.cpp
+        Source/Components/Particles/PortalBullet.h
+        Source/Components/Particles/ShootBullet.cpp
+        Source/Components/Particles/ShootBullet.h
+        Source/Actors/XenoGun.cpp
+        Source/Actors/XenoGun.h
+        Source/Actors/Portal.cpp
+        Source/Actors/Portal.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)
