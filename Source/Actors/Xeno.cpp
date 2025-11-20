@@ -11,6 +11,8 @@
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Game.h"
 #include "XenoArm.h"
+#include "XenoGun.h"
+
 Xeno::Xeno(Game* game, float width, float height)
   :Actor(game)
   ,mWidth(width)
@@ -30,7 +32,10 @@ Xeno::Xeno(Game* game, float width, float height)
   this, "../Assets/Sprites/Xeno/Xeno.png","../Assets/Sprites/Xeno/Xeno.json",
     mWidth, mHeight, 100
   );
+
   mAimArm = new XenoArm(game, this);
+  mXenoGun = new XenoGun(game, this);
+
   mDrawComponent->AddAnimation("idle", std::vector{1});
   mDrawComponent->AddAnimation("run", std::vector{2,3,4,5,6,7});
   mDrawComponent->AddAnimation("aim", std::vector{0});
@@ -99,7 +104,7 @@ void Xeno::OnProcessInput(const Uint8* state) {
   if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
     isAiming = true;
   }
-  mIsAiming = isAiming;
+  mIsAiming = isAiming && IsOnGround();
 
   if (!mIsAiming) {
     if (state[SDL_SCANCODE_D]) {

@@ -59,7 +59,10 @@ void XenoArm::OnProcessInput(const Uint8* keyState) {
     const float facing = (mOwner->GetScale().x < 0.0f) ? M_PI : 0.0f;
 
     // Localize, clamp, and reapply facing
-    const float localAngle = angleRad - facing;
+    float localAngle = angleRad - facing;
+    // Normalize angle to [-PI, PI] range
+    while (localAngle > M_PI) localAngle -= 2.0f * M_PI;
+    while (localAngle < -M_PI) localAngle += 2.0f * M_PI;
     const float clampedLocal = std::clamp(localAngle, kMinAngleRad, kMaxAngleRad);
     const float finalAngle = clampedLocal + facing;
 
@@ -87,5 +90,22 @@ void XenoArm::UpdateCenterFromRotation(float angle, const Vector2& shoulderPos)
   rotatedHalf.y = sinA * halfW;
   SetPosition(shoulderPos + rotatedHalf);
 }
+
+Vector2 XenoArm::GetHandPosition() const
+{
+  // The hand is at the tip of the arm, which is the full arm length from the shoulder
+  const Vector2 shoulderPos = ComputeShoulderPos();
+  const float angle = GetRotation();
+  const float cosA = cosf(angle);
+  const float sinA = sinf(angle);
+  
+  // Calculate the tip position by extending the full arm length from shoulder
+  Vector2 handPos;
+  handPos.x = shoulderPos.x + cosA * mArmWidth;
+  handPos.y = shoulderPos.y + sinA * mArmWidth;
+  
+  return handPos;
+}
+
 
 

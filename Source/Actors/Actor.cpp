@@ -87,6 +87,11 @@ void Actor::Kill()
 
 }
 
+Vector2 Actor::GetForward() const
+{
+    return Vector2(Math::Cos(mRotation), Math::Sin(mRotation));
+}
+
 void Actor::AddComponent(Component* c)
 {
     mComponents.emplace_back(c);

@@ -10,6 +10,10 @@ class XenoArm : public Actor {
   XenoArm(Game* game, Xeno* owner);
   void OnUpdate(float deltaTime) override;
   void OnProcessInput(const Uint8* keyState) override;
+  
+  //Returns the position of the hand (tip of the arm) for gun placement
+  Vector2 GetHandPosition() const;
+  
 private:
   AnimatorComponent* mDrawComponent;
   Xeno* mOwner;

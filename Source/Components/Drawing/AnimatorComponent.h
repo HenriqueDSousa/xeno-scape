@@ -26,6 +26,9 @@ public:
     // Use to pause/unpause the animation
     void SetIsPaused(bool pause) { mIsPaused = pause; }
 
+    // Get the current animation name
+    const std::string& GetCurrentAnimation() const { return mAnimName; }
+
     // Add an animation of the corresponding name to the animation map
     void AddAnimation(const std::string& name, const std::vector<int>& images);
 

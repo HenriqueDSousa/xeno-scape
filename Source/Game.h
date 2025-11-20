@@ -62,6 +62,8 @@ public:
     void UpdateActors(float deltaTime);
     void AddActor(class Actor* actor);
     void RemoveActor(class Actor* actor);
+    void AddBlock(class Block* block);
+    void RemoveBlock(class Block* block);
 
     // Renderer
     class Renderer* GetRenderer() { return mRenderer; }
@@ -128,6 +130,7 @@ private:
     // All the actors in the game
     std::vector<class Actor*> mActors;
     std::vector<class Actor*> mPendingActors;
+    std::vector<class Block*> mBlocks;
 
     // Camera
     Vector2 mCameraPos;

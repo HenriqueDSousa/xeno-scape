@@ -15,6 +15,7 @@ enum class ColliderLayer
     Player,
     Enemy,
     Blocks,
+    Bullet,
     Collectables
 };
 

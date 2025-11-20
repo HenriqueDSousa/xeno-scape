@@ -31,7 +31,7 @@ Game::Game()
         ,mRenderer(nullptr)
         ,mTicksCount(0)
         ,mIsRunning(true)
-        ,mIsDebugging(true)
+        ,mIsDebugging(false)
         ,mUpdatingActors(false)
         ,mCameraPos(Vector2::Zero)
         ,mLevelData(nullptr)
@@ -367,7 +367,7 @@ void Game::UnloadScene() {
   for(auto *actor : mActors) {
     actor->SetState(ActorState::Destroy);
   }
-
+  mBlocks.clear();
   // Delete UI screens
   for (auto ui : mUIStack) {
     delete ui;
@@ -664,6 +664,10 @@ void Game::RemoveActor(Actor* actor) {
         std::iter_swap(iter, mActors.end() - 1);
         mActors.pop_back();
     }
+}
+
+void Game::AddBlock(class Block* block) {
+  mBlocks.emplace_back(block);
 }
 
 void Game::RemoveUI(class UIScreen* screen) {
