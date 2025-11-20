@@ -7,7 +7,6 @@
 
 class GameOver : public UIScreen {
  public:
-  void Update(float deltaTime) override;
-  void Draw() override;
+    GameOver(class Game* game, const std::string& fontName);
 };
 

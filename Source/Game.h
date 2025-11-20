@@ -43,6 +43,17 @@ enum class GameState {
 class Game
 {
 public:
+    static const int WINDOW_WIDTH   = 1280;
+    static const int WINDOW_HEIGHT  = 720;
+    static const int LEVEL_WIDTH    = 20;
+    static const int LEVEL_HEIGHT   = 20;
+    // Size of source sprites (in pixels). Your sprites are 16x16.
+    static const int SPRITE_SIZE    = 16;
+    // Scaled tile size at runtime: use GetTileSize() to retrieve
+    static const int SPAWN_DISTANCE = 700;
+    static const int FPS = 60;
+    static constexpr std::string_view BLOCK_ASSETS_PATH = "../Assets/Sprites/Blocks/";
+    static constexpr std::string_view ENTITY_LAYER = "Entity";
     Game();
 
     bool Initialize();
@@ -56,6 +67,7 @@ public:
     // Scene Handling
     void SetScene(GameScene scene);
     void UnloadScene();
+    GameScene GetCurrentScene() const { return mCurrentScene; }
 
     // Actor functions
     void InitializeActors();
@@ -65,18 +77,6 @@ public:
 
     // Renderer
     class Renderer* GetRenderer() { return mRenderer; }
-
-    static const int WINDOW_WIDTH   = 1280;
-    static const int WINDOW_HEIGHT  = 720;
-    static const int LEVEL_WIDTH    = 20;
-    static const int LEVEL_HEIGHT   = 20;
-    // Size of source sprites (in pixels). Your sprites are 16x16.
-    static const int SPRITE_SIZE    = 16;
-    // Scaled tile size at runtime: use GetTileSize() to retrieve
-    static const int SPAWN_DISTANCE = 700;
-    static const int FPS = 60;
-    static constexpr std::string_view BLOCK_ASSETS_PATH = "../Assets/Sprites/Blocks/";
-    static constexpr std::string_view ENTITY_LAYER = "Entity";
 
     // Scale factor for sprites / tiles. Computed at runtime in Initialize().
     int GetGameScale() const { return mGameScale; }
@@ -184,7 +184,7 @@ private:
     int **mLevelData;
     Texture* mBackgroundTexture{};
     // Runtime scale for sprites (multiplier for SPRITE_SIZE)
-    int mGameScale{2};
+    int mGameScale{1};
     // Mapping from tile ID -> sprite filename (populated per-level)
     std::unordered_map<int, std::string> mTileSpriteMap;
 
