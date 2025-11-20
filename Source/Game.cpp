@@ -95,7 +95,6 @@ void Game::OnPause() {
   if (mGameState != GameState::Gameplay)
     return;
 
-  SDL_Log("Paused");
   mPauseMenu = new PauseMenu(this, "../Assets/Fonts/SuperPixel-m2L8j.ttf");
   SetState(GameState::Paused);
 
@@ -110,7 +109,6 @@ void Game::OnResume() {
 
     mPauseMenu->Close();
     SetState(GameState::Gameplay);
-    SDL_Log("Resume");
     mPauseMenu = nullptr;
 
   if (mHud) {

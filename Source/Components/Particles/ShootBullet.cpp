@@ -2,6 +2,7 @@
 
 #include "../../Game.h"
 #include "../Drawing/AnimatorComponent.h"
+#include "../Physics/AABBColliderComponent.h"
 
 ShootBullet::ShootBullet(class Game* game)
   :Bullet(game) {
@@ -12,14 +13,17 @@ ShootBullet::ShootBullet(class Game* game)
 
 void ShootBullet::OnHorizontalCollision(const float minOverlap,
                                         AABBColliderComponent* other) {
-  Bullet::OnHorizontalCollision(minOverlap, other);
+  if (other->GetLayer() == ColliderLayer::Blocks) {
+   Kill();
+  }
 }
 void ShootBullet::OnVerticalCollision(const float minOverlap,
                                       AABBColliderComponent* other) {
-  Bullet::OnVerticalCollision(minOverlap, other);
+  if (other->GetLayer() == ColliderLayer::Blocks) {
+    Kill();
+  }
 }
 
 void ShootBullet::OnUpdate(float deltaTime) {
-  Bullet::OnUpdate(deltaTime);
 
 }
