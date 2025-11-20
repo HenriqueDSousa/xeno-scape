@@ -16,6 +16,7 @@ enum class ColliderLayer
     Enemy,
     Blocks,
     Bullet,
+    Portal,
     Collectables
 };
 

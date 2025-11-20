@@ -81,6 +81,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/Particles/ShootBullet.h
         Source/Actors/XenoGun.cpp
         Source/Actors/XenoGun.h
+        Source/Actors/Portal.cpp
+        Source/Actors/Portal.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)

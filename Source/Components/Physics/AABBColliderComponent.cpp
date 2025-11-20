@@ -110,8 +110,7 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
         if (Intersect(*collider)) {
             float overlap = GetMinHorizontalOverlap(collider);
             bool isStatic = mIsStatic || collider->mIsStatic;
-            if ((GetLayer() != ColliderLayer::Collectables &&
-                collider->GetLayer() != ColliderLayer::Collectables) || isStatic ) {
+            if (isStatic) {
                 ResolveHorizontalCollisions(rigidBody, overlap);
             }
             rigidBody->GetOwner()->OnHorizontalCollision(overlap, collider);
@@ -136,9 +135,9 @@ float AABBColliderComponent::DetectVerticalCollision(RigidBodyComponent *rigidBo
         bool isStatic = mIsStatic || collider->mIsStatic;
         if (Intersect(*collider)) {
             float overlap = GetMinVerticalOverlap(collider);
-            if ((GetLayer() != ColliderLayer::Collectables &&
-                collider->GetLayer() != ColliderLayer::Collectables) || isStatic )
+            if (isStatic) {
                 ResolveVerticalCollisions(rigidBody, overlap);
+            }
             rigidBody->GetOwner()->OnVerticalCollision(overlap, collider);
             collider->GetOwner()->OnVerticalCollision(overlap, this);
             return overlap;

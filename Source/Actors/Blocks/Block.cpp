@@ -17,5 +17,4 @@ Block::Block(Game* game, const std::string &texturePath)
     mColliderComponent = new AABBColliderComponent(this,
         0.0f, 0.0f,
         game->GetTileSize(), game->GetTileSize(), ColliderLayer::Blocks, true);
-    mGame->AddBlock(this);
 }

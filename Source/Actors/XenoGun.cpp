@@ -16,7 +16,10 @@ XenoGun::XenoGun(Game* game, Xeno* owner)
   ,mShootingCooldown(0.0f)
   ,mIsShooting(false)
   ,mShootingAnimTimer(0.0f)
-  ,mCurrentMode(SHOOT) {
+  ,mCurrentMode(SHOOT)
+  ,mActiveBluePortal(nullptr)
+  ,mActiveOrangePortal(nullptr)
+{
 
   mBluePortalGun = new ParticleSystemComponent<class BluePortalBullet>(this, 20);
   mOrangePortalGun = new ParticleSystemComponent<class OrangePortalBullet>(this, 20);
@@ -29,6 +32,16 @@ XenoGun::XenoGun(Game* game, Xeno* owner)
   mAnimatorComponent->AddAnimation("orangePortalShooting",std::vector{6});
   mAnimatorComponent->AddAnimation("shooting",std::vector{1,2,3,4});
   mAnimatorComponent->SetVisible(false);
+  
+  // Create the portal instances once
+  mActiveBluePortal = new BluePortal(game, this, Vector2::Zero);
+  mActiveBluePortal->SetState(ActorState::Paused);
+  
+  mActiveOrangePortal = new OrangePortal(game, this, Vector2::Zero);
+  mActiveOrangePortal->SetState(ActorState::Paused);
+  
+  // Set gun reference for portal bullets
+  SetupPortalBulletReferences();
 }
 
 void XenoGun::OnUpdate(float deltaTime) {
@@ -133,5 +146,17 @@ void XenoGun::Shoot() {
       mAnimatorComponent->SetAnimFPS(10.0f);
       mShootingAnimTimer = 0.4f; // Duration for 4-frame animation at 10fps (0.4s)
       break;
+  }
+}
+
+void XenoGun::SetupPortalBulletReferences() {
+  // Set gun reference for all blue portal bullets
+  for (auto* bullet : mBluePortalGun->GetParticles()) {
+    bullet->SetGun(this);
+  }
+  
+  // Set gun reference for all orange portal bullets
+  for (auto* bullet : mOrangePortalGun->GetParticles()) {
+    bullet->SetGun(this);
   }
 }

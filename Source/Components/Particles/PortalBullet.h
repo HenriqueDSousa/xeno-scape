@@ -10,6 +10,8 @@ enum class PortalType {
   ORANGE
 };
 
+class XenoGun;
+
 class PortalBullet : public Bullet {
  public:
   PortalBullet(class Game* game, PortalType portalType);
@@ -20,8 +22,13 @@ class PortalBullet : public Bullet {
                            AABBColliderComponent* other) override;
   void OnUpdate(float deltaTime) override;
 
+  void SetGun(XenoGun* gun) { mGun = gun; }
+
 private:
+  void SpawnPortal() const;
+  
   PortalType mPortalType;
+  XenoGun* mGun;
 };
 
 // Wrapper classes for ParticleSystemComponent compatibility
