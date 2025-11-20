@@ -10,6 +10,7 @@
 #include "../Components/Physics/AABBColliderComponent.h"
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Game.h"
+#include "../UI/Screens/GameOver.h"
 #include "XenoArm.h"
 #include "XenoGun.h"
 
@@ -84,6 +85,7 @@ void Xeno::OnUpdate(float deltaTime) {
     mDrawComponent->SetIsPaused(true);
     mDrawComponent->SetVisible(false);
     SetState(ActorState::Paused);
+    new GameOver(mGame,"../Assets/Fonts/SMB.ttf");
     return;
   }
 

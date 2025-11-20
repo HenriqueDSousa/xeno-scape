@@ -10,10 +10,9 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
   SetSize(Vector2(Game::WINDOW_WIDTH/3, Game::WINDOW_HEIGHT/3));
   SetPosition(Vector2(Game::WINDOW_WIDTH/3, 5 * Game::WINDOW_HEIGHT/12));
 
-  std::string_view text = "Game Paused";
-        AddText(std::string(text),Vector2::Zero, Vector2::Zero,
-                30,
-                Color::White);
+  AddText("Game Paused",Vector2::Zero, Vector2::Zero,
+          30,
+          Color::White);
 
   AddButton("Resume", Vector2(GetSize().x / 4, GetSize().y / 3),
           Vector2(GetSize().x / 2, 50.f),
