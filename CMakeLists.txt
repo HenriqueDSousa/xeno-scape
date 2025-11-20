@@ -64,8 +64,8 @@ add_executable(${PROJECT_NAME}
         Source/UI/Screens/MainMenu.h
         Source/UI/Timer.cpp
         Source/UI/Timer.h
-        Source/Actors/Robot1.cpp
-        Source/Actors/Robot1.h
+        Source/Actors/MeleeRobot.cpp
+        Source/Actors/MeleeRobot.h
         Source/Actors/Xeno.cpp
         Source/Actors/Xeno.h
         Source/UI/UIRect.cpp
@@ -83,6 +83,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/XenoGun.h
         Source/Actors/Portal.cpp
         Source/Actors/Portal.h
+        Source/UI/Screens/GameOver.cpp
+        Source/UI/Screens/GameOver.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)

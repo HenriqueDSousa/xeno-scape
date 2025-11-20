@@ -4,6 +4,8 @@
 #include "../../Json.h"
 #include "../../Renderer/Texture.h"
 #include <fstream>
+#include <algorithm>
+#include <cctype>
 
 AnimatorComponent::AnimatorComponent(class Actor* owner, const std::string &texPath, const std::string &dataPath,
                                      int width, int height, int drawOrder)
@@ -48,15 +50,54 @@ bool AnimatorComponent::LoadSpriteSheetData(const std::string& dataPath)
     auto textureWidth = static_cast<float>(spriteSheetData["meta"]["size"]["w"].get<int>());
     auto textureHeight = static_cast<float>(spriteSheetData["meta"]["size"]["h"].get<int>());
 
-    for(const auto& frame : spriteSheetData["frames"]) {
-
+    // Sort frames by their numeric index to ensure correct order
+    std::vector<std::pair<int, nlohmann::json>> sortedFrames;
+    
+    for(const auto& [key, frame] : spriteSheetData["frames"].items()) {
+        // Extract numeric index from frame name (e.g., "MeleeRobotIdle0" -> 0)
+        std::string keyStr = key;
+        int index = -1;
+        
+        // Find the last sequence of digits in the key
+        for (int i = keyStr.length() - 1; i >= 0; i--) {
+            if (std::isdigit(keyStr[i])) {
+                size_t endPos = i + 1;
+                while (i > 0 && std::isdigit(keyStr[i - 1])) {
+                    i--;
+                }
+                index = std::stoi(keyStr.substr(i, endPos - i));
+                break;
+            }
+        }
+        
+        if (index >= 0) {
+            sortedFrames.emplace_back(index, frame);
+        }
+    }
+    
+    // Sort by index
+    std::sort(sortedFrames.begin(), sortedFrames.end(), 
+              [](const auto& a, const auto& b) { return a.first < b.first; });
+    
+    // Resize the sprite sheet data to accommodate all frames
+    if (!sortedFrames.empty()) {
+        int maxIndex = sortedFrames.back().first;
+        mSpriteSheetData.resize(maxIndex + 1);
+    }
+    
+    // Store frames at their correct indices
+    for(const auto& [index, frame] : sortedFrames) {
         int x = frame["frame"]["x"].get<int>();
         int y = frame["frame"]["y"].get<int>();
         int w = frame["frame"]["w"].get<int>();
         int h = frame["frame"]["h"].get<int>();
 
-        mSpriteSheetData.emplace_back(static_cast<float>(x)/textureWidth, static_cast<float>(y)/textureHeight,
-                                      static_cast<float>(w)/textureWidth, static_cast<float>(h)/textureHeight);
+        mSpriteSheetData[index] = Vector4(
+            static_cast<float>(x)/textureWidth, 
+            static_cast<float>(y)/textureHeight,
+            static_cast<float>(w)/textureWidth, 
+            static_cast<float>(h)/textureHeight
+        );
     }
 
     return true;
@@ -69,7 +110,7 @@ void AnimatorComponent::Draw(Renderer* renderer)
     Vector4 textureRect;
     if (mAnimations.find(mAnimName) != mAnimations.end()) {
         const auto& animFrames = mAnimations[mAnimName];
-        int currentFrameIndex = static_cast<int>(mAnimTimer) % animFrames.size();
+        int currentFrameIndex = static_cast<int>(mAnimTimer);
         int spriteIndex = animFrames[currentFrameIndex];
         textureRect = mSpriteSheetData[spriteIndex];
     } else {
@@ -96,9 +137,13 @@ void AnimatorComponent::Update(float deltaTime) {
     if (mIsPaused || mAnimations.empty()) {
         return;
     }
-    mAnimTimer += deltaTime * mAnimFPS;
-    if (mAnimTimer >= mAnimations.size()) {
-        mAnimTimer = 0.0f; // Loop
+    
+    if (mAnimations.find(mAnimName) != mAnimations.end()) {
+        mAnimTimer += deltaTime * mAnimFPS;
+        const auto& currentAnim = mAnimations[mAnimName];
+        if (mAnimTimer >= currentAnim.size()) {
+            mAnimTimer = 0.0f; // Loop
+        }
     }
 }
 

@@ -102,6 +102,7 @@ public:
     void UpdateUI(float deltaTime);
     void RemoveUI(class UIScreen* screen);
     Font* LoadFont(const std::string& fileName);
+    HUD* GetHud() const { return mHud; }
 
     // Pause
     void OnPause();

@@ -8,11 +8,14 @@
 class XenoArm;
 enum XenoState
 {
-  Aiming
+  Alive,
+  Dead
 };
 
 class Xeno : public Actor {
- public:
+  constexpr static float DEATH_DURATION = 1.0f;
+
+public:
 
   explicit Xeno(Game* game, float width, float height);
   void OnHorizontalCollision(const float minOverlap,
@@ -40,11 +43,13 @@ private:
 
   float mHeight;
   float mWidth;
-
   float mForwardSpeed;
   float mJumpSpeed;
   bool mIsRunning;
   bool mIsAiming;
+  XenoState mXenoState;
+
+  float mDeathTimer = DEATH_DURATION;
 
   class RigidBodyComponent* mRigidBodyComponent;
   class AnimatorComponent* mDrawComponent;

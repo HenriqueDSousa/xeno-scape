@@ -20,6 +20,7 @@ Xeno::Xeno(Game* game, float width, float height)
   ,mIsRunning(false)
   ,mForwardSpeed(400.0f)
   ,mJumpSpeed(-750.0f)
+  ,mXenoState(Alive)
 {
   mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 2.00f, true);
   mRigidBodyComponent->SetMaxSpeedX(700.0f);
@@ -36,9 +37,10 @@ Xeno::Xeno(Game* game, float width, float height)
   mAimArm = new XenoArm(game, this);
   mXenoGun = new XenoGun(game, this);
 
-  mDrawComponent->AddAnimation("idle", std::vector{1});
+  mDrawComponent->AddAnimation("idle", std::vector{0});
+  mDrawComponent->AddAnimation("aim", std::vector{1});
   mDrawComponent->AddAnimation("run", std::vector{2,3,4,5,6,7});
-  mDrawComponent->AddAnimation("aim", std::vector{0});
+  mDrawComponent->AddAnimation("death", std::vector{8,9,10});
   mDrawComponent->SetAnimation("idle");
   mDrawComponent->SetAnimFPS(10.0f);
 
@@ -56,7 +58,14 @@ void Xeno::OnVerticalCollision(const float minOverlap,
   Actor::OnVerticalCollision(minOverlap, other);
 }
 
-void Xeno::Kill() { Actor::Kill(); }
+void Xeno::Kill() {
+  mXenoState = Dead;
+  mDrawComponent->SetAnimation("death");
+  mDrawComponent->SetAnimFPS(3.0f);
+  mRigidBodyComponent->SetEnabled(false);
+  mColliderComponent->SetEnabled(false);
+  mGame->GetHud()->SetPaused(true);
+}
 
 void Xeno::OnUpdate(float deltaTime) {
   float cameraX = GetGame()->GetCameraPos().x;
@@ -64,13 +73,23 @@ void Xeno::OnUpdate(float deltaTime) {
   {
     mPosition.x = cameraX;
   }
-  if (mPosition.y < 0) {
+  if (mPosition.y > 1000.0f) {
     Kill();
+  }
+
+  if (mXenoState == Dead) {
+    mDeathTimer -= deltaTime;
+    if (mDeathTimer > 0.0f) return;
+
+    mDrawComponent->SetIsPaused(true);
+    mDrawComponent->SetVisible(false);
+    SetState(ActorState::Paused);
+    return;
   }
 
   // Aiming
   if (mIsAiming) {
-    mRigidBodyComponent->SetVelocity(Vector2::Zero);
+    mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
   }
 
   ManageAnimations();
@@ -94,7 +113,7 @@ void Xeno::ManageAnimations() {
 }
 
 void Xeno::OnProcessInput(const Uint8* state) {
-  if (!mRigidBodyComponent) return;
+  if (!mRigidBodyComponent || mXenoState == Dead) return;
 
   bool isAiming = false;
   bool isMoving = false;
@@ -104,7 +123,7 @@ void Xeno::OnProcessInput(const Uint8* state) {
   if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
     isAiming = true;
   }
-  mIsAiming = isAiming && IsOnGround();
+  mIsAiming = isAiming;
 
   if (!mIsAiming) {
     if (state[SDL_SCANCODE_D]) {
@@ -121,17 +140,17 @@ void Xeno::OnProcessInput(const Uint8* state) {
       mRigidBodyComponent->ApplyForce(Vector2(-mForwardSpeed, 0.0f));
       isMoving = true;
     }
-    if (state[SDL_SCANCODE_W]) {
-      if (IsOnGround()) {
-        auto velocity = mRigidBodyComponent->GetVelocity();
-        mRigidBodyComponent->SetVelocity(Vector2(velocity.x, mJumpSpeed));
-        SetOffGround();
-      }
+  }
+  if (state[SDL_SCANCODE_W]) {
+    if (IsOnGround()) {
+      auto velocity = mRigidBodyComponent->GetVelocity();
+      mRigidBodyComponent->SetVelocity(Vector2(velocity.x, mJumpSpeed));
+      SetOffGround();
     }
-    mIsRunning = isMoving;
-    if (!mIsRunning && IsOnGround()) {
-      mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
-    }
+  }
+  mIsRunning = isMoving;
+  if (!mIsRunning && IsOnGround()) {
+    mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
   }
 
 }

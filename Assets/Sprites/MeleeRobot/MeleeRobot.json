@@ -1,5 +1,5 @@
 { "frames": {
-   "MeleeRobot 0.aseprite": {
+   "MeleeRobotIdle0": {
     "frame": { "x": 0, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -7,7 +7,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 1.aseprite": {
+   "MeleeRobotIdle1": {
     "frame": { "x": 16, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -15,7 +15,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 2.aseprite": {
+   "MeleeRobotIdle2": {
     "frame": { "x": 32, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -23,7 +23,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 3.aseprite": {
+   "MeleeRobotIdle3": {
     "frame": { "x": 48, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -31,7 +31,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 4.aseprite": {
+   "MeleeRobotWalk4": {
     "frame": { "x": 64, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -39,7 +39,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 5.aseprite": {
+   "MeleeRobotWalk5": {
     "frame": { "x": 80, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -47,7 +47,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 6.aseprite": {
+   "MeleeRobotWalk6": {
     "frame": { "x": 96, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -55,7 +55,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 7.aseprite": {
+   "MeleeRobotWalk7": {
     "frame": { "x": 112, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -63,7 +63,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 8.aseprite": {
+   "MeleeRobotWalk8": {
     "frame": { "x": 128, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -71,7 +71,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 9.aseprite": {
+   "MeleeRobotWalk9": {
     "frame": { "x": 144, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -79,7 +79,7 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 10.aseprite": {
+   "MeleeRobotWalk10": {
     "frame": { "x": 160, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
@@ -87,8 +87,16 @@
     "sourceSize": { "w": 16, "h": 27 },
     "duration": 100
    },
-   "MeleeRobot 11.aseprite": {
+   "MeleeRobotWalk11": {
     "frame": { "x": 176, "y": 0, "w": 16, "h": 27 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 27 },
+    "sourceSize": { "w": 16, "h": 27 },
+    "duration": 100
+   },
+   "MeleeRobotHit12": {
+    "frame": { "x": 192, "y": 0, "w": 16, "h": 27 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 27 },
@@ -101,11 +109,12 @@
   "version": "1.3.15.3-dev",
   "image": "MeleeRobot.png",
   "format": "RGBA8888",
-  "size": { "w": 192, "h": 27 },
+  "size": { "w": 208, "h": 27 },
   "scale": "1",
   "frameTags": [
    { "name": "Idle", "from": 0, "to": 3, "direction": "forward", "color": "#000000ff" },
-   { "name": "Walk", "from": 4, "to": 11, "direction": "forward", "color": "#000000ff" }
+   { "name": "Walk", "from": 4, "to": 11, "direction": "forward", "color": "#000000ff" },
+   { "name": "Hit", "from": 12, "to": 12, "direction": "forward", "color": "#000000ff" }
   ],
   "layers": [
    { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
