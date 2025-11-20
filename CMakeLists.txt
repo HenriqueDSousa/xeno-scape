@@ -64,8 +64,8 @@ add_executable(${PROJECT_NAME}
         Source/UI/Screens/MainMenu.h
         Source/UI/Timer.cpp
         Source/UI/Timer.h
-        Source/Actors/Robot1.cpp
-        Source/Actors/Robot1.h
+        Source/Actors/MeleeRobot.cpp
+        Source/Actors/MeleeRobot.h
         Source/Actors/Xeno.cpp
         Source/Actors/Xeno.h
         Source/UI/UIRect.cpp

@@ -15,6 +15,7 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Blocks/Block.h"
+#include "Actors/MeleeRobot.h"
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
@@ -253,9 +254,11 @@ void Game::LoadLevelEntities(const std::string& jsonFileName) {
     }
 
     // TODO: Create enemies based on type (e.g MeleeRobot, RangedRobot etc)
+    if (type == "MeleeRobot") {
+      auto enemy = new MeleeRobot(this, width, height);
+      enemy->SetPosition(Vector2(x, y));
+    }
   }
-
-
 }
 
 bool Game::LoadTileMap(const std::string& fileName) {
