@@ -23,6 +23,7 @@ public:
   void OnVerticalCollision(const float minOverlap,
                            AABBColliderComponent* other) override;
   void Kill() override;
+  bool IsDead() { return mXenoState == XenoState::Dead; }
 
   void OnUpdate(float deltaTime) override;
   void OnProcessInput(const Uint8* keyState) override;

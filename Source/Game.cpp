@@ -696,6 +696,15 @@ Font* Game::LoadFont(const std::string& fileName) {
     return nullptr;
 }
 
+bool Game::IsPositionOutOfBounds(const Vector2& position) const {
+  float levelWidthPx = (mCurrentLevelWidth > 0) ? (mCurrentLevelWidth * GetTileSize()) : (LEVEL_WIDTH * GetTileSize());
+  float levelHeightPx = (mCurrentLevelHeight > 0) ? (mCurrentLevelHeight * GetTileSize()) : (LEVEL_HEIGHT * GetTileSize());
+
+  float offset = 30.0f;
+  return position.x < -offset || position.x > levelWidthPx + offset ||
+         position.y < -offset || position.y > levelHeightPx + offset;
+}
+
 void Game::AddDrawable(class DrawComponent *drawable)
 {
     mDrawables.emplace_back(drawable);

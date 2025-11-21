@@ -69,13 +69,14 @@ void Xeno::Kill() {
 }
 
 void Xeno::OnUpdate(float deltaTime) {
+  if (mGame->IsPositionOutOfBounds(mPosition)) {
+    Kill();
+  }
+
   float cameraX = GetGame()->GetCameraPos().x;
   if (mPosition.x < cameraX)
   {
     mPosition.x = cameraX;
-  }
-  if (mPosition.y > 1000.0f) {
-    Kill();
   }
 
   if (mXenoState == Dead) {
