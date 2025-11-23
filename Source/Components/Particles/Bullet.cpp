@@ -47,13 +47,4 @@ void Bullet::Emit(const Vector2 &direction, float speed)
 void Bullet::OnUpdate(float deltaTime)
 {
   Particle::OnUpdate(deltaTime);
-  // for (auto obstacle : mGame->GetObstacles()) {
-  //   if (mCollisionComponent->Intersect(obstacle->GetCollider())) {
-  //     Kill();
-  //     if (obstacle->IsExploding()) {
-  //       obstacle->Explode();
-  //       mGame->GetAudio()->PlaySound("BlockExplode.wav", false);
-  //     }
-  //   }
-  // }
 }

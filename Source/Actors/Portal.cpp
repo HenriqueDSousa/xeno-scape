@@ -43,10 +43,11 @@ void Portal::OnHorizontalCollision(const float minOverlap,
 
   auto* otherActor = other->GetOwner();
   auto* rigidBody = otherActor->GetComponent<RigidBodyComponent>();
-  mColliderCooldown = 1.0f;
+
   if (mPortalType == PortalType::ORANGE) {
     auto* bluePortal = mOwner->GetActiveBluePortal();
     if (bluePortal && mOwner->IsBluePortalActive()) {
+      mColliderCooldown = 1.0f;
       otherActor->SetPosition(bluePortal->GetPosition());
       otherActor->SetScale(otherActor->GetScale() * -1.0f);
       bluePortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
@@ -58,6 +59,7 @@ void Portal::OnHorizontalCollision(const float minOverlap,
   } else if (mPortalType == PortalType::BLUE) {
     auto* orangePortal = mOwner->GetActiveOrangePortal();
     if (orangePortal && mOwner->IsOrangePortalActive()) {
+      mColliderCooldown = 1.0f;
       otherActor->SetPosition(orangePortal->GetPosition());
       otherActor->SetScale(otherActor->GetScale() * -1.0f);
       orangePortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
