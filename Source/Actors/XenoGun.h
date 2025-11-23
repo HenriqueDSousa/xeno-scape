@@ -11,7 +11,7 @@
 #include "Actor.h"
 #include "Portal.h"
 
-enum ShootingMode {
+enum class ShootingMode {
   PORTAL_BLUE,
   PORTAL_ORANGE,
   SHOOT
@@ -19,16 +19,20 @@ enum ShootingMode {
 
 class XenoGun : public Actor {
  public:
-  XenoGun(Game* game, Xeno* owner);
 
-  bool IsBluePortalActive() { return mBluePortalActive; }
-  bool IsOrangePortalActive() { return mOrangePortalActive; }
+  XenoGun(class Game* game, class Xeno* owner);
 
   BluePortal* GetActiveBluePortal() const { return mActiveBluePortal; }
   void SetActiveBluePortal(BluePortal* portal) { mActiveBluePortal = portal; }
+  void SetBluePortalActive(bool active) { mBluePortalActive = active; }
+  bool IsBluePortalActive() { return mBluePortalActive; }
   
   OrangePortal* GetActiveOrangePortal() const { return mActiveOrangePortal; }
   void SetActiveOrangePortal(OrangePortal* portal) { mActiveOrangePortal = portal; }
+  void SetOrangePortalActive(bool active) { mOrangePortalActive = active; }
+  bool IsOrangePortalActive() { return mOrangePortalActive; }
+
+  ShootingMode GetShootingMode() {return mCurrentMode; }
 
  protected:
   void OnUpdate(float deltaTime) override;

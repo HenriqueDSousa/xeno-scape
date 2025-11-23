@@ -13,7 +13,7 @@ class MeleeRobot : public Actor {
   constexpr static float INTANGIBILITY_COOLDOWN = 1.0f;
   constexpr static float HIT_DURATION_TIMER = 0.2f;
   constexpr static float MOVE_SPEED = 200.0f;
-  constexpr static float EDGE_CHECK_DISTANCE = 20.0f;
+  constexpr static float EDGE_CHECK_DISTANCE = 10.0f;
 
  public:
   MeleeRobot(Game* game,  float width, float height);

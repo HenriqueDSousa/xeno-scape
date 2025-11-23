@@ -6,6 +6,7 @@
 #include "Actor.h"
 
 class XenoArm;
+class XenoGun;
 enum XenoState
 {
   Alive,
@@ -35,6 +36,7 @@ public:
 
   bool IsAiming() const { return mIsAiming; }
   XenoArm* GetAimArm() const { return mAimArm; }
+  XenoGun* GetXenoGun() const { return mXenoGun; }
 
 private:
   void ManageAnimations();

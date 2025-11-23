@@ -3,8 +3,11 @@
 //
 
 #pragma once
+#include "../Actors/XenoGun.h"
 #include "Screens/UIScreen.h"
 #include "Timer.h"
+
+enum class ShootingMode;
 
 class HUD : public UIScreen {
  public:
@@ -18,7 +21,10 @@ class HUD : public UIScreen {
   void SetPaused(bool isPaused) { mIsPaused = isPaused; }
 
 private:
+  ShootingMode GetCurrentShootingMode();
+
   Timer* mTimer;
+  UIText* mShootingModeText;
   bool mIsPaused;
 };
 

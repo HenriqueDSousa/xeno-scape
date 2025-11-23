@@ -25,7 +25,7 @@ class PortalBullet : public Bullet {
   void SetGun(XenoGun* gun) { mGun = gun; }
 
 private:
-  void SpawnPortal() const;
+  void SpawnPortal(float rotation) const;
   
   PortalType mPortalType;
   XenoGun* mGun;

@@ -90,11 +90,6 @@ void Xeno::OnUpdate(float deltaTime) {
     return;
   }
 
-  // Aiming
-  if (mIsAiming) {
-    mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
-  }
-
   ManageAnimations();
 }
 

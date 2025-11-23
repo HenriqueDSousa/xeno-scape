@@ -75,7 +75,7 @@ public:
     void AddActor(class Actor* actor);
     void RemoveActor(class Actor* actor);
     const std::vector<class Actor*>& GetActors() const { return mActors; }
-    Xeno* GetPlayer() const { return mPlayer; }
+    class Xeno* GetPlayer() const { return mPlayer; }
 
     // Renderer
     class Renderer* GetRenderer() { return mRenderer; }
@@ -105,7 +105,7 @@ public:
     void UpdateUI(float deltaTime);
     void RemoveUI(class UIScreen* screen);
     Font* LoadFont(const std::string& fileName);
-    HUD* GetHud() const { return mHud; }
+    class HUD* GetHud() const { return mHud; }
 
     // Pause
     void OnPause();

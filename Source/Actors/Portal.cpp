@@ -17,11 +17,11 @@ Portal::Portal(Game* game, XenoGun* owner, Vector2 position, PortalType portalTy
   SetPosition(position);
   if (mPortalType == PortalType::ORANGE) {
     mAnimator = new AnimatorComponent(this, "../Assets/Sprites/OrangePortal.png", "",
-      14 * mGame->GetGameScale(), 28 * mGame->GetGameScale());
+      3 * mGame->GetGameScale(), 32 * mGame->GetGameScale());
     mAnimator->SetVisible(false);
   } else if (mPortalType == PortalType::BLUE) {
     mAnimator = new AnimatorComponent(this, "../Assets/Sprites/BluePortal.png", "",
-      14 * mGame->GetGameScale(), 28 * mGame->GetGameScale());
+      3 * mGame->GetGameScale(), 32 * mGame->GetGameScale());
     mAnimator->SetVisible(false);
   }
   mCollider = new AABBColliderComponent(this,

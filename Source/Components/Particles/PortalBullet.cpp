@@ -9,6 +9,7 @@
 #include "../../Game.h"
 #include "../Drawing/AnimatorComponent.h"
 #include "../Physics/AABBColliderComponent.h"
+#include "../Physics/RigidBodyComponent.h"
 
 PortalBullet::PortalBullet(class Game* game, PortalType portalType)
   :Bullet(game)
@@ -29,9 +30,14 @@ PortalBullet::PortalBullet(class Game* game, PortalType portalType)
 
 void PortalBullet::OnHorizontalCollision(const float minOverlap,
                                          AABBColliderComponent* other) {
-  // Check if we hit a block
   if (other->GetLayer() == ColliderLayer::Blocks) {
-    SpawnPortal();
+    float rotation = 0.0f;
+    if (mRigidBody->GetVelocity().x > 0.0f) {
+      rotation = 0.0f;
+    } else {
+      rotation = Math::Pi;
+    }
+    SpawnPortal(rotation);
     Kill();
   } else {
     Kill();
@@ -40,9 +46,14 @@ void PortalBullet::OnHorizontalCollision(const float minOverlap,
 
 void PortalBullet::OnVerticalCollision(const float minOverlap,
                                        AABBColliderComponent* other) {
-  // Check if we hit a block
   if (other->GetLayer() == ColliderLayer::Blocks) {
-    SpawnPortal();
+    float rotation = 0.0f;
+    if (mRigidBody->GetVelocity().y > 0.0f) {
+      rotation = Math::PiOver2;
+    } else {
+      rotation = -Math::PiOver2;
+    }
+    SpawnPortal(rotation);
     Kill();
   } else {
     Kill();
@@ -53,7 +64,7 @@ void PortalBullet::OnUpdate(float deltaTime) {
   Bullet::OnUpdate(deltaTime);
 }
 
-void PortalBullet::SpawnPortal() const {
+void PortalBullet::SpawnPortal(float rotation) const {
   if (!mGun) return;
   
   Vector2 portalPosition = GetPosition();
@@ -62,13 +73,17 @@ void PortalBullet::SpawnPortal() const {
     auto* portal = mGun->GetActiveBluePortal();
     if (portal) {
       portal->SetPosition(portalPosition);
+      portal->SetRotation(rotation);
       portal->SetActive(true);
+      mGun->SetBluePortalActive(true);
     }
   } else if (mPortalType == PortalType::ORANGE) {
     auto* portal = mGun->GetActiveOrangePortal();
     if (portal) {
       portal->SetPosition(portalPosition);
+      portal->SetRotation(rotation);
       portal->SetActive(true);
+      mGun->SetOrangePortalActive(true);
     }
   }
 }

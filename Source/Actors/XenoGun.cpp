@@ -16,7 +16,7 @@ XenoGun::XenoGun(Game* game, Xeno* owner)
   ,mShootingCooldown(0.0f)
   ,mIsShooting(false)
   ,mShootingAnimTimer(0.0f)
-  ,mCurrentMode(SHOOT)
+  ,mCurrentMode(ShootingMode::SHOOT)
   ,mActiveBluePortal(nullptr)
   ,mActiveOrangePortal(nullptr)
 {
@@ -87,13 +87,13 @@ void XenoGun::OnUpdate(float deltaTime) {
 void XenoGun::OnProcessInput(const Uint8* keyState) {
   // Mode switching with number keys
   if (keyState[SDL_SCANCODE_1]) {
-    mCurrentMode = PORTAL_BLUE;
+    mCurrentMode = ShootingMode::PORTAL_BLUE;
   }
   else if (keyState[SDL_SCANCODE_2]) {
-    mCurrentMode = PORTAL_ORANGE;
+    mCurrentMode = ShootingMode::PORTAL_ORANGE;
   }
   else if (keyState[SDL_SCANCODE_3]) {
-    mCurrentMode = SHOOT;
+    mCurrentMode = ShootingMode::SHOOT;
   }
 
   // Shoot with left mouse button when aiming and cooldown allows
@@ -124,23 +124,21 @@ void XenoGun::Shoot() {
   float bulletLifetime = 2.0f;
   
   switch (mCurrentMode) {
-    case PORTAL_BLUE:
+    case ShootingMode::PORTAL_BLUE:
       mBluePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
       mAnimatorComponent->SetAnimation("bluePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
-      mShootingAnimTimer = 0.2f; // Duration for single frame animation
-      mBluePortalActive = true;
+      mShootingAnimTimer = 0.2f;
       break;
       
-    case PORTAL_ORANGE:
+    case ShootingMode::PORTAL_ORANGE:
       mOrangePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
       mAnimatorComponent->SetAnimation("orangePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
-      mShootingAnimTimer = 0.2f; // Duration for single frame animation
-      mOrangePortalActive = true;
+      mShootingAnimTimer = 0.2f;
       break;
       
-    case SHOOT:
+    case ShootingMode::SHOOT:
       mShootingGun->EmitParticle(bulletLifetime, bulletSpeed, direction);
       mAnimatorComponent->SetAnimation("shooting");
       mAnimatorComponent->SetAnimFPS(10.0f);
