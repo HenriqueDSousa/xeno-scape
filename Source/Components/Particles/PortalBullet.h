@@ -10,6 +10,13 @@ enum class PortalType {
   ORANGE
 };
 
+enum class PortalDirection {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT
+};
+
 class XenoGun;
 
 class PortalBullet : public Bullet {
@@ -25,7 +32,7 @@ class PortalBullet : public Bullet {
   void SetGun(XenoGun* gun) { mGun = gun; }
 
 private:
-  void SpawnPortal(float rotation) const;
+  void SpawnPortal(float rotation, PortalDirection direction) const;
   
   PortalType mPortalType;
   XenoGun* mGun;

@@ -5,7 +5,6 @@
 #include "../Components/Particles/PortalBullet.h"
 #include "Actor.h"
 
-enum class PortalType;
 class Portal : public Actor {
 
   constexpr static float COLLIDER_COOLDOWN_TIME = 1.0f;
@@ -22,11 +21,27 @@ class Portal : public Actor {
   void OnUpdate(float deltaTime) override;
 
   void SetCooldown(float cooldown) { mColliderCooldown = cooldown; }
+  void SetDirection(PortalDirection direction) { mDirection = direction; }
+  PortalDirection GetDirection() const { return mDirection; }
 
 private:
+  // Collision handling helpers
+  bool ShouldIgnoreCollision(AABBColliderComponent* other) const;
+  Portal* GetLinkedPortal() const;
+  void TeleportActor(Actor* actor, Portal* exitPortal);
+
+  // Direction checking helpers
+  bool IsHorizontalDirection(PortalDirection direction) const;
+  bool IsVerticalDirection(PortalDirection direction) const;
+  bool ShouldFlipScale(Portal* exitPortal) const;
+
+  // Velocity conversion
+  Vector2 ConvertVelocity(const Vector2& velocity, PortalDirection exitDirection) const;
+
   PortalType mPortalType;
   XenoGun* mOwner;
   float mColliderCooldown;
+  PortalDirection mDirection;
 
   AABBColliderComponent* mCollider;
   AnimatorComponent* mAnimator;

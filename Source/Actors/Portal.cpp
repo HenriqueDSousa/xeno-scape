@@ -13,6 +13,7 @@ Portal::Portal(Game* game, XenoGun* owner, Vector2 position, PortalType portalTy
   ,mPortalType(portalType)
   ,mOwner(owner)
   ,mColliderCooldown(0.0f)
+  ,mDirection(PortalDirection::RIGHT)
 {
   SetPosition(position);
   if (mPortalType == PortalType::ORANGE) {
@@ -36,73 +37,25 @@ void Portal::Kill() {
 
 void Portal::OnHorizontalCollision(const float minOverlap,
                                    AABBColliderComponent* other) {
-
-  if (other->GetLayer() == ColliderLayer::Blocks || mColliderCooldown > 0.0f) {
+  if (ShouldIgnoreCollision(other)) {
     return;
   }
 
-  auto* otherActor = other->GetOwner();
-  auto* rigidBody = otherActor->GetComponent<RigidBodyComponent>();
-
-  if (mPortalType == PortalType::ORANGE) {
-    auto* bluePortal = mOwner->GetActiveBluePortal();
-    if (bluePortal && mOwner->IsBluePortalActive()) {
-      mColliderCooldown = 1.0f;
-      otherActor->SetPosition(bluePortal->GetPosition());
-      otherActor->SetScale(otherActor->GetScale() * -1.0f);
-      bluePortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
-      if (rigidBody) {
-        Vector2 velocity = rigidBody->GetVelocity();
-        rigidBody->SetVelocity(Vector2(-velocity.x, velocity.y));
-      }
-    }
-  } else if (mPortalType == PortalType::BLUE) {
-    auto* orangePortal = mOwner->GetActiveOrangePortal();
-    if (orangePortal && mOwner->IsOrangePortalActive()) {
-      mColliderCooldown = 1.0f;
-      otherActor->SetPosition(orangePortal->GetPosition());
-      otherActor->SetScale(otherActor->GetScale() * -1.0f);
-      orangePortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
-      if (rigidBody) {
-        Vector2 velocity = rigidBody->GetVelocity();
-        rigidBody->SetVelocity(Vector2(-velocity.x, velocity.y));
-      }
-    }
+  Portal* exitPortal = GetLinkedPortal();
+  if (exitPortal) {
+    TeleportActor(other->GetOwner(), exitPortal);
   }
 }
 
 void Portal::OnVerticalCollision(const float minOverlap,
                                  AABBColliderComponent* other) {
-
-  if (other->GetLayer() == ColliderLayer::Blocks || mColliderCooldown > 0.0f) {
+  if (ShouldIgnoreCollision(other)) {
     return;
   }
 
-  auto* otherActor = other->GetOwner();
-  auto* rigidBody = otherActor->GetComponent<RigidBodyComponent>();
-  mColliderCooldown = 1.0f;
-  if (mPortalType == PortalType::ORANGE) {
-    auto* bluePortal = mOwner->GetActiveBluePortal();
-    if (bluePortal && mOwner->IsBluePortalActive()) {
-      otherActor->SetPosition(bluePortal->GetPosition());
-      otherActor->SetScale(otherActor->GetScale() * -1.0f);
-      bluePortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
-      if (rigidBody) {
-        Vector2 velocity = rigidBody->GetVelocity();
-        rigidBody->SetVelocity(Vector2(-velocity.x, velocity.y));
-      }
-    }
-  } else if (mPortalType == PortalType::BLUE) {
-    auto* orangePortal = mOwner->GetActiveOrangePortal();
-    if (orangePortal && mOwner->IsOrangePortalActive()) {
-      otherActor->SetPosition(orangePortal->GetPosition());
-      otherActor->SetScale(otherActor->GetScale() * -1.0f);
-      orangePortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
-      if (rigidBody) {
-        Vector2 velocity = rigidBody->GetVelocity();
-        rigidBody->SetVelocity(Vector2(-velocity.x, velocity.y));
-      }
-    }
+  Portal* exitPortal = GetLinkedPortal();
+  if (exitPortal) {
+    TeleportActor(other->GetOwner(), exitPortal);
   }
 }
 
@@ -113,13 +66,87 @@ void Portal::SetActive(bool active) {
 }
 
 void Portal::OnUpdate(float deltaTime) {
-
   mColliderCooldown -= deltaTime;
+
   if (mColliderCooldown <= 0.0f) {
     mColliderCooldown = 0.0f;
-    mCollider->SetEnabled(true);
-  } else {
-    mCollider->SetEnabled(false);
   }
 
+  mCollider->SetEnabled(mColliderCooldown <= 0.0f);
+}
+
+bool Portal::ShouldIgnoreCollision(AABBColliderComponent* other) const {
+  return other->GetLayer() == ColliderLayer::Blocks || mColliderCooldown > 0.0f;
+}
+
+Portal* Portal::GetLinkedPortal() const {
+  if (mPortalType == PortalType::ORANGE) {
+    auto* bluePortal = mOwner->GetActiveBluePortal();
+    return (bluePortal && mOwner->IsBluePortalActive()) ? bluePortal : nullptr;
+  } else {
+    auto* orangePortal = mOwner->GetActiveOrangePortal();
+    return (orangePortal && mOwner->IsOrangePortalActive()) ? orangePortal : nullptr;
+  }
+}
+
+void Portal::TeleportActor(Actor* actor, Portal* exitPortal) {
+  mColliderCooldown = 1.0f;
+  actor->SetPosition(exitPortal->GetPosition());
+  exitPortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
+
+  auto* rigidBody = actor->GetComponent<RigidBodyComponent>();
+  if (rigidBody) {
+    Vector2 newVelocity = ConvertVelocity(rigidBody->GetVelocity(), exitPortal->GetDirection());
+    rigidBody->SetVelocity(newVelocity);
+
+    if (ShouldFlipScale(exitPortal)) {
+      actor->SetScale(actor->GetScale() * -1.0f);
+    }
+  }
+}
+
+bool Portal::IsHorizontalDirection(PortalDirection direction) const {
+  return direction == PortalDirection::LEFT || direction == PortalDirection::RIGHT;
+}
+
+bool Portal::IsVerticalDirection(PortalDirection direction) const {
+  return direction == PortalDirection::UP || direction == PortalDirection::DOWN;
+}
+
+bool Portal::ShouldFlipScale(Portal* exitPortal) const {
+  return IsHorizontalDirection(mDirection) && IsHorizontalDirection(exitPortal->GetDirection());
+}
+
+Vector2 Portal::ConvertVelocity(const Vector2& velocity, PortalDirection exitDirection) const {
+  bool entryIsVertical = IsVerticalDirection(mDirection);
+  bool exitIsVertical = IsVerticalDirection(exitDirection);
+
+  // Vertical entry to horizontal exit
+  if (entryIsVertical && !exitIsVertical) {
+    float xVel = (exitDirection == PortalDirection::RIGHT) ? Math::Abs(velocity.y) : -Math::Abs(velocity.y);
+    return Vector2(xVel, velocity.x);
+  }
+
+  // Horizontal entry to vertical exit
+  if (!entryIsVertical && exitIsVertical) {
+    float yVel = (exitDirection == PortalDirection::DOWN) ? Math::Abs(velocity.x) : -Math::Abs(velocity.x);
+    float xVel = (mDirection == PortalDirection::RIGHT) ? velocity.x : -velocity.x;
+    return Vector2(xVel, yVel);
+  }
+
+  // Both vertical: flip Y if same direction
+  if (entryIsVertical && exitIsVertical) {
+    if (mDirection == exitDirection) {
+      return Vector2(velocity.x, -velocity.y);
+    }
+  }
+
+  // Both horizontal: flip X if same direction
+  if (!entryIsVertical && !exitIsVertical) {
+    if (mDirection == exitDirection) {
+      return Vector2(-velocity.x, velocity.y);
+    }
+  }
+
+  return velocity;
 }

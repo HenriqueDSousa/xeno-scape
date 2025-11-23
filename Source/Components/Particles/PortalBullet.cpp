@@ -32,12 +32,15 @@ void PortalBullet::OnHorizontalCollision(const float minOverlap,
                                          AABBColliderComponent* other) {
   if (other->GetLayer() == ColliderLayer::Blocks) {
     float rotation = 0.0f;
+    PortalDirection direction;
     if (mRigidBody->GetVelocity().x > 0.0f) {
       rotation = 0.0f;
+      direction = PortalDirection::RIGHT;
     } else {
       rotation = Math::Pi;
+      direction = PortalDirection::LEFT;
     }
-    SpawnPortal(rotation);
+    SpawnPortal(rotation, direction);
     Kill();
   } else {
     Kill();
@@ -48,12 +51,15 @@ void PortalBullet::OnVerticalCollision(const float minOverlap,
                                        AABBColliderComponent* other) {
   if (other->GetLayer() == ColliderLayer::Blocks) {
     float rotation = 0.0f;
+    PortalDirection direction;
     if (mRigidBody->GetVelocity().y > 0.0f) {
       rotation = Math::PiOver2;
+      direction = PortalDirection::DOWN;
     } else {
       rotation = -Math::PiOver2;
+      direction = PortalDirection::UP;
     }
-    SpawnPortal(rotation);
+    SpawnPortal(rotation, direction);
     Kill();
   } else {
     Kill();
@@ -64,7 +70,7 @@ void PortalBullet::OnUpdate(float deltaTime) {
   Bullet::OnUpdate(deltaTime);
 }
 
-void PortalBullet::SpawnPortal(float rotation) const {
+void PortalBullet::SpawnPortal(float rotation, PortalDirection direction) const {
   if (!mGun) return;
   
   Vector2 portalPosition = GetPosition();
@@ -74,6 +80,7 @@ void PortalBullet::SpawnPortal(float rotation) const {
     if (portal) {
       portal->SetPosition(portalPosition);
       portal->SetRotation(rotation);
+      portal->SetDirection(direction);
       portal->SetActive(true);
       mGun->SetBluePortalActive(true);
     }
@@ -82,6 +89,7 @@ void PortalBullet::SpawnPortal(float rotation) const {
     if (portal) {
       portal->SetPosition(portalPosition);
       portal->SetRotation(rotation);
+      portal->SetDirection(direction);
       portal->SetActive(true);
       mGun->SetOrangePortalActive(true);
     }
