@@ -13,7 +13,7 @@ MainMenu::MainMenu(Game* game, const std::string& fontName)
           24,
           UIButton::TextPos::Center,
           [this]() {
-            mGame->SetScene(GameScene::TestLevel);
+            mGame->SetNextScene();
           },
           Vector2::Zero,
           Color::White);

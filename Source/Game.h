@@ -30,6 +30,7 @@ enum class GameScene
 {
   MainMenu,
   Level1,
+  Level2,
   TestLevel
 };
 
@@ -122,6 +123,7 @@ private:
 
     // Level loading
     int **LoadLevelBlocks(const std::string& fileName);
+    void SetLevelScale();
     void LoadLevelEntities(const std::string& fileName);
     bool LoadTileMap(const std::string& fileName);
     void BuildLevel(int** levelData);
