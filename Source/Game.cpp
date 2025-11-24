@@ -15,6 +15,7 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Blocks/Block.h"
+#include "Actors/Blocks/EndLevelBlock.h"
 #include "Actors/MeleeRobot.h"
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
@@ -27,12 +28,17 @@
 #include "UI/Screens/UIScreen.h"
 #include "UI/UIRect.h"
 
+std::map<GameScene, GameScene> ScenesTransitionMap = {
+  { GameScene::MainMenu,  GameScene::TestLevel },
+  { GameScene::TestLevel, GameScene::MainMenu }
+};
+
 Game::Game()
         :mWindow(nullptr)
         ,mRenderer(nullptr)
         ,mTicksCount(0)
         ,mIsRunning(true)
-        ,mIsDebugging(false)
+        ,mIsDebugging(true)
         ,mUpdatingActors(false)
         ,mCameraPos(Vector2::Zero)
         ,mLevelData(nullptr)
@@ -82,7 +88,7 @@ bool Game::Initialize()
         mGameScale = chosen;
     }
 
-    SetScene(GameScene::MainMenu);
+    SetScene(GameScene::Level1);
 
     // Init all game actors
     InitializeActors();
@@ -115,6 +121,11 @@ void Game::OnResume() {
   if (mHud) {
     mHud->SetPaused(false);
   }
+}
+
+void Game::SetNextScene() {
+  GameScene nextScene = ScenesTransitionMap[GetCurrentScene()];
+  SetScene(nextScene);
 }
 
 void Game::InitializeActors()
@@ -253,7 +264,6 @@ void Game::LoadLevelEntities(const std::string& jsonFileName) {
       mPlayer->SetPosition(Vector2(x, y));
     }
 
-    // TODO: Create enemies based on type (e.g MeleeRobot, RangedRobot etc)
     if (type == "MeleeRobot") {
       auto enemy = new MeleeRobot(this, width, height);
       enemy->SetPosition(Vector2(x, y));
@@ -332,8 +342,14 @@ void Game::BuildLevel(int** levelData)
 
             auto it = mTileSpriteMap.find(tileID);
             if (it != mTileSpriteMap.end()) {
+              //End level tile
+              if (tileID == 72) {
+                auto block = new EndLevelBlock(this, it->second);
+                block->SetPosition(Vector2(worldX, worldY));
+              } else {
                 auto block = new Block(this, it->second);
                 block->SetPosition(Vector2(worldX, worldY));
+              }
             }
         }
     }
@@ -396,11 +412,22 @@ void Game::ApplySceneChange(GameScene gameScene) {
       mHud->SetPaused(false);
       LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
 
-      if (mCurrentScene == GameScene::TestLevel) {
-        int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
-        BuildLevel(levelData);
-        LoadLevelEntities("../Assets/Levels/TestLevel/testlevel.json");
-      }
+      int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
+      BuildLevel(levelData);
+      LoadLevelEntities("../Assets/Levels/TestLevel/testlevel.json");
+
+      break;
+    }
+    case GameScene::Level1: {
+      SetState(GameState::Gameplay);
+
+      mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetPaused(false);
+      LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
+
+      int** levelData = LoadLevelBlocks("../Assets/Levels/Level1/level1.json");
+      BuildLevel(levelData);
+      LoadLevelEntities("../Assets/Levels/Level1/level1.json");
       break;
     }
     default:
@@ -602,7 +629,6 @@ void Game::UpdateActors(float deltaTime)
 
 void Game::UpdateCamera()
 {
-    // TODO: Update to player's position once player actor exists
     // Compute level size in pixels using current level dimensions
     float levelWidthPx = (mCurrentLevelWidth > 0) ? (mCurrentLevelWidth * GetTileSize()) : (LEVEL_WIDTH * GetTileSize());
     float levelHeightPx = (mCurrentLevelHeight > 0) ? (mCurrentLevelHeight * GetTileSize()) : (LEVEL_HEIGHT * GetTileSize());
@@ -611,22 +637,27 @@ void Game::UpdateCamera()
     float targetX = levelWidthPx * 0.5f;
     float targetY = levelHeightPx * 0.5f;
 
+    // If player exists, use player position as camera target
+    if (mPlayer && !mPlayer->IsDead()) {
+        targetX = mPlayer->GetPosition().x;
+        targetY = mPlayer->GetPosition().y;
+    }
+
     // Convert target (center) to camera top-left coordinates
     float camX = targetX - (WINDOW_WIDTH * 0.5f);
     float camY = targetY - (WINDOW_HEIGHT * 0.5f);
 
-    // Clamp horizontally. If level is smaller than window, keep left at 0 (no need to move)
+    // Clamp horizontally. If level is smaller than window, center the level
     if (levelWidthPx <= WINDOW_WIDTH) {
-        // Keep camera so level is visible; align left (0) is fine here
-        camX = 0.0f;
+        camX = (levelWidthPx - WINDOW_WIDTH) * 0.5f;
     } else {
         if (camX < 0.0f) camX = 0.0f;
         if (camX > levelWidthPx - WINDOW_WIDTH) camX = levelWidthPx - WINDOW_WIDTH;
     }
 
-    // Clamp vertically. If level is shorter than the window, align the level bottom with window bottom
+    // Clamp vertically. If level is shorter than the window, center the level
     if (levelHeightPx <= WINDOW_HEIGHT) {
-        camY = levelHeightPx - WINDOW_HEIGHT; // negative or zero
+        camY = (levelHeightPx - WINDOW_HEIGHT) * 0.5f;
     } else {
         if (camY < 0.0f) camY = 0.0f;
         if (camY > levelHeightPx - WINDOW_HEIGHT) camY = levelHeightPx - WINDOW_HEIGHT;
@@ -694,6 +725,15 @@ Font* Game::LoadFont(const std::string& fileName) {
     font->Unload();
     delete font;
     return nullptr;
+}
+
+bool Game::IsPositionOutOfBounds(const Vector2& position) const {
+  float levelWidthPx = (mCurrentLevelWidth > 0) ? (mCurrentLevelWidth * GetTileSize()) : (LEVEL_WIDTH * GetTileSize());
+  float levelHeightPx = (mCurrentLevelHeight > 0) ? (mCurrentLevelHeight * GetTileSize()) : (LEVEL_HEIGHT * GetTileSize());
+
+  float offset = 30.0f;
+  return position.x < -offset || position.x > levelWidthPx + offset ||
+         position.y < -offset || position.y > levelHeightPx + offset;
 }
 
 void Game::AddDrawable(class DrawComponent *drawable)

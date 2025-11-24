@@ -12,7 +12,7 @@ class Block : public Actor
 public:
     explicit Block(Game* game, const std::string &texturePath);
 
-private:
+protected:
     AABBColliderComponent* mColliderComponent;
     AnimatorComponent* mDrawComponent;
 };

@@ -25,10 +25,10 @@ Bullet::~Bullet()
 
 void Bullet::Kill()
 {
-  Particle::Kill();
   mAnimatorComponent->SetVisible(false);
   mCollisionComponent->SetEnabled(false);
   mRigidBody->SetVelocity(Vector2::Zero);
+  Particle::Kill();
 }
 
 void Bullet::Awake(const Vector2 &position, const float &rotation, float lifetime)
@@ -47,13 +47,4 @@ void Bullet::Emit(const Vector2 &direction, float speed)
 void Bullet::OnUpdate(float deltaTime)
 {
   Particle::OnUpdate(deltaTime);
-  // for (auto obstacle : mGame->GetObstacles()) {
-  //   if (mCollisionComponent->Intersect(obstacle->GetCollider())) {
-  //     Kill();
-  //     if (obstacle->IsExploding()) {
-  //       obstacle->Explode();
-  //       mGame->GetAudio()->PlaySound("BlockExplode.wav", false);
-  //     }
-  //   }
-  // }
 }

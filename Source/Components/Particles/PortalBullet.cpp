@@ -9,6 +9,7 @@
 #include "../../Game.h"
 #include "../Drawing/AnimatorComponent.h"
 #include "../Physics/AABBColliderComponent.h"
+#include "../Physics/RigidBodyComponent.h"
 
 PortalBullet::PortalBullet(class Game* game, PortalType portalType)
   :Bullet(game)
@@ -29,9 +30,17 @@ PortalBullet::PortalBullet(class Game* game, PortalType portalType)
 
 void PortalBullet::OnHorizontalCollision(const float minOverlap,
                                          AABBColliderComponent* other) {
-  // Check if we hit a block
   if (other->GetLayer() == ColliderLayer::Blocks) {
-    SpawnPortal();
+    float rotation = 0.0f;
+    PortalDirection direction;
+    if (mRigidBody->GetVelocity().x > 0.0f) {
+      rotation = 0.0f;
+      direction = PortalDirection::LEFT;
+    } else {
+      rotation = Math::Pi;
+      direction = PortalDirection::RIGHT;
+    }
+    SpawnPortal(rotation, direction, minOverlap);
     Kill();
   } else {
     Kill();
@@ -40,9 +49,17 @@ void PortalBullet::OnHorizontalCollision(const float minOverlap,
 
 void PortalBullet::OnVerticalCollision(const float minOverlap,
                                        AABBColliderComponent* other) {
-  // Check if we hit a block
   if (other->GetLayer() == ColliderLayer::Blocks) {
-    SpawnPortal();
+    float rotation = 0.0f;
+    PortalDirection direction;
+    if (mRigidBody->GetVelocity().y > 0.0f) {
+      rotation = Math::PiOver2;
+      direction = PortalDirection::UP;
+    } else {
+      rotation = -Math::PiOver2;
+      direction = PortalDirection::DOWN;
+    }
+    SpawnPortal(rotation, direction, minOverlap);
     Kill();
   } else {
     Kill();
@@ -53,22 +70,33 @@ void PortalBullet::OnUpdate(float deltaTime) {
   Bullet::OnUpdate(deltaTime);
 }
 
-void PortalBullet::SpawnPortal() const {
+void PortalBullet::SpawnPortal(float rotation, PortalDirection direction, float minOverlap) const {
   if (!mGun) return;
-  
+
   Vector2 portalPosition = GetPosition();
-  
+  if (direction == PortalDirection::LEFT || direction == PortalDirection::RIGHT) {
+    portalPosition.x += minOverlap;
+  } else {
+    portalPosition.y += minOverlap;
+  }
+
   if (mPortalType == PortalType::BLUE) {
     auto* portal = mGun->GetActiveBluePortal();
     if (portal) {
       portal->SetPosition(portalPosition);
+      portal->SetRotation(rotation);
+      portal->SetDirection(direction);
       portal->SetActive(true);
+      mGun->SetBluePortalActive(true);
     }
   } else if (mPortalType == PortalType::ORANGE) {
     auto* portal = mGun->GetActiveOrangePortal();
     if (portal) {
       portal->SetPosition(portalPosition);
+      portal->SetRotation(rotation);
+      portal->SetDirection(direction);
       portal->SetActive(true);
+      mGun->SetOrangePortalActive(true);
     }
   }
 }

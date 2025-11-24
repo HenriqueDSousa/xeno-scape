@@ -33,6 +33,7 @@ public:
     void AddAnimation(const std::string& name, const std::vector<int>& images);
 
     void SetHeight(int height) { mHeight = height; }
+    void SetWidth(int width) { mWidth = width; }
 
 private:
     bool LoadSpriteSheetData(const std::string& dataPath);

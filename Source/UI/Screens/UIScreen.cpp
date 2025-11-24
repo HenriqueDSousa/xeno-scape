@@ -38,12 +38,12 @@ void UIScreen::Update(float deltaTime) {
 
 void UIScreen::Draw() {
 
-  for (UIText* text : mTexts) {
-    text->Draw(mRenderer, mPos);
-  }
-
   for (UIButton* button : mButtons) {
     button->Draw(mRenderer, mPos);
+  }
+
+  for (UIText* text : mTexts) {
+    text->Draw(mRenderer, mPos);
   }
 }
 

@@ -85,6 +85,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Portal.h
         Source/UI/Screens/GameOver.cpp
         Source/UI/Screens/GameOver.h
+        Source/Actors/Blocks/EndLevelBlock.cpp
+        Source/Actors/Blocks/EndLevelBlock.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image OpenGL::OpenGL SDL2_ttf::SDL2_ttf)

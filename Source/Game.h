@@ -68,12 +68,15 @@ public:
     void SetScene(GameScene scene);
     void UnloadScene();
     GameScene GetCurrentScene() const { return mCurrentScene; }
+    void SetNextScene();
 
     // Actor functions
     void InitializeActors();
     void UpdateActors(float deltaTime);
     void AddActor(class Actor* actor);
     void RemoveActor(class Actor* actor);
+    const std::vector<class Actor*>& GetActors() const { return mActors; }
+    class Xeno* GetPlayer() const { return mPlayer; }
 
     // Renderer
     class Renderer* GetRenderer() { return mRenderer; }
@@ -81,6 +84,7 @@ public:
     // Scale factor for sprites / tiles. Computed at runtime in Initialize().
     int GetGameScale() const { return mGameScale; }
     int GetTileSize() const { return SPRITE_SIZE * mGameScale; }
+    bool IsPositionOutOfBounds(const Vector2& position) const;
 
     // Draw functions
     void AddDrawable(class DrawComponent* drawable);
@@ -102,7 +106,7 @@ public:
     void UpdateUI(float deltaTime);
     void RemoveUI(class UIScreen* screen);
     Font* LoadFont(const std::string& fileName);
-    HUD* GetHud() const { return mHud; }
+    class HUD* GetHud() const { return mHud; }
 
     // Pause
     void OnPause();

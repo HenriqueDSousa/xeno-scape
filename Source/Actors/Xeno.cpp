@@ -69,13 +69,14 @@ void Xeno::Kill() {
 }
 
 void Xeno::OnUpdate(float deltaTime) {
+  if (mGame->IsPositionOutOfBounds(mPosition)) {
+    Kill();
+  }
+
   float cameraX = GetGame()->GetCameraPos().x;
   if (mPosition.x < cameraX)
   {
     mPosition.x = cameraX;
-  }
-  if (mPosition.y > 1000.0f) {
-    Kill();
   }
 
   if (mXenoState == Dead) {
@@ -87,11 +88,6 @@ void Xeno::OnUpdate(float deltaTime) {
     SetState(ActorState::Paused);
     new GameOver(mGame,"../Assets/Fonts/SMB.ttf");
     return;
-  }
-
-  // Aiming
-  if (mIsAiming) {
-    mRigidBodyComponent->SetVelocity(Vector2(0.0f, mRigidBodyComponent->GetVelocity().y));
   }
 
   ManageAnimations();

@@ -1184,6 +1184,7 @@ namespace Color
 	constexpr Vector4 Red(1.0f, 0.0f, 0.0f, 1.0f);
 	constexpr Vector4 Green(0.0f, 1.0f, 0.0f, 1.0f);
 	constexpr Vector4 Blue(0.0f, 0.0f, 1.0f, 1.0f);
+        constexpr Vector4 Orange(1.0f, 0.65f, 0.0f, 1.0f);
 	constexpr Vector4 Yellow(1.0f, 1.0f, 0.0f, 1.0f);
 	constexpr Vector4 LightYellow(1.0f, 1.0f, 0.88f, 1.0f);
 	constexpr Vector4 LightBlue(0.68f, 0.85f, 0.9f, 1.0f);

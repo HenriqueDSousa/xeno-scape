@@ -110,13 +110,16 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
         if (Intersect(*collider)) {
             float overlap = GetMinHorizontalOverlap(collider);
             bool isStatic = mIsStatic || collider->mIsStatic;
-            if (isStatic) {
-                ResolveHorizontalCollisions(rigidBody, overlap);
-            }
+
             rigidBody->GetOwner()->OnHorizontalCollision(overlap, collider);
             if (collider->GetOwner()->GetComponent<RigidBodyComponent>() == nullptr ||
                 collider->GetOwner()->GetComponent<RigidBodyComponent>()->IsEnabled() == false) {
                 collider->GetOwner()->OnHorizontalCollision(overlap, this);
+            }
+
+            // Now resolve the collision (which zeros velocity)
+            if (isStatic) {
+                ResolveHorizontalCollisions(rigidBody, overlap);
             }
             return overlap;
         }
@@ -135,11 +138,15 @@ float AABBColliderComponent::DetectVerticalCollision(RigidBodyComponent *rigidBo
         bool isStatic = mIsStatic || collider->mIsStatic;
         if (Intersect(*collider)) {
             float overlap = GetMinVerticalOverlap(collider);
+
+            // Notify owners BEFORE resolving, so they can read velocity
+            rigidBody->GetOwner()->OnVerticalCollision(overlap, collider);
+            collider->GetOwner()->OnVerticalCollision(overlap, this);
+
+            // Now resolve the collision (which zeros velocity)
             if (isStatic) {
                 ResolveVerticalCollisions(rigidBody, overlap);
             }
-            rigidBody->GetOwner()->OnVerticalCollision(overlap, collider);
-            collider->GetOwner()->OnVerticalCollision(overlap, this);
             return overlap;
         }
     }
@@ -179,6 +186,8 @@ void AABBColliderComponent::ResolveVerticalCollisions(RigidBodyComponent *rigidB
 
 void AABBColliderComponent::DebugDraw(class Renderer *renderer)
 {
+  if (mIsEnabled) {
     renderer->DrawRect(mOwner->GetPosition() + mOffset,Vector2((float)mWidth, (float)mHeight), mOwner->GetRotation(),
                        Color::Green, mOwner->GetGame()->GetCameraPos(), RendererMode::LINES);
+  }
 }

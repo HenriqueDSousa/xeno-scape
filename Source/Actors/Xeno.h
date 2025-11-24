@@ -6,6 +6,7 @@
 #include "Actor.h"
 
 class XenoArm;
+class XenoGun;
 enum XenoState
 {
   Alive,
@@ -23,6 +24,7 @@ public:
   void OnVerticalCollision(const float minOverlap,
                            AABBColliderComponent* other) override;
   void Kill() override;
+  bool IsDead() { return mXenoState == XenoState::Dead; }
 
   void OnUpdate(float deltaTime) override;
   void OnProcessInput(const Uint8* keyState) override;
@@ -34,6 +36,7 @@ public:
 
   bool IsAiming() const { return mIsAiming; }
   XenoArm* GetAimArm() const { return mAimArm; }
+  XenoGun* GetXenoGun() const { return mXenoGun; }
 
 private:
   void ManageAnimations();
