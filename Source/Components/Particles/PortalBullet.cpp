@@ -35,12 +35,12 @@ void PortalBullet::OnHorizontalCollision(const float minOverlap,
     PortalDirection direction;
     if (mRigidBody->GetVelocity().x > 0.0f) {
       rotation = 0.0f;
-      direction = PortalDirection::RIGHT;
+      direction = PortalDirection::LEFT;
     } else {
       rotation = Math::Pi;
-      direction = PortalDirection::LEFT;
+      direction = PortalDirection::RIGHT;
     }
-    SpawnPortal(rotation, direction);
+    SpawnPortal(rotation, direction, minOverlap);
     Kill();
   } else {
     Kill();
@@ -54,12 +54,12 @@ void PortalBullet::OnVerticalCollision(const float minOverlap,
     PortalDirection direction;
     if (mRigidBody->GetVelocity().y > 0.0f) {
       rotation = Math::PiOver2;
-      direction = PortalDirection::DOWN;
+      direction = PortalDirection::UP;
     } else {
       rotation = -Math::PiOver2;
-      direction = PortalDirection::UP;
+      direction = PortalDirection::DOWN;
     }
-    SpawnPortal(rotation, direction);
+    SpawnPortal(rotation, direction, minOverlap);
     Kill();
   } else {
     Kill();
@@ -70,11 +70,16 @@ void PortalBullet::OnUpdate(float deltaTime) {
   Bullet::OnUpdate(deltaTime);
 }
 
-void PortalBullet::SpawnPortal(float rotation, PortalDirection direction) const {
+void PortalBullet::SpawnPortal(float rotation, PortalDirection direction, float minOverlap) const {
   if (!mGun) return;
-  
+
   Vector2 portalPosition = GetPosition();
-  
+  if (direction == PortalDirection::LEFT || direction == PortalDirection::RIGHT) {
+    portalPosition.x += minOverlap;
+  } else {
+    portalPosition.y += minOverlap;
+  }
+
   if (mPortalType == PortalType::BLUE) {
     auto* portal = mGun->GetActiveBluePortal();
     if (portal) {

@@ -1,4 +1,8 @@
 {
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
     "activeFile": "testlevel.json",
     "expandedProjectPaths": [
         "."
@@ -32,11 +36,14 @@
             "scaleInEditor": 1
         },
         "testlevel.json": {
-            "scale": 3,
-            "selectedLayer": 1,
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 95.5,
-                "y": 202.66666666666666
+                "x": 144.75,
+                "y": 171.5
             }
         },
         "testlevel.json#tileset": {
@@ -60,6 +67,10 @@
     "last.exportedFilePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1",
     "last.imagePath": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
+    "map.fixedSize": true,
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
     "openFiles": [
         "testlevel.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
@@ -67,8 +78,8 @@
     ],
     "project": "testlevel.tiled-project",
     "recentFiles": [
-        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json",
         "testlevel.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies/Enemies.json",
         "tileset.tsx",

@@ -41,6 +41,9 @@ public:
     void DebugDraw(class Renderer* renderer) override;
 
     void SetHeight(int height) { mHeight = height; }
+    void SetWidth(int width) { mWidth = width; }
+
+    void SetStatic(bool isStatic) { mIsStatic = isStatic; }
 
 private:
     float GetMinVerticalOverlap(AABBColliderComponent* b) const;

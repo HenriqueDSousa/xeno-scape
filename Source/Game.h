@@ -68,6 +68,7 @@ public:
     void SetScene(GameScene scene);
     void UnloadScene();
     GameScene GetCurrentScene() const { return mCurrentScene; }
+    void SetNextScene();
 
     // Actor functions
     void InitializeActors();
