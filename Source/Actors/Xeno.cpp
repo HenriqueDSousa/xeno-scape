@@ -65,8 +65,7 @@ void Xeno::Kill() {
   mDrawComponent->SetAnimFPS(3.0f);
   mRigidBodyComponent->SetEnabled(false);
   mColliderComponent->SetEnabled(false);
-  mGame->GetHud()->SetPaused(true);
-}
+  mGame->GetHud()->SetPaused(true);}
 
 void Xeno::OnUpdate(float deltaTime) {
   if (mGame->IsPositionOutOfBounds(mPosition)) {

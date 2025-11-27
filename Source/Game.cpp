@@ -266,7 +266,6 @@ void Game::LoadLevelEntities(const std::string& jsonFileName) {
     float MaxPosY = 0;
 
     if (type == "Xeno") {
-      SDL_Log("Loading Player");
       mPlayer = new Xeno(this, width, height);
       // Tiled uses bottom-left for entity position, adjust to center
       mPlayer->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
@@ -437,6 +436,7 @@ void Game::ApplySceneChange(GameScene gameScene) {
       LoadLevelEntities("../Assets/Levels/Level1/level1.json");
 
       mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetTimerTime(30.0f);
       mHud->SetPaused(false);
 
       break;
@@ -450,6 +450,7 @@ void Game::ApplySceneChange(GameScene gameScene) {
       BuildLevel(levelData);
       LoadLevelEntities("../Assets/Levels/Level2/level2.json");
       mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetTimerTime(40.0f);
       mHud->SetPaused(false);
 
       break;
@@ -679,13 +680,8 @@ void Game::UpdateCamera()
         if (camX > levelWidthPx - WINDOW_WIDTH) camX = levelWidthPx - WINDOW_WIDTH;
     }
 
-    // Clamp vertically. If level is shorter than the window, center the level
-    if (levelHeightPx <= WINDOW_HEIGHT) {
-        camY = (levelHeightPx - WINDOW_HEIGHT) * 0.5f;
-    } else {
-        if (camY < 0.0f) camY = 0.0f;
-        if (camY > levelHeightPx - WINDOW_HEIGHT) camY = levelHeightPx - WINDOW_HEIGHT;
-    }
+    if (camY < 0.0f) camY = 0.0f;
+    if (camY > levelHeightPx - WINDOW_HEIGHT) camY = levelHeightPx - WINDOW_HEIGHT;
 
     mCameraPos.x = camX;
     mCameraPos.y = camY;

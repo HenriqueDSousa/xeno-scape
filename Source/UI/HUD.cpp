@@ -12,7 +12,7 @@ HUD::HUD(class Game* game, const std::string& fontName)
   mIsPaused(true) {
   SetPosition(Vector2(Vector2::Zero));
   SetSize(Vector2(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT));
-  mTimer = new Timer(60.0f,
+  mTimer = new Timer(game, 60.0f,
     Vector2((GetSize().x / 2.0f), GetSize().y / 30.0f),
     Vector2::Zero,
     Color::White, mFont);
@@ -58,6 +58,10 @@ void HUD::Draw() {
 void HUD::ChangeResolution(float oldScale, float newScale) {
   UIScreen::ChangeResolution(oldScale, newScale);
   mTimer->ChangeResolution(oldScale, newScale);
+}
+
+void HUD::SetTimerTime(float timeLeft) {
+  mTimer->SetTimeLeft(timeLeft);
 }
 
 ShootingMode HUD::GetCurrentShootingMode() {
