@@ -19,6 +19,7 @@ class HUD : public UIScreen {
   void ChangeResolution(float oldScale, float newScale) override;
   void SetVisible(bool isVisible) { mIsVisible = isVisible; }
   void SetPaused(bool isPaused) { mIsPaused = isPaused; }
+  void SetTimerTime(float timeLeft);
 
 private:
   ShootingMode GetCurrentShootingMode();

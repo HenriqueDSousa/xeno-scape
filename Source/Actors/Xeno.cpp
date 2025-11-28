@@ -24,7 +24,7 @@ Xeno::Xeno(Game* game, float width, float height)
   ,mXenoState(Alive)
 {
   mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 2.00f, true);
-  mRigidBodyComponent->SetMaxSpeedX(700.0f);
+  mRigidBodyComponent->SetMaxSpeedX(2000.0f);
 
   mColliderComponent = new AABBColliderComponent(this,
         0.0f, 0.0f,
@@ -65,8 +65,7 @@ void Xeno::Kill() {
   mDrawComponent->SetAnimFPS(3.0f);
   mRigidBodyComponent->SetEnabled(false);
   mColliderComponent->SetEnabled(false);
-  mGame->GetHud()->SetPaused(true);
-}
+  mGame->GetHud()->SetPaused(true);}
 
 void Xeno::OnUpdate(float deltaTime) {
   if (mGame->IsPositionOutOfBounds(mPosition)) {

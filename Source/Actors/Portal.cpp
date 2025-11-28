@@ -148,7 +148,7 @@ Vector2 Portal::ConvertVelocity(const Vector2& velocity, PortalDirection exitDir
     if (mDirection == exitDirection) {
       float yVel = -velocity.y * VELOCITY_SCALE_FACTOR;
       if (yVel == 0) yVel = (exitDirection == PortalDirection::DOWN) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
-      return Vector2(velocity.x, yVel);
+      return Vector2(0.0f, yVel);
     }
   }
 
@@ -157,7 +157,7 @@ Vector2 Portal::ConvertVelocity(const Vector2& velocity, PortalDirection exitDir
     if (mDirection == exitDirection) {
       float xVel = -velocity.x * VELOCITY_SCALE_FACTOR;
       if (xVel == 0) xVel = (exitDirection == PortalDirection::RIGHT) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
-      return Vector2(xVel, velocity.y);
+      return Vector2(xVel, 0.0f);
     }
   }
 

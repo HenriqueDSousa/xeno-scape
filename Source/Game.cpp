@@ -23,14 +23,18 @@
 #include "Json.h"
 #include "Random.h"
 #include "UI/Font.h"
+#include "UI/Screens/GameEnd.h"
 #include "UI/Screens/MainMenu.h"
 #include "UI/Screens/PauseMenu.h"
 #include "UI/Screens/UIScreen.h"
 #include "UI/UIRect.h"
 
 std::map<GameScene, GameScene> ScenesTransitionMap = {
-  { GameScene::MainMenu,  GameScene::TestLevel },
-  { GameScene::TestLevel, GameScene::MainMenu }
+  // { GameScene::TestLevel, GameScene::MainMenu },
+  { GameScene::MainMenu,  GameScene::Level1 },
+  {GameScene::Level1, GameScene::Level2},
+    {GameScene::Level2, GameScene::GameEnd}
+
 };
 
 Game::Game()
@@ -47,6 +51,7 @@ Game::Game()
         ,mCurrentLevelWidth(0)
         ,mCurrentLevelHeight(0)
         ,mFadeRect(nullptr)
+        ,mPlayer(nullptr)
 {
 }
 
@@ -77,18 +82,7 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    // Compute a reasonable integer scale (mGameScale) based on actual window size
-    {
-        int winW = 0, winH = 0;
-        SDL_GetWindowSize(mWindow, &winW, &winH);
-        int scaleW = winW / (LEVEL_WIDTH * Game::SPRITE_SIZE);
-        int scaleH = winH / (LEVEL_HEIGHT * Game::SPRITE_SIZE);
-        int chosen = std::max(1, std::min(scaleW, scaleH));
-        if (chosen <= 0) chosen = 1;
-        mGameScale = chosen;
-    }
-
-    SetScene(GameScene::Level1);
+    SetScene(GameScene::MainMenu);
 
     // Init all game actors
     InitializeActors();
@@ -211,6 +205,19 @@ int **Game::LoadLevelBlocks(const std::string& jsonFileName)
     return level;
 }
 
+void Game::SetLevelScale() {
+  // Compute a reasonable integer scale (mGameScale) based on actual window size
+
+  int winW = 0, winH = 0;
+  SDL_GetWindowSize(mWindow, &winW, &winH);
+  int scaleW = winW / (LEVEL_WIDTH * Game::SPRITE_SIZE);
+  int scaleH = winH / (LEVEL_HEIGHT * Game::SPRITE_SIZE);
+  int chosen = std::max(1, std::min(scaleW, scaleH));
+  if (chosen <= 0) chosen = 1;
+  mGameScale = chosen;
+
+}
+
 void Game::LoadLevelEntities(const std::string& jsonFileName) {
   // Open the JSON file
   std::ifstream ifs(jsonFileName);
@@ -250,10 +257,10 @@ void Game::LoadLevelEntities(const std::string& jsonFileName) {
   for (const auto &obj : entities_data["objects"]) {
     std::string type = obj["type"];
     int id = obj["id"];
-    float x = static_cast<float>(obj["x"]) * mGameScale;
-    float y = static_cast<float>(obj["y"]) * mGameScale;
-    float width = static_cast<float>(obj["width"]) * mGameScale;
-    float height = static_cast<float>(obj["height"]) * mGameScale;
+    float x = static_cast<float>(obj["x"]) * GetGameScale();
+    float y = static_cast<float>(obj["y"]) * GetGameScale();
+    float width = static_cast<float>(obj["width"]) * GetGameScale();
+    float height = static_cast<float>(obj["height"]) * GetGameScale();
     float MinPosX = 0;
     float MaxPosX = 0;
     float MinPosY = 0;
@@ -261,12 +268,14 @@ void Game::LoadLevelEntities(const std::string& jsonFileName) {
 
     if (type == "Xeno") {
       mPlayer = new Xeno(this, width, height);
-      mPlayer->SetPosition(Vector2(x, y));
+      // Tiled uses bottom-left for entity position, adjust to center
+      mPlayer->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
     }
 
     if (type == "MeleeRobot") {
       auto enemy = new MeleeRobot(this, width, height);
-      enemy->SetPosition(Vector2(x, y));
+      // Tiled uses bottom-left for entity position, adjust to center
+      enemy->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
     }
   }
 }
@@ -407,27 +416,49 @@ void Game::ApplySceneChange(GameScene gameScene) {
     }
     case GameScene::TestLevel: {
       SetState(GameState::Gameplay);
+      LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
+      int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
+      SetLevelScale();
+      BuildLevel(levelData);
+      LoadLevelEntities("../Assets/Levels/TestLevel/testlevel.json");
 
       mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
       mHud->SetPaused(false);
-      LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
-
-      int** levelData = LoadLevelBlocks("../Assets/Levels/TestLevel/testlevel.json");
-      BuildLevel(levelData);
-      LoadLevelEntities("../Assets/Levels/TestLevel/testlevel.json");
 
       break;
     }
     case GameScene::Level1: {
       SetState(GameState::Gameplay);
-
-      mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
-      mHud->SetPaused(false);
       LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
 
       int** levelData = LoadLevelBlocks("../Assets/Levels/Level1/level1.json");
+      SetLevelScale();
       BuildLevel(levelData);
       LoadLevelEntities("../Assets/Levels/Level1/level1.json");
+
+      mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetTimerTime(30.0f);
+      mHud->SetPaused(false);
+
+      break;
+    }
+    case GameScene::Level2: {
+      SetState(GameState::Gameplay);
+      LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
+
+      int** levelData = LoadLevelBlocks("../Assets/Levels/Level2/level2.json");
+      SetLevelScale();
+      BuildLevel(levelData);
+      LoadLevelEntities("../Assets/Levels/Level2/level2.json");
+      mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetTimerTime(40.0f);
+      mHud->SetPaused(false);
+
+      break;
+    }
+    case GameScene::GameEnd: {
+      SetState(GameState::GameOver);
+      new GameEnd(this, "../Assets/Fonts/SMB.ttf");
       break;
     }
     default:
@@ -444,7 +475,7 @@ void Game::UpdateSceneManager(float deltaTime)
         mFadeAlpha += deltaTime / mFadeSpeed;
         if (!mFadeRect) {
           // Create a full-screen black rect used for fading (use screen-space)
-          mFadeRect = new UIRect(Vector2::Zero, Vector2(WINDOW_WIDTH * mGameScale, WINDOW_HEIGHT * mGameScale), Vector4(0.0f, 0.0f, 0.0f, mFadeAlpha));
+          mFadeRect = new UIRect(Vector2::Zero, Vector2(WINDOW_WIDTH * 10, WINDOW_HEIGHT * 10), Vector4(0.0f, 0.0f, 0.0f, mFadeAlpha));
         }
         if (mFadeAlpha >= 1.0f) {
           mFadeAlpha = 1.0f;
@@ -655,13 +686,8 @@ void Game::UpdateCamera()
         if (camX > levelWidthPx - WINDOW_WIDTH) camX = levelWidthPx - WINDOW_WIDTH;
     }
 
-    // Clamp vertically. If level is shorter than the window, center the level
-    if (levelHeightPx <= WINDOW_HEIGHT) {
-        camY = (levelHeightPx - WINDOW_HEIGHT) * 0.5f;
-    } else {
-        if (camY < 0.0f) camY = 0.0f;
-        if (camY > levelHeightPx - WINDOW_HEIGHT) camY = levelHeightPx - WINDOW_HEIGHT;
-    }
+    if (camY < 0.0f) camY = 0.0f;
+    if (camY > levelHeightPx - WINDOW_HEIGHT) camY = levelHeightPx - WINDOW_HEIGHT;
 
     mCameraPos.x = camX;
     mCameraPos.y = camY;

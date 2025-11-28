@@ -3,8 +3,11 @@
 //
 
 #include "Timer.h"
-Timer::Timer(float timeLeft, const Vector2& pos, const Vector2& size, const Vector4& color, Font* font)
+
+#include "../Game.h"
+Timer::Timer(Game* game, float timeLeft, const Vector2& pos, const Vector2& size, const Vector4& color, Font* font)
 : UIElement(pos, size, color),
+  mGame(game),
   mTimeLeft(timeLeft) {
   mText = new UIText(std::to_string(timeLeft), font, 15, 1024, Vector2::Zero, size, color);
 }
@@ -20,6 +23,7 @@ void Timer::Update(float deltaTime) {
   mTimeLeft -= deltaTime;
   if (mTimeLeft < 0.0f) {
     mTimeLeft = 0.0f;
+    mGame->GetPlayer()->Kill();
   }
 }
 
