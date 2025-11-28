@@ -92,6 +92,8 @@ add_executable(${PROJECT_NAME}
         Source/UI/Screens/GameEnd.h
         Source/AudioSystem.cpp
         Source/AudioSystem.h
+        Source/Actors/Blocks/PortalDisabledBlock.cpp
+        Source/Actors/Blocks/PortalDisabledBlock.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW SDL2::SDL2 SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer OpenGL::OpenGL SDL2_ttf::SDL2_ttf)

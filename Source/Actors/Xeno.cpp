@@ -24,7 +24,7 @@ Xeno::Xeno(Game* game, float width, float height)
   ,mXenoState(Alive)
 {
   mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 2.00f, true);
-  mRigidBodyComponent->SetMaxSpeedX(2000.0f);
+  mRigidBodyComponent->SetMaxSpeedX(1000.0f);
 
   mColliderComponent = new AABBColliderComponent(this,
         0.0f, 0.0f,

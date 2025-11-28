@@ -16,6 +16,7 @@
 #include "Actors/Actor.h"
 #include "Actors/Blocks/Block.h"
 #include "Actors/Blocks/EndLevelBlock.h"
+#include "Actors/Blocks/PortalDisabledBlock.h"
 #include "Actors/MeleeRobot.h"
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
@@ -33,7 +34,8 @@ std::map<GameScene, GameScene> ScenesTransitionMap = {
   // { GameScene::TestLevel, GameScene::MainMenu },
   { GameScene::MainMenu,  GameScene::Level1 },
   {GameScene::Level1, GameScene::Level2},
-    {GameScene::Level2, GameScene::GameEnd}
+  {GameScene::Level2, GameScene::Level3},
+  {GameScene::Level3, GameScene::GameEnd},
 
 };
 
@@ -341,32 +343,38 @@ bool Game::LoadTileMap(const std::string& fileName) {
 
 void Game::BuildLevel(int** levelData)
 {
-    for (int y=0; y < mCurrentLevelHeight; y++) {
-        for (int x=0; x < mCurrentLevelWidth; x++) {
-            int tileID = levelData[y][x];
+  for (int y=0; y < mCurrentLevelHeight; y++) {
+    for (int x=0; x < mCurrentLevelWidth; x++) {
+      int tileID = levelData[y][x];
 
-            int tile = GetTileSize();
-            float worldX = x * tile + tile / 2.0f;
-            float worldY = y * tile + tile / 2.0f;
+      int tile = GetTileSize();
+      float worldX = x * tile + tile / 2.0f;
+      float worldY = y * tile + tile / 2.0f;
 
-            // Skip empty tiles or invalid IDs (only negative IDs are empty)
-            if (tileID < 0) {
-                continue;
-            }
+      // Skip empty tiles or invalid IDs (only negative IDs are empty)
+      if (tileID < 0) {
+        continue;
+      }
 
-            auto it = mTileSpriteMap.find(tileID);
-            if (it != mTileSpriteMap.end()) {
-              //End level tile
-              if (tileID == 72) {
-                auto block = new EndLevelBlock(this, it->second);
-                block->SetPosition(Vector2(worldX, worldY));
-              } else {
-                auto block = new Block(this, it->second);
-                block->SetPosition(Vector2(worldX, worldY));
-              }
-            }
+      auto it = mTileSpriteMap.find(tileID);
+      if (it != mTileSpriteMap.end()) {
+        //End level tile
+        if (tileID == 72) {
+          auto block = new EndLevelBlock(this, it->second);
+          block->SetPosition(Vector2(worldX, worldY));
         }
+        if (tileID == 114) {
+          auto block = new PortalDisabledBlock(this, it->second);
+          block->SetPosition(Vector2(worldX, worldY));
+        }
+
+        else {
+          auto block = new Block(this, it->second);
+          block->SetPosition(Vector2(worldX, worldY));
+        }
+      }
     }
+  }
 }
 
 void Game::LoadBackgroundTexture(const std::string &fileName) {
@@ -457,6 +465,20 @@ void Game::ApplySceneChange(GameScene gameScene) {
       LoadLevelEntities("../Assets/Levels/Level2/level2.json");
       mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
       mHud->SetTimerTime(40.0f);
+      mHud->SetPaused(false);
+
+      break;
+    }
+    case GameScene::Level3: {
+      SetState(GameState::Gameplay);
+      LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
+
+      int** levelData = LoadLevelBlocks("../Assets/Levels/Level3/level3.json");
+      SetLevelScale();
+      BuildLevel(levelData);
+      LoadLevelEntities("../Assets/Levels/Level3/level3.json");
+      mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetTimerTime(30.0f);
       mHud->SetPaused(false);
 
       break;

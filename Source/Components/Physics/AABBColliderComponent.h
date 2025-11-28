@@ -18,6 +18,7 @@ enum class ColliderLayer
     Bullet,
     Portal,
     PortalBullet,
+    PortalDisabled,
     Collectables
 };
 

@@ -18,11 +18,11 @@
             "scaleInEditor": 2
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/level1.json": {
-            "scale": 1.6842708333333334,
+            "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 240.16327540355002,
-                "y": 159.7130311089121
+                "x": 242.25,
+                "y": 172
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx": {
@@ -37,8 +37,16 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 162.25,
-                "y": 128
+                "x": 197.75,
+                "y": 187.5
+            }
+        },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 235.625,
+                "y": 195
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json": {
@@ -61,8 +69,8 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 144.75,
-                "y": 111
+                "x": 160,
+                "y": 159.5
             }
         },
         "testlevel.json#tileset": {
