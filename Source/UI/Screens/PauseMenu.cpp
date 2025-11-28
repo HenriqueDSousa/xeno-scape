@@ -29,7 +29,7 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
           24,
           UIButton::TextPos::Center,
           [this]() {
-            mGame->OnResume();
+            mGame->SetScene(GameScene::MainMenu);
           },
           Vector2::Zero,
           Color::White);
