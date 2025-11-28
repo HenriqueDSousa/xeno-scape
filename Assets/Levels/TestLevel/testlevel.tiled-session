@@ -21,8 +21,8 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 242.25,
-                "y": 172
+                "x": 257.75,
+                "y": 171.5
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx": {
@@ -37,8 +37,8 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 197.75,
-                "y": 187.5
+                "x": 213.25,
+                "y": 187
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json": {

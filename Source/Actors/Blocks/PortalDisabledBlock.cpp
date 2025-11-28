@@ -8,5 +8,5 @@
 PortalDisabledBlock::PortalDisabledBlock(Game* game,
                                          const std::string& texturePath)
   :Block(game, texturePath) {
-  mColliderComponent->SetLayer(ColliderLayer::PortalDisabled);
+  mColliderComponent->SetLayer(ColliderLayer::PortalDisabledBlock);
 }

@@ -86,7 +86,7 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    SetScene(GameScene::MainMenu);
+    SetScene(GameScene::Level3);
 
     // Init all game actors
     InitializeActors();

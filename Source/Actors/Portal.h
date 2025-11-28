@@ -9,7 +9,7 @@ class Portal : public Actor {
 
   constexpr static float COLLIDER_COOLDOWN_TIME = 0.2f;
   constexpr static float OFFSET_AMOUNT = 10.0f;
-  constexpr static float VELOCITY_SCALE_FACTOR = 1.2f;
+  constexpr static float VELOCITY_SCALE_FACTOR = 1.0f;
   constexpr static float MIN_OUT_VELOCITY = 50.0f;
 
  public:

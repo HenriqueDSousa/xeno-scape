@@ -167,7 +167,8 @@ bool MeleeRobot::IsGroundAhead(float direction) {
 
   auto& colliders = mGame->GetColliders();
   for (auto collider : colliders) {
-    if (collider->GetLayer() == ColliderLayer::Blocks) {
+    if (collider->GetLayer() == ColliderLayer::Blocks ||
+        collider->GetLayer() == ColliderLayer::PortalDisabledBlock)  {
       Vector2 colliderMin = collider->GetMin();
       Vector2 colliderMax = collider->GetMax();
 

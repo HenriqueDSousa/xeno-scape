@@ -13,13 +13,15 @@ ShootBullet::ShootBullet(class Game* game)
 
 void ShootBullet::OnHorizontalCollision(const float minOverlap,
                                         AABBColliderComponent* other) {
-  if (other->GetLayer() == ColliderLayer::Blocks) {
+  if (other->GetLayer() == ColliderLayer::Blocks ||
+    other->GetLayer() == ColliderLayer::PortalDisabledBlock) {
    Kill();
   }
 }
 void ShootBullet::OnVerticalCollision(const float minOverlap,
                                       AABBColliderComponent* other) {
-  if (other->GetLayer() == ColliderLayer::Blocks) {
+  if (other->GetLayer() == ColliderLayer::Blocks ||
+    other->GetLayer() == ColliderLayer::PortalDisabledBlock) {
     Kill();
   }
 }
