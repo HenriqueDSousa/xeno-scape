@@ -31,6 +31,7 @@ enum class GameScene
   MainMenu,
   Level1,
   Level2,
+  GameEnd,
   TestLevel
 };
 

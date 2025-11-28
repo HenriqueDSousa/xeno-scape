@@ -23,6 +23,7 @@
 #include "Json.h"
 #include "Random.h"
 #include "UI/Font.h"
+#include "UI/Screens/GameEnd.h"
 #include "UI/Screens/MainMenu.h"
 #include "UI/Screens/PauseMenu.h"
 #include "UI/Screens/UIScreen.h"
@@ -32,7 +33,7 @@ std::map<GameScene, GameScene> ScenesTransitionMap = {
   // { GameScene::TestLevel, GameScene::MainMenu },
   { GameScene::MainMenu,  GameScene::Level1 },
   {GameScene::Level1, GameScene::Level2},
-    {GameScene::Level2, GameScene::MainMenu}
+    {GameScene::Level2, GameScene::GameEnd}
 
 };
 
@@ -453,6 +454,11 @@ void Game::ApplySceneChange(GameScene gameScene) {
       mHud->SetTimerTime(40.0f);
       mHud->SetPaused(false);
 
+      break;
+    }
+    case GameScene::GameEnd: {
+      SetState(GameState::GameOver);
+      new GameEnd(this, "../Assets/Fonts/SMB.ttf");
       break;
     }
     default:
