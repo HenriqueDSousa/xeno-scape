@@ -62,11 +62,13 @@ void MeleeRobot::OnVerticalCollision(const float minOverlap,
 void MeleeRobot::Kill() {
   mHealth--;
   if (mHealth == 0) {
+    mGame->GetAudio()->PlaySound("Explosion.wav", false);
     SetState(ActorState::Destroy);
     return;
   } else {
     mAnimator->SetAnimation("hit");
     mHitDurationTimer = 0.2f;
+    mGame->GetAudio()->PlaySound("Hit.wav", false);
   }
   mIntangibilityTimer = INTANGIBILITY_COOLDOWN;
 }

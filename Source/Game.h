@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "Actors/Xeno.h"
+#include "AudioSystem.h"
 #include "Renderer/Renderer.h"
 #include "UI/HUD.h"
 #include "UI/Screens/PauseMenu.h"
@@ -113,6 +114,9 @@ public:
     // Pause
     void OnPause();
     void OnResume();
+
+    // Audio
+    AudioSystem* GetAudio() { return mAudio; }
     // Game specific
 
 private:
@@ -194,6 +198,10 @@ private:
     int mGameScale{1};
     // Mapping from tile ID -> sprite filename (populated per-level)
     std::unordered_map<int, std::string> mTileSpriteMap;
+
+    // Audio system
+    AudioSystem* mAudio;
+    SoundHandle mBackgroundMusic;
 
     // Game specific
     Xeno* mPlayer;

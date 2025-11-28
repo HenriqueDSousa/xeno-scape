@@ -8,6 +8,13 @@
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "Blocks/Block.h"
 #include "XenoGun.h"
+
+const std::unordered_set<ColliderLayer> IGNORE_COLLISION_LAYERS = {
+  ColliderLayer::Blocks,
+  ColliderLayer::Portal,
+  ColliderLayer::PortalBullet
+};
+
 Portal::Portal(Game* game, XenoGun* owner, Vector2 position, PortalType portalType)
   :Actor(game)
   ,mPortalType(portalType)
@@ -82,7 +89,8 @@ void Portal::OnUpdate(float deltaTime) {
 }
 
 bool Portal::ShouldIgnoreCollision(AABBColliderComponent* other) const {
-  return other->GetLayer() == ColliderLayer::Blocks || mColliderCooldown > 0.0f;
+  return  IGNORE_COLLISION_LAYERS.find(other->GetLayer()) != IGNORE_COLLISION_LAYERS.end() ||
+    mColliderCooldown > 0.0f;
 }
 
 Portal* Portal::GetLinkedPortal() const {
@@ -101,6 +109,7 @@ void Portal::TeleportActor(Actor* actor, Portal* exitPortal) {
   actor->SetPosition(newPosition);
   SetCooldown(COLLIDER_COOLDOWN_TIME);
   exitPortal->SetCooldown(COLLIDER_COOLDOWN_TIME);
+  mGame->GetAudio()->PlaySound("PortalTeleport.wav", false);
 
   auto* rigidBody = actor->GetComponent<RigidBodyComponent>();
   if (rigidBody) {

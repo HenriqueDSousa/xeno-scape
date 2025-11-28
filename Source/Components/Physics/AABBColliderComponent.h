@@ -17,6 +17,7 @@ enum class ColliderLayer
     Blocks,
     Bullet,
     Portal,
+    PortalBullet,
     Collectables
 };
 
@@ -45,6 +46,7 @@ public:
 
     void SetStatic(bool isStatic) { mIsStatic = isStatic; }
 
+    void SetLayer(ColliderLayer layer) { mLayer = layer; }
 private:
     float GetMinVerticalOverlap(AABBColliderComponent* b) const;
     float GetMinHorizontalOverlap(AABBColliderComponent* b) const;

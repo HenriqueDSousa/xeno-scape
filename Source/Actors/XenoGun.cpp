@@ -129,6 +129,7 @@ void XenoGun::Shoot() {
       mAnimatorComponent->SetAnimation("bluePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
       mShootingAnimTimer = 0.2f;
+      mGame->GetAudio()->PlaySound("PortalShoot.wav", false);
       break;
       
     case ShootingMode::PORTAL_ORANGE:
@@ -136,6 +137,7 @@ void XenoGun::Shoot() {
       mAnimatorComponent->SetAnimation("orangePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
       mShootingAnimTimer = 0.2f;
+      mGame->GetAudio()->PlaySound("PortalShoot.wav", false);
       break;
       
     case ShootingMode::SHOOT:
@@ -143,6 +145,7 @@ void XenoGun::Shoot() {
       mAnimatorComponent->SetAnimation("shooting");
       mAnimatorComponent->SetAnimFPS(10.0f);
       mShootingAnimTimer = 0.4f; // Duration for 4-frame animation at 10fps (0.4s)
+      mGame->GetAudio()->PlaySound("LaserShoot.wav", false);
       break;
   }
 }
