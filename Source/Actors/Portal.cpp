@@ -108,7 +108,8 @@ void Portal::TeleportActor(Actor* actor, Portal* exitPortal) {
     rigidBody->SetVelocity(newVelocity);
 
     if (ShouldFlipScale(exitPortal)) {
-      actor->SetScale(actor->GetScale() * -1.0f);
+      Vector2 actorScale = actor->GetScale();
+      actor->SetScale(Vector2(actorScale.x * -1.0f, actorScale.y));
     }
   }
 }
@@ -122,7 +123,8 @@ bool Portal::IsVerticalDirection(PortalDirection direction) const {
 }
 
 bool Portal::ShouldFlipScale(Portal* exitPortal) const {
-  return IsHorizontalDirection(mDirection) && IsHorizontalDirection(exitPortal->GetDirection());
+  return IsHorizontalDirection(mDirection) && IsHorizontalDirection(exitPortal->GetDirection())
+  && mDirection == exitPortal->GetDirection();
 }
 
 Vector2 Portal::ConvertVelocity(const Vector2& velocity, PortalDirection exitDirection) const {
@@ -140,7 +142,7 @@ Vector2 Portal::ConvertVelocity(const Vector2& velocity, PortalDirection exitDir
   if (!entryIsVertical && exitIsVertical) {
     float yVel = (exitDirection == PortalDirection::DOWN) ? Math::Abs(velocity.x) : -Math::Abs(velocity.x);
     if (yVel == 0) yVel = (exitDirection == PortalDirection::DOWN) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
-    return Vector2(velocity.y, yVel * VELOCITY_SCALE_FACTOR);
+    return Vector2(velocity.x, yVel * VELOCITY_SCALE_FACTOR);
   }
 
   // Both vertical: flip Y if same direction

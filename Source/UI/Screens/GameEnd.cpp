@@ -29,8 +29,7 @@ GameEnd::GameEnd(Game* game, const std::string& fontName)
           24,
           UIButton::TextPos::Center,
           [this]() {
-            mGame->SetState(GameState::Gameplay);
-            mGame->SetScene(mGame->GetCurrentScene());
+            mGame->SetScene(GameScene::Level1);
             Close();
           },
           Vector2::Zero,
