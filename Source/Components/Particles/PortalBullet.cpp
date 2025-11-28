@@ -25,7 +25,7 @@ PortalBullet::PortalBullet(class Game* game, PortalType portalType)
       7 * mGame->GetGameScale(), 7 * mGame->GetGameScale(), 0);
     mAnimatorComponent->SetVisible(false);
   }
-
+  mCollisionComponent->SetLayer(ColliderLayer::PortalBullet);
 }
 
 void PortalBullet::OnHorizontalCollision(const float minOverlap,
@@ -40,8 +40,8 @@ void PortalBullet::OnHorizontalCollision(const float minOverlap,
       rotation = Math::Pi;
       direction = PortalDirection::RIGHT;
     }
-    SpawnPortal(rotation, direction, minOverlap);
     Kill();
+    SpawnPortal(rotation, direction, minOverlap);
   } else {
     Kill();
   }
@@ -59,8 +59,8 @@ void PortalBullet::OnVerticalCollision(const float minOverlap,
       rotation = -Math::PiOver2;
       direction = PortalDirection::DOWN;
     }
-    SpawnPortal(rotation, direction, minOverlap);
     Kill();
+    SpawnPortal(rotation, direction, minOverlap);
   } else {
     Kill();
   }

@@ -51,6 +51,8 @@ Game::Game()
         ,mCurrentLevelWidth(0)
         ,mCurrentLevelHeight(0)
         ,mFadeRect(nullptr)
+        ,mAudio(nullptr)
+        ,mBackgroundMusic(SoundHandle::Invalid)
         ,mPlayer(nullptr)
 {
 }
@@ -86,6 +88,9 @@ bool Game::Initialize()
 
     // Init all game actors
     InitializeActors();
+
+    mAudio = new AudioSystem(20);
+    mBackgroundMusic = mAudio->PlaySound("XenoMusic.ogg", true);
 
     mTicksCount = SDL_GetTicks();
 
