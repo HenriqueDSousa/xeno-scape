@@ -103,6 +103,15 @@ public:
     // Resumes all paused sounds on all channels
     void ResumeAllSounds();
 
+    // Set volume for a specific playing sound (0-128)
+    void SetSoundVolume(SoundHandle sound, int volume);
+
+    // Set master volume for all channels (0-128)
+    void SetMasterVolume(int volume);
+
+    // Set volume for a specific sound effect (affects the Mix_Chunk itself, 0-128)
+    void SetSoundEffectVolume(const std::string& soundName, int volume);
+
     // Cache all sounds under Assets/Sounds
     void CacheAllSounds();
 

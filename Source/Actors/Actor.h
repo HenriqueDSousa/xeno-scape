@@ -19,6 +19,12 @@ enum class ActorState
     Destroy
 };
 
+enum class Layer {
+  Default,
+  Player,
+  Enemy
+};
+
 class Actor
 {
 public:
@@ -45,6 +51,9 @@ public:
     // State getter/setter
     ActorState GetState() const { return mState; }
     void SetState(ActorState state) { mState = state; }
+
+    Layer GetLayer() const { return mLayer; }
+    void SetLayer(Layer layer) { mLayer = layer; }
 
     // Get the forward direction vector based on rotation
     Vector2 GetForward() const;
@@ -91,6 +100,7 @@ protected:
 
     // Actor's state
     ActorState mState;
+    Layer mLayer;
 
     // Transform
     Vector2 mPosition;

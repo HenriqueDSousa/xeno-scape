@@ -14,6 +14,7 @@
 
 #include "Actors/Xeno.h"
 #include "AudioSystem.h"
+#include "Json.h"
 #include "Renderer/Renderer.h"
 #include "UI/HUD.h"
 #include "UI/Screens/PauseMenu.h"
@@ -33,6 +34,7 @@ enum class GameScene
   Level1,
   Level2,
   Level3,
+  Level4,
   GameEnd,
   TestLevel
 };
@@ -134,6 +136,7 @@ private:
     bool LoadTileMap(const std::string& fileName);
     void BuildLevel(int** levelData);
     void LoadBackgroundTexture(const std::string& fileName);
+    bool ShouldFlipActor(const std::vector<nlohmann::basic_json<>> &properties);
 
     void UpdateSceneManager(float deltaTime);
     void ApplySceneChange(GameScene scene);

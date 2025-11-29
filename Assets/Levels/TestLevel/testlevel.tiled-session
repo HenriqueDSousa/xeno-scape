@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level2/level2.json",
+    "activeFile": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json",
     "expandedProjectPaths": [
         "."
     ],
@@ -21,8 +21,8 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 257.75,
-                "y": 171.5
+                "x": 240,
+                "y": 159.5
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/tileset.tsx": {
@@ -34,24 +34,35 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 2,
-            "selectedLayer": 1,
+            "scale": 1.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 213.25,
-                "y": 187
+                "x": 196.33333333333331,
+                "y": 136.66666666666666
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json": {
-            "scale": 4,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 235.625,
-                "y": 195
+                "x": 218.25,
+                "y": 156.5
+            }
+        },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level4/level4.json": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 231.66666666666663,
+                "y": 156
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json": {
             "dynamicWrapping": true,
-            "scaleInDock": 3,
+            "scaleInDock": 2,
             "scaleInEditor": 1
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies/Enemies.json": {
@@ -98,21 +109,24 @@
     "map.lastUsedFormat": "json",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 20,
+    "map.width": 30,
     "openFiles": [
         "testlevel.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/level1.json",
-        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level2/level2.json"
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level2/level2.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json"
     ],
     "project": "testlevel.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
         "testlevel.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/level1.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level2/level2.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies/Enemies.json",
         "tileset.tsx",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/block_tileset.tsx",
