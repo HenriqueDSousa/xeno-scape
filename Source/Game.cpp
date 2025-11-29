@@ -37,7 +37,7 @@ std::map<GameScene, GameScene> ScenesTransitionMap = {
   {GameScene::Level1, GameScene::Level2},
   {GameScene::Level2, GameScene::Level3},
   {GameScene::Level3, GameScene::Level4},
-    {GameScene::Level4, GameScene::GameEnd},
+  {GameScene::Level4, GameScene::GameEnd},
 
 };
 
@@ -88,7 +88,7 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    SetScene(GameScene::Level4);
+    SetScene(GameScene::MainMenu);
 
     // Init all game actors
     InitializeActors();
