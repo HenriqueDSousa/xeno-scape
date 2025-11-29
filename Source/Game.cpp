@@ -95,7 +95,7 @@ bool Game::Initialize()
 
     mAudio = new AudioSystem(20);
     mBackgroundMusic = mAudio->PlaySound("XenoMusic.ogg", true);
-    mAudio->StopSound(mBackgroundMusic);
+    mAudio->SetSoundVolume(mBackgroundMusic, 20);
 
     mTicksCount = SDL_GetTicks();
 
@@ -414,7 +414,7 @@ bool Game::ShouldFlipActor(
       }
     }
   }
-
+  return false;
 }
 
 void Game::PushUI(class UIScreen *screen) {

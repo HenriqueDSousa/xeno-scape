@@ -227,6 +227,37 @@ void AudioSystem::ResumeAllSounds()
     }
 }
 
+// Set volume for a specific playing sound (0-128)
+void AudioSystem::SetSoundVolume(SoundHandle sound, int volume)
+{
+    if(mHandleMap.find(sound) == mHandleMap.end())
+    {
+        SDL_Log("[AudioSystem] SetSoundVolume couldn't find handle %s", sound.GetDebugStr());
+        return;
+    }
+    
+    Mix_Volume(mHandleMap[sound].mChannel, volume);
+}
+
+// Set master volume for all channels (0-128)
+void AudioSystem::SetMasterVolume(int volume)
+{
+    Mix_Volume(-1, volume); // -1 affects all channels
+}
+
+// Set volume for a specific sound effect (affects the Mix_Chunk itself, 0-128)
+void AudioSystem::SetSoundEffectVolume(const std::string& soundName, int volume)
+{
+    Mix_Chunk* sound = GetSound(soundName);
+    if (sound == nullptr)
+    {
+        SDL_Log("[AudioSystem] SetSoundEffectVolume couldn't find sound for %s", soundName.c_str());
+        return;
+    }
+    
+    Mix_VolumeChunk(sound, volume);
+}
+
 // Cache all sounds under Assets/Sounds
 void AudioSystem::CacheAllSounds()
 {
