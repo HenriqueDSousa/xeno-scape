@@ -16,6 +16,8 @@ MeleeRobot::MeleeRobot(Game* game,  float width, float height)
   ,mPatrolDirection(1.0f)
   ,mHitDurationTimer(0.0f)
 {
+  mLayer = Layer::Enemy;
+
 
   mRigidBody = new RigidBodyComponent(this, 1.0f, 2.00f, true);
   mRigidBody->SetMaxSpeedX(700.0f);
@@ -44,6 +46,7 @@ void MeleeRobot::OnHorizontalCollision(const float minOverlap,
       other->GetOwner()->Kill();
       break;
     case ColliderLayer::Bullet:
+      if (other->GetOwner()->GetLayer() == Layer::Enemy) return;
       Kill();
       other->GetOwner()->Kill();
       break;

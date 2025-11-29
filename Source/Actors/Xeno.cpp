@@ -23,13 +23,14 @@ Xeno::Xeno(Game* game, float width, float height)
   ,mJumpSpeed(-750.0f)
   ,mXenoState(Alive)
 {
+  mLayer = Layer::Player;
+
   mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 2.00f, true);
   mRigidBodyComponent->SetMaxSpeedX(1000.0f);
 
   mColliderComponent = new AABBColliderComponent(this,
         0.0f, 0.0f,
         mWidth - 1, mHeight - 1, ColliderLayer::Player);
-
   mDrawComponent = new AnimatorComponent(
   this, "../Assets/Sprites/Xeno/Xeno.png","../Assets/Sprites/Xeno/Xeno.json",
     mWidth, mHeight, 100
@@ -51,7 +52,15 @@ Xeno::Xeno(Game* game, float width, float height)
 
 void Xeno::OnHorizontalCollision(const float minOverlap,
                                  AABBColliderComponent* other) {
-  Actor::OnHorizontalCollision(minOverlap, other);
+  switch (other->GetLayer()) {
+    case ColliderLayer::Bullet:
+      if (other->GetOwner()->GetLayer() == Layer::Player) return;
+      Kill();
+      other->GetOwner()->Kill();
+      break;
+    default:
+      break;
+  }
 }
 
 void Xeno::OnVerticalCollision(const float minOverlap,

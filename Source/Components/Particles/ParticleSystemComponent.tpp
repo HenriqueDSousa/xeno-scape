@@ -38,6 +38,9 @@ void ParticleSystemComponent<T>::EmitParticle(float lifetime, float speed, const
       Vector2 direction = mOwner->GetForward();
       p->Emit(direction, speed);
 
+      // Set the particle's layer to match the owner's layer
+      p->SetLayer(mOwner->GetLayer());
+
       // Break inner loop to emit only one particle per iteration
       break;
     }

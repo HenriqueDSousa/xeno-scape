@@ -18,6 +18,7 @@
 #include "Actors/Blocks/EndLevelBlock.h"
 #include "Actors/Blocks/PortalDisabledBlock.h"
 #include "Actors/MeleeRobot.h"
+#include "Actors/RangedRobot.h"
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
@@ -281,6 +282,12 @@ void Game::LoadLevelEntities(const std::string& jsonFileName) {
 
     if (type == "MeleeRobot") {
       auto enemy = new MeleeRobot(this, width, height);
+      // Tiled uses bottom-left for entity position, adjust to center
+      enemy->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
+    }
+
+    if (type == "RangedRobot") {
+      auto enemy = new RangedRobot(this, width, height);
       // Tiled uses bottom-left for entity position, adjust to center
       enemy->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
     }

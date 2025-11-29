@@ -59,20 +59,8 @@
                  "type":"MeleeRobot",
                  "visible":true,
                  "width":16,
-                 "x":332.5,
-                 "y":142.666666666667
-                }, 
-                {
-                 "gid":145,
-                 "height":32,
-                 "id":3,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":-97.3333333333333,
-                 "y":-117.333333333333
+                 "x":302.5,
+                 "y":143.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -81,7 +69,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":4,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.1-99-gec89c545",
