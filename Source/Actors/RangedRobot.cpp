@@ -34,11 +34,14 @@ RangedRobot::RangedRobot(Game* game, float width, float height)
     "../Assets/Sprites/RangedRobot/RangedRobot.json",
     mWidth, mHeight, 100);
   mAnimator->AddAnimation("idle", std::vector{0,1,2});
-  // mAnimator->AddAnimation("walk", std::vector{3,4,5,6,7});
+  mAnimator->AddAnimation("hit", std::vector{8});
   mAnimator->SetAnimation("idle");
   mAnimator->SetAnimFPS(10.0f);
 
   mGun = new ParticleSystemComponent<ShootBullet>(this, 10);
+
+  // Initialize aim angle based on scale direction
+  mAimAngle = (mScale.x > 0.0f) ? 0.0f : Math::Pi;
 }
 
 void RangedRobot::OnHorizontalCollision(const float minOverlap,
@@ -104,9 +107,12 @@ void RangedRobot::OnUpdate(float deltaTime) {
   if (mHitDurationTimer <= 0.0f) {
     mHitDurationTimer = 0.0f;
     
-    // Aim at player if visible
+    // Aim at player if visible, otherwise reset to default direction
     if (CanSeePlayer()) {
       AimAtPlayer();
+    } else {
+      // Reset to default shooting direction based on scale
+      mAimAngle = (mScale.x > 0.0f) ? 0.0f : Math::Pi;
     }
 
     // Handle burst shooting
@@ -176,8 +182,8 @@ void RangedRobot::AimAtPlayer() {
 void RangedRobot::Shoot() {
   // Calculate direction from aim angle
   Vector2 direction(Math::Cos(mAimAngle), Math::Sin(mAimAngle));
-  // float directionX = (mScale.x > 0.0f) ? 1.0f : -1.0f;
-  // Vector2 offset(20.0f * mGame->GetGameScale() * directionX, 0.0f);
+  float directionX = (mScale.x > 0.0f) ? 1.0f : -1.0f;
+
   Vector2 offset(0.0f, 0.0f);
 
   // Temporarily set rotation for emission, then restore

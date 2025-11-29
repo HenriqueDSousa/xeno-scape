@@ -21,7 +21,8 @@ void ShootBullet::OnHorizontalCollision(const float minOverlap,
 void ShootBullet::OnVerticalCollision(const float minOverlap,
                                       AABBColliderComponent* other) {
   if (other->GetLayer() == ColliderLayer::Blocks ||
-    other->GetLayer() == ColliderLayer::PortalDisabledBlock) {
+    other->GetLayer() == ColliderLayer::PortalDisabledBlock ||
+    other->GetLayer() == ColliderLayer::Bullet ) {
     Kill();
   }
 }

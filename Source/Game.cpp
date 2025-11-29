@@ -36,7 +36,8 @@ std::map<GameScene, GameScene> ScenesTransitionMap = {
   { GameScene::MainMenu,  GameScene::Level1 },
   {GameScene::Level1, GameScene::Level2},
   {GameScene::Level2, GameScene::Level3},
-  {GameScene::Level3, GameScene::GameEnd},
+  {GameScene::Level3, GameScene::Level4},
+    {GameScene::Level4, GameScene::GameEnd},
 
 };
 
@@ -87,13 +88,14 @@ bool Game::Initialize()
     mRenderer = new Renderer(mWindow);
     mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    SetScene(GameScene::Level3);
+    SetScene(GameScene::Level4);
 
     // Init all game actors
     InitializeActors();
 
     mAudio = new AudioSystem(20);
     mBackgroundMusic = mAudio->PlaySound("XenoMusic.ogg", true);
+    mAudio->StopSound(mBackgroundMusic);
 
     mTicksCount = SDL_GetTicks();
 
@@ -273,23 +275,32 @@ void Game::LoadLevelEntities(const std::string& jsonFileName) {
     float MaxPosX = 0;
     float MinPosY = 0;
     float MaxPosY = 0;
+    float scaleX = 1.0f;
+    if (obj.contains("properties")) {
+      if (ShouldFlipActor(obj["properties"])) {
+        scaleX = -1.0f;
+      }
+    }
 
     if (type == "Xeno") {
       mPlayer = new Xeno(this, width, height);
       // Tiled uses bottom-left for entity position, adjust to center
       mPlayer->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
+      mPlayer->SetScale(Vector2(scaleX, 1.0f));
     }
 
     if (type == "MeleeRobot") {
       auto enemy = new MeleeRobot(this, width, height);
       // Tiled uses bottom-left for entity position, adjust to center
       enemy->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
+      enemy->SetScale(Vector2(scaleX, 1.0f));
     }
 
     if (type == "RangedRobot") {
       auto enemy = new RangedRobot(this, width, height);
       // Tiled uses bottom-left for entity position, adjust to center
       enemy->SetPosition(Vector2(x + width * 0.5f, y - height * 0.5f));
+      enemy->SetScale(Vector2(scaleX, 1.0f));
     }
   }
 }
@@ -393,6 +404,18 @@ void Game::LoadBackgroundTexture(const std::string &fileName) {
         SDL_Log("Error loading background texture!");
     }
 }
+bool Game::ShouldFlipActor(
+    const std::vector<nlohmann::basic_json<>>& properties) {
+
+  for (const auto &obj : properties) {
+    if (obj.contains("name") && obj["name"] == "flipped") {
+      if (obj.contains("value") && obj["value"].is_boolean()) {
+        return obj["value"].get<bool>();
+      }
+    }
+  }
+
+}
 
 void Game::PushUI(class UIScreen *screen) {
     if (!screen) {
@@ -490,6 +513,21 @@ void Game::ApplySceneChange(GameScene gameScene) {
 
       break;
     }
+    case GameScene::Level4: {
+      SetState(GameState::Gameplay);
+      LoadTileMap("../Assets/Sprites/Blocks/block_tileset.json");
+
+      int** levelData = LoadLevelBlocks("../Assets/Levels/Level4/level4.json");
+      SetLevelScale();
+      BuildLevel(levelData);
+      LoadLevelEntities("../Assets/Levels/Level4/level4.json");
+      mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
+      mHud->SetTimerTime(45.0f);
+      mHud->SetPaused(false);
+
+      break;
+    }
+
     case GameScene::GameEnd: {
       SetState(GameState::GameOver);
       new GameEnd(this, "../Assets/Fonts/SMB.ttf");
