@@ -3,7 +3,11 @@
         "height": 4300,
         "width": 2
     },
+<<<<<<< Updated upstream
     "activeFile": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json",
+=======
+    "activeFile": "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level4/level4.json",
+>>>>>>> Stashed changes
     "expandedProjectPaths": [
         "."
     ],
@@ -47,6 +51,7 @@
             ],
             "scale": 2,
             "selectedLayer": 1,
+<<<<<<< Updated upstream
             "viewCenter": {
                 "x": 218.25,
                 "y": 156.5
@@ -58,6 +63,19 @@
             "viewCenter": {
                 "x": 231.66666666666663,
                 "y": 156
+=======
+            "viewCenter": {
+                "x": 218.25,
+                "y": 156.5
+            }
+        },
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level4/level4.json": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 215.75,
+                "y": 176
+>>>>>>> Stashed changes
             }
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Blocks/block_tileset.json": {
@@ -70,7 +88,7 @@
             "scaleInEditor": 1
         },
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json": {
-            "scaleInDock": 1,
+            "scaleInDock": 2,
             "scaleInEditor": 1
         },
         "testlevel.json": {
@@ -116,7 +134,12 @@
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Entities/Entities.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/level1.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level2/level2.json",
+<<<<<<< Updated upstream
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json"
+=======
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json",
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level4/level4.json"
+>>>>>>> Stashed changes
     ],
     "project": "testlevel.tiled-project",
     "property.type": "bool",
@@ -127,6 +150,10 @@
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/level1.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level2/level2.json",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level3/level3.json",
+<<<<<<< Updated upstream
+=======
+        "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level4/level4.json",
+>>>>>>> Stashed changes
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Sprites/Enemies/Enemies.json",
         "tileset.tsx",
         "/home/henrique/Desktop/DCC192/xeno-scape/Assets/Levels/Level1/block_tileset.tsx",
