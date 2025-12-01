@@ -62,9 +62,7 @@ void Portal::OnVerticalCollision(const float minOverlap,
 }
 
 void Portal::SetDirection(PortalDirection direction) {
-  mDirection = direction;
-  UpdateColliderForDirection();
-}
+  mDirection = direction; }
 
 void Portal::SetActive(bool active) {
   SetState(active == true ? ActorState::Active : ActorState::Paused);
@@ -136,20 +134,43 @@ bool Portal::ShouldFlipScale(Portal* exitPortal) const {
   && mDirection == exitPortal->GetDirection();
 }
 
-Vector2 Portal::ConvertVelocity(const Vector2& in, PortalDirection dir) const {
-  Vector2 out = ApplyExitTransform(in, dir);
+Vector2 Portal::ConvertVelocity(const Vector2& velocity, PortalDirection exitDirection) const {
+  bool entryIsVertical = IsVerticalDirection(mDirection);
+  bool exitIsVertical = IsVerticalDirection(exitDirection);
 
-  // Get the normalized direction vector that actor should exit toward
-  Vector2 axis = DirectionToUnitVector(dir);
-  float projected = Vector2::Dot(out, axis);
-
-  // If the velocity component in the exit direction is too small, clamp it
-  if (projected < MIN_OUT_VELOCITY) {
-    // Replace ONLY the component along exit direction
-    out += axis * (MIN_OUT_VELOCITY - projected);
+  // Vertical entry to horizontal exit
+  if (entryIsVertical && !exitIsVertical) {
+    float xVel = (exitDirection == PortalDirection::RIGHT) ? Math::Abs(velocity.y) : -Math::Abs(velocity.y);
+    if (xVel == 0) xVel = (exitDirection == PortalDirection::RIGHT) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
+    return Vector2(xVel * VELOCITY_SCALE_FACTOR, velocity.x);
   }
 
-  return out;
+  // Horizontal entry to vertical exit
+  if (!entryIsVertical && exitIsVertical) {
+    float yVel = (exitDirection == PortalDirection::DOWN) ? Math::Abs(velocity.x) : -Math::Abs(velocity.x);
+    if (yVel == 0) yVel = (exitDirection == PortalDirection::DOWN) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
+    return Vector2(velocity.x, yVel * VELOCITY_SCALE_FACTOR);
+  }
+
+  // Both vertical: flip Y if same direction
+  if (entryIsVertical) {
+    if (mDirection == exitDirection) {
+      float yVel = -velocity.y * VELOCITY_SCALE_FACTOR;
+      if (yVel == 0) yVel = (exitDirection == PortalDirection::DOWN) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
+      return Vector2(0.0f, yVel);
+    }
+  }
+
+  // Both horizontal: flip X if same direction
+  if (!entryIsVertical) {
+    if (mDirection == exitDirection) {
+      float xVel = -velocity.x * VELOCITY_SCALE_FACTOR;
+      if (xVel == 0) xVel = (exitDirection == PortalDirection::RIGHT) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
+      return Vector2(xVel, 0.0f);
+    }
+  }
+
+  return velocity;
 }
 
 Vector2 Portal::AddOffset(const Vector2& position, PortalDirection direction) const {
@@ -167,19 +188,6 @@ Vector2 Portal::AddOffset(const Vector2& position, PortalDirection direction) co
   }
 }
 
-void Portal::UpdateColliderForDirection() {
-  float scale = mGame->GetGameScale();
-
-  if (IsHorizontalDirection(mDirection)) {
-    mCollider->SetWidth(3.0f * scale);
-    mCollider->SetHeight(32.0f * scale);
-  }
-  else {
-    mCollider->SetWidth(32.0f * scale);
-    mCollider->SetHeight(3.0f * scale);
-  }
-}
-
 inline Vector2 Portal::DirectionToUnitVector(PortalDirection dir) const {
   switch (dir) {
     case PortalDirection::UP:    return Vector2(0.0f, -1.0f);
@@ -190,34 +198,39 @@ inline Vector2 Portal::DirectionToUnitVector(PortalDirection dir) const {
   return Vector2::Zero;
 }
 
-Vector2 Portal::ApplyExitTransform(const Vector2& v, PortalDirection exitDir) const
-{
-  PortalDirection in  = mDirection;
+Vector2 Portal::ApplyExitTransform(const Vector2& v, PortalDirection exitDir) const {
+  PortalDirection in = mDirection;
   PortalDirection out = exitDir;
 
   // --- PARALLEL (same or opposite): velocity unchanged ---
   if ((in == out) ||
       (in == PortalDirection::RIGHT && out == PortalDirection::LEFT) ||
-      (in == PortalDirection::LEFT  && out == PortalDirection::RIGHT) ||
-      (in == PortalDirection::UP    && out == PortalDirection::DOWN) ||
-      (in == PortalDirection::DOWN  && out == PortalDirection::UP))
-  {
-    return v;   // <--- FIXED
+      (in == PortalDirection::LEFT && out == PortalDirection::RIGHT) ||
+      (in == PortalDirection::UP && out == PortalDirection::DOWN) ||
+      (in == PortalDirection::DOWN && out == PortalDirection::UP)) {
+    return v;  // <--- FIXED
   }
 
   // --- PERPENDICULAR: compute ±90° rotation ---
   bool rotateCCW = false;
 
-  switch (in)
-  {
-    case PortalDirection::RIGHT: rotateCCW = (out == PortalDirection::UP);    break;
-    case PortalDirection::UP:    rotateCCW = (out == PortalDirection::LEFT);  break;
-    case PortalDirection::LEFT:  rotateCCW = (out == PortalDirection::DOWN);  break;
-    case PortalDirection::DOWN:  rotateCCW = (out == PortalDirection::RIGHT); break;
+  switch (in) {
+    case PortalDirection::RIGHT:
+      rotateCCW = (out == PortalDirection::UP);
+      break;
+    case PortalDirection::UP:
+      rotateCCW = (out == PortalDirection::LEFT);
+      break;
+    case PortalDirection::LEFT:
+      rotateCCW = (out == PortalDirection::DOWN);
+      break;
+    case PortalDirection::DOWN:
+      rotateCCW = (out == PortalDirection::RIGHT);
+      break;
   }
 
   if (rotateCCW)
-    return Vector2(-v.y,  v.x);   // +90°
+    return Vector2(-v.y, v.x);  // +90°
   else
-    return Vector2( v.y, -v.x);   // -90°
+    return Vector2(v.y, -v.x);  // -90°
 }

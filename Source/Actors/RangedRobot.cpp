@@ -4,6 +4,7 @@
 
 #include "RangedRobot.h"
 #include "../Components/Physics/AABBColliderComponent.h"
+#include "../Components/Particles/Bullet.h"
 #include "../Game.h"
 #include "Xeno.h"
 
@@ -50,11 +51,16 @@ void RangedRobot::OnHorizontalCollision(const float minOverlap,
     case ColliderLayer::Player:
       // Ranged robot doesn't damage on contact, only by shooting
       break;
-    case ColliderLayer::Bullet:
+    case ColliderLayer::Bullet: {
+      auto bullet = dynamic_cast<Bullet*>(other->GetOwner());
+      if (bullet != nullptr && bullet->InGraceTime()) {
+        return;  // Ignore bullets in grace period (just spawned)
+      }
       if (other->GetOwner()->GetLayer() == Layer::Enemy) return;
       Kill();
       other->GetOwner()->Kill();
       break;
+    }
     case ColliderLayer::Blocks:
       // Stationary robot, no need to handle wall collision
       break;
@@ -181,15 +187,13 @@ void RangedRobot::AimAtPlayer() {
 
 void RangedRobot::Shoot() {
   // Calculate direction from aim angle
-  Vector2 direction(Math::Cos(mAimAngle), Math::Sin(mAimAngle));
-  float directionX = (mScale.x > 0.0f) ? 1.0f : -1.0f;
-
   Vector2 offset(0.0f, 0.0f);
 
   // Temporarily set rotation for emission, then restore
   float originalRotation = mRotation;
   mRotation = mAimAngle;
-  mGun->EmitParticle(5.0f, 300.0f, offset);
+  auto *particle = mGun->EmitParticle(5.0f, 300.0f, offset);
+  particle->StartGraceTime();
   mRotation = originalRotation;
   
   // Play shoot sound
