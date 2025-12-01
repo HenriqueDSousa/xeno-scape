@@ -3,7 +3,7 @@
 ### Screenshots
 
 - ![1](https://github.com/HenriqueDSousa/xeno-scape/raw/main/Screenshots/1.png "1")
-- ![2](https://github.com/HenriqueDSousa/xeno-scape/raw/main/Screenshots/1.png "2")
+- ![2](https://github.com/HenriqueDSousa/xeno-scape/raw/main/Screenshots/2.png "2")
 
 ### Descrição
 
