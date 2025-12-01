@@ -28,6 +28,6 @@ As condições de derrota são: ser atingido por um inimigo, cair para fora da �
 - Trocar de arma e atirar
 
 ### Créditos
-- João: UI
-- Henrique: Fases, arte e personagens
-- Vítor: Física
+- João Luiz Figueiredo: UI
+- Henrique Daniel de Sousa: Fases, arte e personagens
+- Vítor Souza: Física
