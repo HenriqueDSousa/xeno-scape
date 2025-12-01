@@ -71,7 +71,7 @@ void RangedRobot::OnHorizontalCollision(const float minOverlap,
 
 void RangedRobot::OnVerticalCollision(const float minOverlap,
                                       AABBColliderComponent* other) {
-  Actor::OnVerticalCollision(minOverlap, other);
+  OnHorizontalCollision(minOverlap, other);
 }
 
 void RangedRobot::Kill() {

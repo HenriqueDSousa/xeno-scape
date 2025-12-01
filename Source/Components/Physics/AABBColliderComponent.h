@@ -15,10 +15,10 @@ enum class ColliderLayer
   Player,
   Enemy,
   Blocks,
+  PortalDisabledBlock,
   Bullet,
   Portal,
   PortalBullet,
-  PortalDisabledBlock,
   Collectables
 };
 
