@@ -53,7 +53,7 @@ void XenoGun::OnUpdate(float deltaTime) {
     if (arm) {
       Vector2 handPos = arm->GetHandPosition();
       float angle = arm->GetRotation();
-      float offsetDistance = 5.0f * mGame->GetGameScale();
+      float offsetDistance = 3.0f * mGame->GetGameScale();
       Vector2 offset(cosf(angle) * offsetDistance, sinf(angle) * offsetDistance);
 
       SetPosition(handPos + offset);
@@ -124,24 +124,31 @@ void XenoGun::Shoot() {
   float bulletLifetime = 2.0f;
   
   switch (mCurrentMode) {
-    case ShootingMode::PORTAL_BLUE:
-      mBluePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
+    case ShootingMode::PORTAL_BLUE: {
+      if (GetActiveBluePortal()!=nullptr) GetActiveBluePortal()->SetActive(false);
+      auto particle = mBluePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
+      particle->FixInitialOverlap();
       mAnimatorComponent->SetAnimation("bluePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
       mShootingAnimTimer = 0.2f;
       mGame->GetAudio()->PlaySound("PortalShoot.wav", false);
       break;
+    }
       
-    case ShootingMode::PORTAL_ORANGE:
-      mOrangePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
+    case ShootingMode::PORTAL_ORANGE: {
+      if (GetActiveOrangePortal()!=nullptr) GetActiveOrangePortal()->SetActive(false);
+      auto particle=mOrangePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
+      particle->FixInitialOverlap();
       mAnimatorComponent->SetAnimation("orangePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
       mShootingAnimTimer = 0.2f;
       mGame->GetAudio()->PlaySound("PortalShoot.wav", false);
       break;
+    }
       
     case ShootingMode::SHOOT:
-      mShootingGun->EmitParticle(bulletLifetime, bulletSpeed, direction);
+      auto particle=mShootingGun->EmitParticle(bulletLifetime, bulletSpeed, direction);
+      particle->StartGraceTime();
       mAnimatorComponent->SetAnimation("shooting");
       mAnimatorComponent->SetAnimFPS(10.0f);
       mShootingAnimTimer = 0.4f; // Duration for 4-frame animation at 10fps (0.4s)

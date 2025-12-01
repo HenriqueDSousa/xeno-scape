@@ -3,8 +3,12 @@
 //
 
 #include "PortalBullet.h"
+#include "../../Actors/XenoArm.h"
+
+#include <cfloat>
 
 #include "../../Actors/Portal.h"
+#include "../../Actors/XenoArm.h"
 #include "../../Actors/XenoGun.h"
 #include "../../Game.h"
 #include "../Drawing/AnimatorComponent.h"
@@ -99,4 +103,76 @@ void PortalBullet::SpawnPortal(float rotation, PortalDirection direction, float 
       mGun->SetOrangePortalActive(true);
     }
   }
+}
+
+void PortalBullet::FixInitialOverlap()
+{
+    bool resolvedSomething = false;
+    for (int iter = 0; iter < 5; ++iter)
+    {
+        resolvedSomething = false;
+
+        Vector2 bulletPos = GetPosition();
+        Vector2 gunPos = mGame->GetPlayer()->GetAimArm()->ComputeShoulderPos();
+
+        auto colliders = GetGame()->GetColliders();
+
+        for (auto* collider : colliders)
+        {
+            if (collider->GetLayer() != ColliderLayer::Blocks)
+                continue;
+            if (!mCollisionComponent->Intersect(*collider))
+                continue;
+
+            // BLOCK
+            Vector2 bMin = collider->GetMin();
+            Vector2 bMax = collider->GetMax();
+
+            // BULLET
+            Vector2 cMin = mCollisionComponent->GetMin();
+            Vector2 cMax = mCollisionComponent->GetMax();
+
+            // Overlaps
+            float overlapLeft   = cMax.x - bMin.x;
+            float overlapRight  = bMax.x - cMin.x;
+            float overlapUp     = cMax.y - bMin.y;
+            float overlapDown   = bMax.y - cMin.y;
+
+            struct Cand {
+                Vector2 corr;
+                float distSq;
+                bool valid;
+            };
+
+            Cand cand[4];
+
+            cand[0] = { Vector2(-overlapLeft, 0.0f), (bulletPos + Vector2(-overlapLeft,0.0f) - gunPos).LengthSq(), overlapLeft  > 0 };
+            cand[1] = { Vector2(overlapRight, 0.0f), (bulletPos + Vector2(overlapRight,0.0f) - gunPos).LengthSq(), overlapRight > 0 };
+            cand[2] = { Vector2(0.0f, -overlapUp),   (bulletPos + Vector2(0.0f,-overlapUp) - gunPos).LengthSq(),   overlapUp    > 0 };
+            cand[3] = { Vector2(0.0f, overlapDown),  (bulletPos + Vector2(0.0f,overlapDown) - gunPos).LengthSq(),  overlapDown  > 0 };
+
+            // Pick closest-to-gun correction
+            float bestDist = FLT_MAX;
+            Vector2 bestCorr = Vector2::Zero;
+
+            for (auto& c : cand)
+            {
+                if (!c.valid) continue;
+                if (c.distSq < bestDist)
+                {
+                    bestDist = c.distSq;
+                    bestCorr = c.corr;
+                }
+            }
+
+            bulletPos += bestCorr;
+            SetPosition(bulletPos);
+
+            resolvedSomething = true;
+        }
+
+        // If we went through all colliders and didn’t resolve anything, stop!
+        if (!resolvedSomething)
+            break;
+    }
 }

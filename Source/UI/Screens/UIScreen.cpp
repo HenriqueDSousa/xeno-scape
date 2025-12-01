@@ -110,6 +110,7 @@ UIText *UIScreen::AddText(const std::string &name, const Vector2 &pos,
                           const Vector2 &dims, const int pointSize,
                           Vector4 color, const int unsigned wrapLength) {
   UIText* t = new UIText(name, mFont, pointSize, wrapLength, pos, dims, color);
+  t->SetPosition(pos - t->GetSize() * 0.5f);
   mTexts.emplace_back(t);
 
   return t;
@@ -130,6 +131,7 @@ UIButton* UIScreen::AddButton(const std::string& name, const Vector2& pos,
     mSelectedButtonIndex = 0;
   }
 
+  b->SetPosition(pos - b->GetSize() * 0.5f);
   return b;
 }
 

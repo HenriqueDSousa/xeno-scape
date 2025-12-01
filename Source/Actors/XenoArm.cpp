@@ -8,10 +8,6 @@
 #include <algorithm>
 #include <cmath>
 
-// Clamp angles to +/- 45 degrees
-static constexpr float kMinAngleRad = -75.0f * (M_PI / 180.0f);
-static constexpr float kMaxAngleRad = 75.0f * (M_PI / 180.0f);
-
 XenoArm::XenoArm(Game* game, Xeno* owner)
   :Actor(game)
   ,mOwner(owner)
@@ -106,6 +102,3 @@ Vector2 XenoArm::GetHandPosition() const
   
   return handPos;
 }
-
-
-

@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "../Math.h"
 #include "VertexArray.h"
 #include "Texture.h"

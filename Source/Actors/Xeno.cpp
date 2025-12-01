@@ -53,11 +53,17 @@ Xeno::Xeno(Game* game, float width, float height)
 void Xeno::OnHorizontalCollision(const float minOverlap,
                                  AABBColliderComponent* other) {
   switch (other->GetLayer()) {
-    case ColliderLayer::Bullet:
-      if (other->GetOwner()->GetLayer() == Layer::Player) return;
+    case ColliderLayer::Bullet: {
+      auto owner=dynamic_cast<Bullet*>(other->GetOwner());
+      if (owner!=nullptr){
+        if (owner->InGraceTime()) {
+          return;
+        }
+      }
       Kill();
       other->GetOwner()->Kill();
       break;
+    }
     default:
       break;
   }
@@ -147,6 +153,31 @@ void Xeno::OnProcessInput(const Uint8* state) {
       isMoving = true;
     }
   }
+  else {
+    int mouseX = 0, mouseY = 0;
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Convert mouse to world coordinates
+    const Vector2 mouseWorld(
+        static_cast<float>(mouseX) + mGame->GetCameraPos().x,
+        static_cast<float>(mouseY) + mGame->GetCameraPos().y
+    );
+
+    // Horizontal direction from player to mouse
+    const float dx = mouseWorld.x - mPosition.x;
+
+    // If mouse is right and we are facing left → flip once
+    if (dx > 0.0f && mScale.x < 0.0f)
+    {
+      mScale.x = 1.0f;
+    }
+    // If mouse is left and we are facing right → flip once
+    else if (dx < 0.0f && mScale.x > 0.0f)
+    {
+      mScale.x = -1.0f;
+    }
+  }
+
   if (state[SDL_SCANCODE_W]) {
     if (IsOnGround()) {
       auto velocity = mRigidBodyComponent->GetVelocity();

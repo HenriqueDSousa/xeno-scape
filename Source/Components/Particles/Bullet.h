@@ -14,9 +14,13 @@ public:
   void Emit(const Vector2 &direction, float speed) override;
   void Awake(const Vector2 &position, const float &rotation, float lifetime) override;
 
+  void StartGraceTime();
+  bool InGraceTime();
+
 protected:
 
   class AnimatorComponent* mAnimatorComponent;
   class AABBColliderComponent* mCollisionComponent;
   class RigidBodyComponent *mRigidBody;
+  float mGraceTime;
 };

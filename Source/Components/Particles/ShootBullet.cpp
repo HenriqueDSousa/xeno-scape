@@ -14,19 +14,21 @@ ShootBullet::ShootBullet(class Game* game)
 void ShootBullet::OnHorizontalCollision(const float minOverlap,
                                         AABBColliderComponent* other) {
   if (other->GetLayer() == ColliderLayer::Blocks ||
+    other->GetLayer() == ColliderLayer::Bullet ||
     other->GetLayer() == ColliderLayer::PortalDisabledBlock) {
-   Kill();
+    Kill();
   }
 }
 void ShootBullet::OnVerticalCollision(const float minOverlap,
                                       AABBColliderComponent* other) {
-  if (other->GetLayer() == ColliderLayer::Blocks ||
-    other->GetLayer() == ColliderLayer::PortalDisabledBlock ||
-    other->GetLayer() == ColliderLayer::Bullet ) {
-    Kill();
-  }
+  OnHorizontalCollision(minOverlap, other);
 }
 
 void ShootBullet::OnUpdate(float deltaTime) {
+  mGraceTime = std::max(0.0f,mGraceTime-deltaTime);
+}
 
+void ShootBullet::Kill() {
+  mGraceTime=0;
+  Bullet::Kill();
 }

@@ -8,7 +8,7 @@
 class Portal : public Actor {
 
   constexpr static float COLLIDER_COOLDOWN_TIME = 0.2f;
-  constexpr static float OFFSET_AMOUNT = 10.0f;
+  constexpr static float OFFSET_AMOUNT = 3.0f;
   constexpr static float VELOCITY_SCALE_FACTOR = 1.0f;
   constexpr static float MIN_OUT_VELOCITY = 50.0f;
 
@@ -43,6 +43,10 @@ private:
 
   // Position offset to prevent double teleports
   Vector2 AddOffset(const Vector2& position, PortalDirection direction) const;
+  void UpdateColliderForDirection();
+  Vector2 DirectionToUnitVector(PortalDirection dir) const;
+  Vector2 ApplyExitTransform(const Vector2& velocity,
+                             PortalDirection exitDir) const;
 
   PortalType mPortalType;
   XenoGun* mOwner;

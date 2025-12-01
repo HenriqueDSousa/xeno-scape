@@ -16,10 +16,10 @@ HUD::HUD(class Game* game, const std::string& fontName)
     Vector2((GetSize().x / 2.0f), GetSize().y / 30.0f),
     Vector2::Zero,
     Color::White, mFont);
-  AddText("Ammo: ", Vector2(20.0f * mGame->GetGameScale(), 10.0f * mGame->GetGameScale()),
+  AddText("Ammo: ", Vector2(40.0f * mGame->GetGameScale(), 10.0f * mGame->GetGameScale()),
     Vector2(20.0f * mGame->GetGameScale(), 30.0f * mGame->GetGameScale()) ,
     16, Color::White);
-  mShootingModeText = AddText("Pistol", Vector2((60.0f) * mGame->GetGameScale(), 11.0f * mGame->GetGameScale()),
+  mShootingModeText = AddText("Pistol", Vector2(80.0f * mGame->GetGameScale(), 11.0f * mGame->GetGameScale()),
     Vector2(20.0f * mGame->GetGameScale(), 30.0f * mGame->GetGameScale()) ,
     12, Color::Yellow);
 }

@@ -5,6 +5,13 @@
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "Actor.h"
 #include "Xeno.h"
+
+// Clamp angles to +/- 45 degrees
+#pragma once
+static constexpr float kMinAngleRad = -75.0f * (M_PI / 180.0f);
+#pragma once
+static constexpr float kMaxAngleRad = 75.0f * (M_PI / 180.0f);
+
 class XenoArm : public Actor {
  public:
   XenoArm(Game* game, Xeno* owner);
@@ -13,7 +20,9 @@ class XenoArm : public Actor {
   
   //Returns the position of the hand (tip of the arm) for gun placement
   Vector2 GetHandPosition() const;
-  
+
+  Vector2 ComputeShoulderPos() const;
+
 private:
   AnimatorComponent* mDrawComponent;
   Xeno* mOwner;
@@ -21,7 +30,6 @@ private:
   float mArmWidth;
   float mArmHeight;
   // Helpers for pivot math
-  Vector2 ComputeShoulderPos() const;
   void UpdateCenterFromRotation(float angle, const Vector2& shoulderPos);
 };
 

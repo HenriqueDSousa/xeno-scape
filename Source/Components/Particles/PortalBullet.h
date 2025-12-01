@@ -31,10 +31,12 @@ class PortalBullet : public Bullet {
 
   void SetGun(XenoGun* gun) { mGun = gun; }
 
+  void FixInitialOverlap();
+
 private:
   void SpawnPortal(float rotation, PortalDirection direction, float minOverlap) const;
-  
-  PortalType mPortalType;
+
+ PortalType mPortalType;
   XenoGun* mGun;
 };
 

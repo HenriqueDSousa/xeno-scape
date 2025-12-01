@@ -35,6 +35,7 @@ enum class GameScene
   Level2,
   Level3,
   Level4,
+  LevelSelect,
   GameEnd,
   TestLevel
 };
@@ -43,7 +44,7 @@ enum class GameState {
   Gameplay,
   Paused,
   MainMenu,
-  GameOver,
+  GameOver
 };
 
 class Game
@@ -183,7 +184,7 @@ private:
     GameScene mNextSceneToLoad;
     SceneTransitionState mSceneTransitionState = SceneTransitionState::None;
     float mFadeAlpha = 0.0f;
-    float mFadeSpeed = 1.0f;
+    float mFadeSpeed = M_PI/10;
     UIRect* mFadeRect;
 
     //UI elements

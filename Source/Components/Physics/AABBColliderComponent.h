@@ -14,17 +14,20 @@ enum class ColliderLayer
 {
     Player,
     Enemy,
-    Blocks,
     Bullet,
     Portal,
     PortalBullet,
     PortalDisabledBlock,
-    Collectables
+    Collectables,
+    Blocks, // should be last
 };
 
 class AABBColliderComponent : public Component
 {
 public:
+
+    int mWidth;
+    int mHeight;
 
     AABBColliderComponent(class Actor* owner, int dx, int dy, int w, int h,
                                 ColliderLayer layer, bool isStatic = false, int updateOrder = 10);
@@ -35,12 +38,16 @@ public:
     float DetectHorizontalCollision(RigidBodyComponent *rigidBody);
     float DetectVerticalCollision(RigidBodyComponent *rigidBody);
 
+    float GetMinVerticalOverlap(AABBColliderComponent* b) const;
+    float GetMinHorizontalOverlap(AABBColliderComponent* b) const;
+
     Vector2 GetMin() const;
     Vector2 GetMax() const;
     ColliderLayer GetLayer() const { return mLayer; }
 
     // Drawing for debug purposes
     void DebugDraw(class Renderer* renderer) override;
+    void SetOffset(Vector2 offset);
 
     void SetHeight(int height) { mHeight = height; }
     void SetWidth(int width) { mWidth = width; }
@@ -49,16 +56,11 @@ public:
 
     void SetLayer(ColliderLayer layer) { mLayer = layer; }
 private:
-    float GetMinVerticalOverlap(AABBColliderComponent* b) const;
-    float GetMinHorizontalOverlap(AABBColliderComponent* b) const;
-
     void ResolveHorizontalCollisions(RigidBodyComponent *rigidBody, const float minOverlap);
     void ResolveVerticalCollisions(RigidBodyComponent *rigidBody, const float minOverlap);
 
 
     Vector2 mOffset;
-    int mWidth;
-    int mHeight;
     bool mIsStatic;
 
     ColliderLayer mLayer;

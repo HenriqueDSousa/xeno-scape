@@ -12,5 +12,5 @@ public:
   void OnVerticalCollision(const float minOverlap,
                            AABBColliderComponent* other) override;
   void OnUpdate(float deltaTime) override;
-
+  void Kill() override;
 };

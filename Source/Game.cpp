@@ -22,10 +22,12 @@
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
+#include "Components/Physics/AABBColliderComponent.h"
 #include "Json.h"
 #include "Random.h"
 #include "UI/Font.h"
 #include "UI/Screens/GameEnd.h"
+#include "UI/Screens/LevelSelectMenu.h"
 #include "UI/Screens/MainMenu.h"
 #include "UI/Screens/PauseMenu.h"
 #include "UI/Screens/UIScreen.h"
@@ -71,7 +73,7 @@ bool Game::Initialize()
         return false;
     }
 
-    mWindow = SDL_CreateWindow("Xeno Scape", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
+    mWindow = SDL_CreateWindow("Xeno Scape", 50, 50, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
     if (!mWindow)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -455,6 +457,11 @@ void Game::ApplySceneChange(GameScene gameScene) {
         // mBackgroundMusic = mAudio->PlaySound("Music.ogg", true);
       // }
       new MainMenu(this, "../Assets/Fonts/SMB.ttf");
+      break;
+    }
+    case GameScene::LevelSelect: {
+      SetState(GameState::MainMenu);
+      new LevelSelectMenu(this, "../Assets/Fonts/SMB.ttf");
       break;
     }
     case GameScene::TestLevel: {
@@ -852,6 +859,12 @@ void Game::RemoveDrawable(class DrawComponent *drawable)
 void Game::AddCollider(class AABBColliderComponent* collider)
 {
     mColliders.emplace_back(collider);
+    std::sort(mColliders.begin(), mColliders.end(),
+        [](auto a, auto b) {
+            return static_cast<int>(a->GetLayer()) <
+                   static_cast<int>(b->GetLayer());
+        }
+    );
 }
 
 void Game::RemoveCollider(AABBColliderComponent* collider)
@@ -889,12 +902,8 @@ void Game::GenerateOutput()
               }
         }
     }
-    //Draw UI
-    if (mFadeRect != nullptr) {
-      // Fade rect is a screen-space UI element; draw it without camera offset
-      mFadeRect->Draw(mRenderer, Vector2::Zero);
-    }
 
+    // Draw UI
     for (auto ui : mUIStack)
     {
         if (ui->GetState() == UIScreen::EActive)
@@ -902,6 +911,12 @@ void Game::GenerateOutput()
             ui->Draw();
         }
     }
+
+    if (mFadeRect != nullptr) {
+        // Fade rect is a screen-space UI element; draw it without camera offset
+        mFadeRect->Draw(mRenderer, Vector2::Zero);
+    }
+
     // Swap front buffer and back buffer
     mRenderer->Present();
 }

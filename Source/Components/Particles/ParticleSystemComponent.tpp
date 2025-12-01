@@ -24,7 +24,7 @@ ParticleSystemComponent<T>::~ParticleSystemComponent()
 }
 
 template <typename T>
-void ParticleSystemComponent<T>::EmitParticle(float lifetime, float speed, const Vector2& offsetPosition)
+T *ParticleSystemComponent<T>::EmitParticle(float lifetime, float speed, const Vector2& offsetPosition)
 {
   for (auto p : mParticles)
   {
@@ -41,8 +41,8 @@ void ParticleSystemComponent<T>::EmitParticle(float lifetime, float speed, const
       // Set the particle's layer to match the owner's layer
       p->SetLayer(mOwner->GetLayer());
 
-      // Break inner loop to emit only one particle per iteration
-      break;
+      return p;
     }
   }
+  return nullptr;
 }

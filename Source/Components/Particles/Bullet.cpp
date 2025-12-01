@@ -48,3 +48,11 @@ void Bullet::OnUpdate(float deltaTime)
 {
   Particle::OnUpdate(deltaTime);
 }
+
+void Bullet::StartGraceTime() {
+  mGraceTime=0.171;
+}
+
+bool Bullet::InGraceTime() {
+  return mGraceTime>0;
+}
