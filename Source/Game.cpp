@@ -22,7 +22,6 @@
 #include "CSV.h"
 #include "Components/Drawing/DrawComponent.h"
 #include "Components/Physics/RigidBodyComponent.h"
-#include "Components/Physics/AABBColliderComponent.h"
 #include "Json.h"
 #include "Random.h"
 #include "UI/Font.h"
@@ -705,6 +704,13 @@ void Game::UpdateGame(float deltaTime)
     UpdateActors(deltaTime);
     UpdateUI(deltaTime);
     UpdateCamera();
+
+    std::sort(mColliders.begin(), mColliders.end(),
+        [](auto a, auto b) {
+            return static_cast<int>(a->GetLayer()) <
+                   static_cast<int>(b->GetLayer());
+        }
+    );
 }
 
 void Game::UpdateActors(float deltaTime)
@@ -859,12 +865,6 @@ void Game::RemoveDrawable(class DrawComponent *drawable)
 void Game::AddCollider(class AABBColliderComponent* collider)
 {
     mColliders.emplace_back(collider);
-    std::sort(mColliders.begin(), mColliders.end(),
-        [](auto a, auto b) {
-            return static_cast<int>(a->GetLayer()) <
-                   static_cast<int>(b->GetLayer());
-        }
-    );
 }
 
 void Game::RemoveCollider(AABBColliderComponent* collider)

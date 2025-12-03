@@ -65,7 +65,7 @@ void RangedRobot::OnHorizontalCollision(const float minOverlap,
 
 void RangedRobot::OnVerticalCollision(const float minOverlap,
                                       AABBColliderComponent* other) {
-  Actor::OnVerticalCollision(minOverlap, other);
+  OnHorizontalCollision(minOverlap, other);
 }
 
 void RangedRobot::Kill() {
@@ -180,10 +180,6 @@ void RangedRobot::AimAtPlayer() {
 }
 
 void RangedRobot::Shoot() {
-  // Calculate direction from aim angle
-  Vector2 direction(Math::Cos(mAimAngle), Math::Sin(mAimAngle));
-  float directionX = (mScale.x > 0.0f) ? 1.0f : -1.0f;
-
   Vector2 offset(0.0f, 0.0f);
 
   // Temporarily set rotation for emission, then restore
@@ -191,7 +187,7 @@ void RangedRobot::Shoot() {
   mRotation = mAimAngle;
   mGun->EmitParticle(5.0f, 300.0f, offset);
   mRotation = originalRotation;
-  
+
   // Play shoot sound
   mGame->GetAudio()->PlaySound("LaserShoot.wav", false);
 }

@@ -105,7 +105,7 @@ public:
 
     // Camera functions
     Vector2& GetCameraPos() { return mCameraPos; };
-    void SetCameraPos(const Vector2& position) { mCameraPos = position; };
+    void SetCameraPos(const Vector2& position) { mCameraPos = position; }
 
     // UI functions
     const std::vector<class UIScreen*>& GetUIStack() const { return mUIStack; }

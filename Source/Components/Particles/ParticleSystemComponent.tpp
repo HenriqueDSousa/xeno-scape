@@ -3,6 +3,7 @@
 //
 
 #include "../../Game.h"
+#include "../Physics/AABBColliderComponent.h"
 #include "ParticleSystemComponent.h"
 
 template <typename T>
@@ -40,7 +41,6 @@ T *ParticleSystemComponent<T>::EmitParticle(float lifetime, float speed, const V
 
       // Set the particle's layer to match the owner's layer
       p->SetLayer(mOwner->GetLayer());
-
       return p;
     }
   }

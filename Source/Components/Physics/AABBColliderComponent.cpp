@@ -9,6 +9,7 @@
 #include <unordered_set>
 
 #include "../../Actors/Actor.h"
+#include "../../Actors/RangedRobot.h"
 #include "../../Game.h"
 
 std::unordered_set ResolvableLayers = {ColliderLayer::Enemy, ColliderLayer::Player};
@@ -118,10 +119,10 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
             }
 
             // Now resolve the collision (which zeros velocity)
-            if (isStatic) {
+            if (isStatic && collider->GetLayer() != ColliderLayer::Bullet && collider->GetLayer() != ColliderLayer::PortalBullet) {
                 ResolveHorizontalCollisions(rigidBody, overlap);
+                return overlap;
             }
-            return overlap;
         }
     }
     return 0.0f;
@@ -144,10 +145,10 @@ float AABBColliderComponent::DetectVerticalCollision(RigidBodyComponent *rigidBo
             collider->GetOwner()->OnVerticalCollision(overlap, this);
 
             // Now resolve the collision (which zeros velocity)
-            if (isStatic) {
+            if (isStatic && collider->GetLayer() != ColliderLayer::Bullet && collider->GetLayer() != ColliderLayer::PortalBullet) {
                 ResolveVerticalCollisions(rigidBody, overlap);
+                return overlap;
             }
-            return overlap;
         }
     }
     return 0.0f;
