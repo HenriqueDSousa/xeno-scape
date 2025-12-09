@@ -8,12 +8,12 @@
 PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
 : UIScreen(game, fontName) {
   SetSize(Vector2(Game::WINDOW_WIDTH,Game::WINDOW_HEIGHT));
-  AddText("Game Paused",Vector2(GetSize().x / 2, GetSize().y / 2 - 120.0f),
+  AddText("Game Paused",Vector2(GetSize().x / 2, GetSize().y / 2 - 150.0f),
     Vector2::Zero,
     30,
     Color::White);
 
-  AddButton("Resume", Vector2(GetSize().x / 2, GetSize().y / 2),
+  AddButton("Resume", Vector2(GetSize().x / 2, GetSize().y / 2 - 30.0f),
           Vector2(GetSize().x / 4, 50.f),
           24,
           UIButton::TextPos::Center,
@@ -23,8 +23,18 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
           Vector2::Zero,
           Color::White);
 
+  AddButton("Restart Level", Vector2(GetSize().x / 2, GetSize().y / 2 + 30.0f),
+          Vector2(GetSize().x / 4, 50.f),
+          24,
+          UIButton::TextPos::Center,
+          [this]() {
+            mGame->SetScene(mGame->GetCurrentScene());
+          },
+          Vector2::Zero,
+          Color::White);
+
   AddButton("Level Select",
-          Vector2(GetSize().x / 2, GetSize().y / 2 + 60.0f),
+          Vector2(GetSize().x / 2, GetSize().y / 2 + 90.0f),
           Vector2(GetSize().x / 4, 50.f),
           24,
           UIButton::TextPos::Center,
@@ -34,7 +44,7 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
           Vector2::Zero,
           Color::White);
 
-  AddButton("Quit", Vector2(GetSize().x / 2, GetSize().y / 2 + 120.0f),
+  AddButton("Quit", Vector2(GetSize().x / 2, GetSize().y / 2 + 150.0f),
       Vector2(GetSize().x / 4, 50.f),
       24,
       UIButton::TextPos::Center,

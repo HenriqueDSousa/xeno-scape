@@ -489,6 +489,7 @@ void Game::ApplySceneChange(GameScene gameScene) {
       mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
       mHud->SetTimerTime(30.0f);
       mHud->SetPaused(false);
+      mHud->ShowTutorial(8.0f);  // Show controls tutorial for 8 seconds
 
       break;
     }

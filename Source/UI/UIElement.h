@@ -24,6 +24,9 @@ public:
   const Vector4& GetColor() const { return mColor; }
   void SetColor(const Vector4 &color) { mColor = color; }
 
+  bool IsVisible() const { return mIsVisible; }
+  void SetVisible(bool visible) { mIsVisible = visible; }
+
   virtual void Draw(Renderer* renderer, const Vector2 &screenPos) {};
 
   virtual void Update(float deltaTime) {};
@@ -34,4 +37,5 @@ protected:
   Vector2 mPosition;
   Vector2 mSize;
   Vector4 mColor;
+  bool mIsVisible = true;
 };

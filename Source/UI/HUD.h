@@ -21,11 +21,19 @@ class HUD : public UIScreen {
   void SetPaused(bool isPaused) { mIsPaused = isPaused; }
   void SetTimerTime(float timeLeft);
 
+  // Tutorial system
+  void ShowTutorial(float duration = 8.0f);
+
 private:
   ShootingMode GetCurrentShootingMode();
 
   Timer* mTimer;
   UIText* mShootingModeText;
   bool mIsPaused;
+
+  // Tutorial
+  std::vector<UIText*> mTutorialTexts;
+  float mTutorialTimer = 0.0f;
+  bool mShowTutorial = false;
 };
 
