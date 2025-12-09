@@ -710,6 +710,10 @@ void Game::UpdateGame(float deltaTime)
 
 void Game::UpdateActors(float deltaTime)
 {
+    // Don't update actors when the game is paused
+    if (mGameState == GameState::Paused)
+        return;
+
     mUpdatingActors = true;
     for (auto actor : mActors)
     {
