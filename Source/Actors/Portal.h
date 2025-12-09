@@ -43,7 +43,6 @@ private:
 
   // Position offset to prevent double teleports
   Vector2 AddOffset(const Vector2& position, PortalDirection direction) const;
-  void UpdateColliderForDirection();
   Vector2 DirectionToUnitVector(PortalDirection dir) const;
   Vector2 ApplyExitTransform(const Vector2& velocity,
                              PortalDirection exitDir) const;

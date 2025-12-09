@@ -488,6 +488,7 @@ void Game::ApplySceneChange(GameScene gameScene) {
       mHud = new HUD(this, "../Assets/Fonts/SMB.ttf");
       mHud->SetTimerTime(30.0f);
       mHud->SetPaused(false);
+      mHud->ShowTutorial(8.0f);  // Show controls tutorial for 8 seconds
 
       break;
     }
@@ -715,6 +716,10 @@ void Game::UpdateGame(float deltaTime)
 
 void Game::UpdateActors(float deltaTime)
 {
+    // Don't update actors when the game is paused
+    if (mGameState == GameState::Paused)
+        return;
+
     mUpdatingActors = true;
     for (auto actor : mActors)
     {

@@ -36,6 +36,8 @@ void UIText::SetText(const std::string& name) {
 }
 
 void UIText::Draw(Renderer* renderer, const Vector2& cameraPos) {
+  if (!mIsVisible) return;
+
   Vector2 centerPos = Vector2(mPosition.x + cameraPos.x + mSize.x * 0.5f,
                               mPosition.y + cameraPos.y + mSize.y * 0.5f);
 

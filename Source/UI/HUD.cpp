@@ -45,6 +45,68 @@ void HUD::Update(float deltaTime) {
     default:
       break;
   }
+
+  // Update tutorial fade
+  if (mShowTutorial) {
+    mTutorialTimer -= deltaTime;
+    if (mTutorialTimer <= 0.0f) {
+      mShowTutorial = false;
+      // Hide tutorial texts
+      for (auto* text : mTutorialTexts) {
+        text->SetVisible(false);
+      }
+    } else if (mTutorialTimer < 2.0f) {
+      // Fade out in last 2 seconds
+      float alpha = mTutorialTimer / 2.0f;
+      for (auto* text : mTutorialTexts) {
+        Vector4 color = text->GetColor();
+        color.w = alpha;
+        text->SetColor(color);
+      }
+    }
+  }
+}
+
+void HUD::ShowTutorial(float duration) {
+  mShowTutorial = true;
+  mTutorialTimer = duration;
+
+  float scale = static_cast<float>(mGame->GetGameScale());
+  float centerX = GetSize().x / 2.0f;
+  float startY = GetSize().y * 0.15f;  // Top area of screen
+  float lineHeight = 28.0f * scale;
+
+  // Create tutorial texts
+  UIText* t1 = AddText("[A] [D] - Move", 
+    Vector2(centerX, startY),
+    Vector2(300.0f * scale, 30.0f * scale),
+    14, Color::White);
+  
+  UIText* t2 = AddText("[W] - Jump", 
+    Vector2(centerX, startY + lineHeight),
+    Vector2(300.0f * scale, 30.0f * scale),
+    14, Color::White);
+
+  UIText* t3 = AddText("[Right Click] - Aim", 
+    Vector2(centerX, startY + lineHeight * 2),
+    Vector2(300.0f * scale, 30.0f * scale),
+    14, Color::White);
+
+  UIText* t4 = AddText("[Left Click] - Shoot", 
+    Vector2(centerX, startY + lineHeight * 3),
+    Vector2(300.0f * scale, 30.0f * scale),
+    14, Color::White);
+
+  UIText* t5 = AddText("[1] Pistol  [2] Blue Portal  [3] Orange Portal", 
+    Vector2(centerX, startY + lineHeight * 4),
+    Vector2(400.0f * scale, 30.0f * scale),
+    14, Color::Yellow);
+
+  mTutorialTexts.push_back(t1);
+  mTutorialTexts.push_back(t2);
+  mTutorialTexts.push_back(t3);
+  mTutorialTexts.push_back(t4);
+  mTutorialTexts.push_back(t5);
 }
 
 void HUD::Draw() {
