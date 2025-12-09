@@ -108,14 +108,12 @@ void Xeno::OnUpdate(float deltaTime) {
 }
 
 void Xeno::ManageAnimations() {
-  if (mIsAiming) {
-    mDrawComponent->SetAnimation("aim");
-    mDrawComponent->SetAnimFPS(10.0f);
-    return;
-  }
   if (IsOnGround()) {
     if (mIsRunning) {
       mDrawComponent->SetAnimation("run");
+      mDrawComponent->SetAnimFPS(10.0f);
+    } else if (mIsAiming) {
+      mDrawComponent->SetAnimation("aim");
       mDrawComponent->SetAnimFPS(10.0f);
     } else {
       mDrawComponent->SetAnimation("idle");
@@ -137,26 +135,26 @@ void Xeno::OnProcessInput(const Uint8* state) {
   }
   mIsAiming = isAiming;
 
-  if (!mIsAiming) {
-    if (state[SDL_SCANCODE_D]) {
-      if (mScale.x < 0.0f) {
-        mScale.x *= -1.0f;
-      }
-      mRigidBodyComponent->ApplyForce(Vector2(mForwardSpeed, 0.0f));
-      isMoving = true;
-    }
-    if (state[SDL_SCANCODE_A]){
-      if (mScale.x > 0.0f){
-        mScale.x *= -1.0f;
-      }
-      mRigidBodyComponent->ApplyForce(Vector2(-mForwardSpeed, 0.0f));
-      isMoving = true;
+  // Handle movement (works both when aiming and not aiming)
+  if (state[SDL_SCANCODE_D]) {
+    mRigidBodyComponent->ApplyForce(Vector2(mForwardSpeed, 0.0f));
+    isMoving = true;
+    // Only flip based on movement when not aiming
+    if (!mIsAiming && mScale.x < 0.0f) {
+      mScale.x *= -1.0f;
     }
   }
-  else {
-    int mouseX = 0, mouseY = 0;
-    SDL_GetMouseState(&mouseX, &mouseY);
+  if (state[SDL_SCANCODE_A]) {
+    mRigidBodyComponent->ApplyForce(Vector2(-mForwardSpeed, 0.0f));
+    isMoving = true;
+    // Only flip based on movement when not aiming
+    if (!mIsAiming && mScale.x > 0.0f) {
+      mScale.x *= -1.0f;
+    }
+  }
 
+  // When aiming, face towards the mouse cursor
+  if (mIsAiming) {
     // Convert mouse to world coordinates
     const Vector2 mouseWorld(
         static_cast<float>(mouseX) + mGame->GetCameraPos().x,
