@@ -195,7 +195,7 @@ void RangedRobot::Shoot() {
   auto *particle = mGun->EmitParticle(5.0f, 300.0f, offset);
   particle->StartGraceTime();
   mRotation = originalRotation;
-  
+
   // Play shoot sound
   mGame->GetAudio()->PlaySound("LaserShoot.wav", false);
 }

@@ -5,6 +5,8 @@
 - ![1](https://github.com/HenriqueDSousa/xeno-scape/raw/main/Screenshots/1.png "1")
 - ![2](https://github.com/HenriqueDSousa/xeno-scape/raw/main/Screenshots/2.png "2")
 
+**Gameplay:** https://www.youtube.com/watch?v=nkFddTl27mE
+
 ### Descrição
 
 Neste jogo de plataforma em fases, inspirado na série Portal, você joga como um rato de laboratório, usado como cobaia para experimentos com portais. Seu objetivo é escapar do laboratório, aproveitando-se dos portais, sem ser pego pelos cientistas e robôs.

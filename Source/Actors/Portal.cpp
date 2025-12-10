@@ -62,7 +62,18 @@ void Portal::OnVerticalCollision(const float minOverlap,
 }
 
 void Portal::SetDirection(PortalDirection direction) {
-  mDirection = direction; }
+  mDirection = direction;
+
+  if (IsVerticalDirection(direction)) {
+    // Horizontal portal → wide, short
+    mCollider->SetWidth(32 * mGame->GetGameScale());
+    mCollider->SetHeight(3 * mGame->GetGameScale());
+  } else {
+    // Vertical portal → tall, thin
+    mCollider->SetWidth(3 * mGame->GetGameScale());
+    mCollider->SetHeight(32 * mGame->GetGameScale());
+  }
+}
 
 void Portal::SetActive(bool active) {
   SetState(active == true ? ActorState::Active : ActorState::Paused);
@@ -111,7 +122,7 @@ void Portal::TeleportActor(Actor* actor, Portal* exitPortal) {
 
   auto* rigidBody = actor->GetComponent<RigidBodyComponent>();
   if (rigidBody) {
-    Vector2 newVelocity = ConvertVelocity(rigidBody->GetVelocity(), exitPortal->GetDirection());
+    Vector2 newVelocity = ConvertVelocity(rigidBody->GetVelocity(), exitPortal->GetDirection(),actor);
     rigidBody->SetVelocity(newVelocity);
 
     if (ShouldFlipScale(exitPortal)) {
@@ -134,43 +145,63 @@ bool Portal::ShouldFlipScale(Portal* exitPortal) const {
   && mDirection == exitPortal->GetDirection();
 }
 
-Vector2 Portal::ConvertVelocity(const Vector2& velocity, PortalDirection exitDirection) const {
-  bool entryIsVertical = IsVerticalDirection(mDirection);
-  bool exitIsVertical = IsVerticalDirection(exitDirection);
+Vector2 Portal::ConvertVelocity(const Vector2& v, PortalDirection exitDir, Actor *actor) const
+{
+    PortalDirection in = mDirection;
+    PortalDirection out = exitDir;
 
-  // Vertical entry to horizontal exit
-  if (entryIsVertical && !exitIsVertical) {
-    float xVel = (exitDirection == PortalDirection::RIGHT) ? Math::Abs(velocity.y) : -Math::Abs(velocity.y);
-    if (xVel == 0) xVel = (exitDirection == PortalDirection::RIGHT) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
-    return Vector2(xVel * VELOCITY_SCALE_FACTOR, velocity.x);
-  }
+    bool entryIsVertical = IsVerticalDirection(in);
+    bool exitIsVertical  = IsVerticalDirection(out);
 
-  // Horizontal entry to vertical exit
-  if (!entryIsVertical && exitIsVertical) {
-    float yVel = (exitDirection == PortalDirection::DOWN) ? Math::Abs(velocity.x) : -Math::Abs(velocity.x);
-    if (yVel == 0) yVel = (exitDirection == PortalDirection::DOWN) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
-    return Vector2(velocity.x, yVel * VELOCITY_SCALE_FACTOR);
-  }
+    // --- 1. Compute rotated/redirected velocity ---
+    Vector2 outVel;
 
-  // Both vertical: flip Y if same direction
-  if (entryIsVertical) {
-    if (mDirection == exitDirection) {
-      float yVel = -velocity.y * VELOCITY_SCALE_FACTOR;
-      if (yVel == 0) yVel = (exitDirection == PortalDirection::DOWN) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
-      return Vector2(0.0f, yVel);
+    if (IsHorizontalDirection(mDirection) == IsHorizontalDirection(exitDir)) {
+        // First case: Parallel (same or opposite)
+        outVel = v;
     }
-  }
+    else {
+      if (entryIsVertical && !exitIsVertical) {
+        // entry: UP/DOWN (vertical) -> exit: LEFT/RIGHT (horizontal)
+        // Incoming vertical speed (v.y) becomes horizontal output.
+        float mappedX = (out == PortalDirection::RIGHT) ? Math::Abs(v.y) : -Math::Abs(v.y);
+        // The remaining component on y should come from the incoming x.
+        outVel = Vector2(mappedX, v.x);
+      } else if (!entryIsVertical && exitIsVertical) {
+        // entry: LEFT/RIGHT → exit: UP/DOWN
 
-  // Both horizontal: flip X if same direction
-  if (!entryIsVertical) {
-    if (mDirection == exitDirection) {
-      float xVel = -velocity.x * VELOCITY_SCALE_FACTOR;
-      if (xVel == 0) xVel = (exitDirection == PortalDirection::RIGHT) ? MIN_OUT_VELOCITY : -MIN_OUT_VELOCITY;
-      return Vector2(xVel, 0.0f);
+        // Preserve facing direction for the new horizontal component:
+        float facing = actor->GetScale().x;               // +right, −left
+        float mappedX = Math::Abs(v.y) * (facing >= 0 ? 1.0f : -1.0f);
+
+        // Vertical component still based on incoming horizontal velocity:
+        float mappedY =
+            (out == PortalDirection::DOWN) ? Math::Abs(v.x) : -Math::Abs(v.x);
+
+        outVel = Vector2(mappedX, mappedY);
+      }
     }
-  }
 
-  return velocity;
+    // --- 2. Scale resulting velocity ---
+    outVel *= VELOCITY_SCALE_FACTOR;
+
+    // --- 3. Enforce MIN_OUT_VELOCITY depending on exit direction ---
+  auto clampMin = [&](float vel, PortalDirection dir) -> float {
+    switch (dir) {
+      case PortalDirection::RIGHT: return (vel <  MIN_OUT_VELOCITY) ?  MIN_OUT_VELOCITY : vel;
+      case PortalDirection::LEFT:  return (vel > -MIN_OUT_VELOCITY) ? -MIN_OUT_VELOCITY : vel;
+      case PortalDirection::DOWN:  return (vel <  MIN_OUT_VELOCITY) ?  MIN_OUT_VELOCITY : vel;
+      case PortalDirection::UP:    return (vel > -MIN_OUT_VELOCITY) ? -MIN_OUT_VELOCITY : vel;
+    }
+    return vel;
+  };
+
+  if (IsHorizontalDirection(out))
+    outVel.x = clampMin(outVel.x, out);
+  else
+    outVel.y = clampMin(outVel.y, out);
+
+    return outVel;
 }
 
 Vector2 Portal::AddOffset(const Vector2& position, PortalDirection direction) const {

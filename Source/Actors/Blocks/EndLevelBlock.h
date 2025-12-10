@@ -8,10 +8,8 @@
 class EndLevelBlock : public Block {
  public:
   EndLevelBlock(Game* game, const std::string& texturePath);
-  void OnHorizontalCollision(const float minOverlap,
-                             AABBColliderComponent* other) override;
-  void OnVerticalCollision(const float minOverlap,
-                           AABBColliderComponent* other) override;
-
+  void OnUpdate(float deltaTime) override;
+private:
+  AABBColliderComponent *endZone;
 };
 

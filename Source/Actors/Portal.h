@@ -7,10 +7,10 @@
 
 class Portal : public Actor {
 
-  constexpr static float COLLIDER_COOLDOWN_TIME = 0.2f;
-  constexpr static float OFFSET_AMOUNT = 3.0f;
+  constexpr static float COLLIDER_COOLDOWN_TIME = 0.1f;
+  constexpr static float OFFSET_AMOUNT = 4.0f;
   constexpr static float VELOCITY_SCALE_FACTOR = 1.0f;
-  constexpr static float MIN_OUT_VELOCITY = 50.0f;
+  constexpr static float MIN_OUT_VELOCITY = 150.0f;
 
  public:
   Portal(Game* game, XenoGun* owner, Vector2 position, PortalType portalType);
@@ -39,7 +39,7 @@ private:
   bool ShouldFlipScale(Portal* exitPortal) const;
 
   // Velocity conversion
-  Vector2 ConvertVelocity(const Vector2& velocity, PortalDirection exitDirection) const;
+  Vector2 ConvertVelocity(const Vector2& v, PortalDirection exitDir, Actor* actor) const;
 
   // Position offset to prevent double teleports
   Vector2 AddOffset(const Vector2& position, PortalDirection direction) const;

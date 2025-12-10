@@ -8,19 +8,15 @@
 #include "../../Game.h"
 EndLevelBlock::EndLevelBlock(Game* game, const std::string& texturePath)
   :Block(game, texturePath) {
-  mColliderComponent->SetHeight(game->GetTileSize() + 1);
-  mColliderComponent->SetWidth(game->GetTileSize() + 1);
+  endZone = new AABBColliderComponent(this,
+        0.0f, 0.0f,
+        game->GetTileSize()+1, game->GetTileSize()+1, ColliderLayer::Blocks, true);
+  endZone->SetEnabled(false);
 }
 
-void EndLevelBlock::OnHorizontalCollision(const float minOverlap,
-                                          AABBColliderComponent* other) {
-  if (other->GetLayer() == ColliderLayer::Player) {
-    mGame->SetNextScene();
-  }
-}
-void EndLevelBlock::OnVerticalCollision(const float minOverlap,
-                                        AABBColliderComponent* other) {
-  if (other->GetLayer() == ColliderLayer::Player) {
+void EndLevelBlock::OnUpdate(float deltaTime) {
+  auto comp=mGame->GetPlayer()->GetComponent<AABBColliderComponent>();
+  if (comp && comp->Intersect(*endZone)) {
     mGame->SetNextScene();
   }
 }

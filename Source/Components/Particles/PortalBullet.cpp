@@ -46,7 +46,7 @@ void PortalBullet::OnHorizontalCollision(const float minOverlap,
     }
     Kill();
     SpawnPortal(rotation, direction, minOverlap);
-  } else {
+  } else if (other->GetLayer() != ColliderLayer::Portal && (!InGraceTime() || other->GetLayer() != ColliderLayer::Player)) {
     Kill();
   }
 }
@@ -65,7 +65,7 @@ void PortalBullet::OnVerticalCollision(const float minOverlap,
     }
     Kill();
     SpawnPortal(rotation, direction, minOverlap);
-  } else {
+  } else if (other->GetLayer() != ColliderLayer::Portal && (!InGraceTime() || other->GetLayer() != ColliderLayer::Player)) {
     Kill();
   }
 }

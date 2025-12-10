@@ -12,14 +12,14 @@
 
 enum class ColliderLayer
 {
-  Player,
-  Enemy,
-  Blocks,
-  PortalDisabledBlock,
-  Bullet,
-  Portal,
-  PortalBullet,
-  Collectables
+    Player,
+    Enemy,
+    Bullet,
+    Portal,
+    PortalBullet,
+    Collectables,
+    PortalDisabledBlock,
+    Blocks, // should be last
 };
 
 class AABBColliderComponent : public Component
