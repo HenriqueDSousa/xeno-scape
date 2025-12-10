@@ -42,6 +42,7 @@ void Bullet::Awake(const Vector2 &position, const float &rotation, float lifetim
 void Bullet::Emit(const Vector2 &direction, float speed)
 {
   mRigidBody->SetVelocity(direction * speed);
+  mScale.x = direction.x > 0? 1: -1;
 }
 
 void Bullet::OnUpdate(float deltaTime)
@@ -50,7 +51,7 @@ void Bullet::OnUpdate(float deltaTime)
 }
 
 void Bullet::StartGraceTime() {
-  mGraceTime=0.171;
+  mGraceTime=0.051;
 }
 
 bool Bullet::InGraceTime() {

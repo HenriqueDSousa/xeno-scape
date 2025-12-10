@@ -125,8 +125,8 @@ void XenoGun::Shoot() {
   
   switch (mCurrentMode) {
     case ShootingMode::PORTAL_BLUE: {
-      if (GetActiveBluePortal()!=nullptr) GetActiveBluePortal()->SetActive(false);
       auto particle = mBluePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
+      particle->StartGraceTime();
       particle->FixInitialOverlap();
       mAnimatorComponent->SetAnimation("bluePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
@@ -136,8 +136,8 @@ void XenoGun::Shoot() {
     }
       
     case ShootingMode::PORTAL_ORANGE: {
-      if (GetActiveOrangePortal()!=nullptr) GetActiveOrangePortal()->SetActive(false);
       auto particle=mOrangePortalGun->EmitParticle(bulletLifetime, bulletSpeed, direction * 10.0f);
+      particle->StartGraceTime();
       particle->FixInitialOverlap();
       mAnimatorComponent->SetAnimation("orangePortalShooting");
       mAnimatorComponent->SetAnimFPS(5.0f);
