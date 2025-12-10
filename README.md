@@ -23,6 +23,8 @@ A condição de vitória de uma fase é atingir o bloco com o portal vermelho, q
 
 As condições de derrota são: ser atingido por um inimigo, cair para fora da área de jogo, ou o tempo da fase acabar.
 
+[Vídeo da gameplay](https://www.youtube.com/watch?v=nkFddTl27mE)
+
 ### Funcionalidades
 
 - Teleporte com portais
